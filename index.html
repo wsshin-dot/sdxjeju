@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SDx플랫폼팀 제주 팀데이 - Official Schedule</title>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <style>
+        :root {
+            --primary: #FF6B00;
+            --primary-dark: #E65100;
+            --secondary: #2D9CDB;
+            --accent: #FFD700;
+            --bg: #F0F2F5;
+            --surface: #FFFFFF;
+            --text-main: #191F28;
+            --text-sub: #8B95A1;
+            --border: #E5E8EB;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --safe-area-bottom: env(safe-area-inset-bottom);
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: var(--surface);
+            min-height: 100vh;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+        }
+
+        header {
+            background: var(--surface);
+            padding: 40px 24px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-sticky {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            padding: 12px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+            /* 갭 증가 */
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            overflow-x: auto;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            padding: 8px 4px;
+            border-radius: var(--radius-md);
+            color: var(--text-sub);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+            min-width: 60px;
+        }
+
+        /* REC 버튼 간격 벌리기 */
+        .nav-btn:last-child {
+            margin-left: 8px;
+            flex: 0 0 auto;
+            /* 크기 고정 */
+            min-width: 70px;
+            /* 약간 더 넓게 */
+            background: rgba(255, 107, 0, 0.05);
+            /* 강조 배경 */
+        }
+
+        header {
+            background: linear-gradient(135deg, #FF6B00, #FF9E40);
+            color: white;
+            padding: 40px 24px 30px;
+            border-radius: 0 0 30px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-tag {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(4px);
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            margin: 0 0 8px 0;
+            font-size: 1.8rem;
+            letter-spacing: -0.03em;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 8px;
+            opacity: 0.9;
+            font-size: 0.95rem;
+            flex-wrap: wrap;
+        }
+
+        .header-info span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            border: none;
+            background: var(--bg);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            color: var(--text-sub);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn span.date {
+            font-size: 0.75rem;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .nav-btn.active {
+            background: var(--surface);
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 24px 20px;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            transition: transform 0.2s;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+            margin-top: 10px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 10px;
+            bottom: 0;
+            width: 2px;
+            background: #E5E8EB;
+        }
+
+        .time-item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .time-dot {
+            position: absolute;
+            left: -24px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            background: var(--surface);
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+        }
+
+        .time-item.highlight .time-dot {
+            background: var(--primary);
+            border-color: white;
+            box-shadow: 0 0 0 3px var(--primary);
+        }
+
+        .time-item.free .time-dot {
+            border-color: var(--secondary);
+        }
+
+        .time-header {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .time-time {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .time-title {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 1.05rem;
+        }
+
+        .time-card {
+            background: #FAFAFA;
+            border-radius: var(--radius-md);
+            padding: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .time-desc {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 10px;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .option-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .opt-info {
+            flex: 1;
+        }
+
+        .opt-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 6px;
+        }
+
+        .opt-tag.rec {
+            background: #FFF0E6;
+            color: var(--primary);
+        }
+
+        .opt-tag.normal {
+            background: #F2F4F6;
+            color: var(--text-sub);
+        }
+
+        .opt-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .opt-price {
+            font-size: 0.85rem;
+            color: #E91E63;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .btn-map {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #F2F4F6;
+            color: var(--text-sub);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-map:hover {
+            background: #E5E8EB;
+            color: var(--primary);
+        }
+
+        .budget-card {
+            background: #212529;
+            color: white;
+            overflow: hidden;
+        }
+
+        .budget-total {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .budget-total h3 {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            font-weight: 400;
+        }
+
+        .budget-total .amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-top: 4px;
+        }
+
+        .budget-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .budget-col {
+            background: #212529;
+            padding: 16px 10px;
+            text-align: center;
+        }
+
+        .budget-col .label {
+            font-size: 0.75rem;
+            opacity: 0.6;
+            margin-bottom: 4px;
+        }
+
+        .budget-col .val {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .roulette-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        /* 마블 레이스 (Matter.js) */
+        .race-container {
+            width: 100%;
+            background: #222;
+            border-radius: 16px;
+            padding: 0;
+            margin-bottom: 20px;
+            overflow: hidden;
+            position: relative;
+            border: 4px solid #333;
+            height: 800px;
+            /* 높이 확장 */
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 캔버스가 들어갈 자리 */
+        #matter-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .rank-board {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid #eee;
+            display: none;
+        }
+
+        .rank-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 0.9rem;
+        }
+
+        .rank-item:nth-child(1) {
+            color: #FFD700;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .rank-item:nth-child(2) {
+            color: #C0C0C0;
+            font-weight: 700;
+        }
+
+        .rank-item:nth-child(3) {
+            color: #CD7F32;
+            font-weight: 700;
+        }
+
+        .spin-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 100px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+            transition: transform 0.1s;
+        }
+
+        .spin-btn:active {
+            transform: scale(0.95);
+        }
+
+        .spin-btn.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+        }
+
+        .modal-card {
+            background: white;
+            width: 85%;
+            max-width: 320px;
+            border-radius: 24px;
+            padding: 30px 20px;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.show .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            display: block;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 56px;
+            height: 56px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 90;
+            transition: transform 0.2s;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+
+        .badge.blue {
+            background: rgba(45, 156, 219, 0.15);
+            color: var(--secondary);
+        }
+
+        .badge.red {
+            background: rgba(233, 30, 99, 0.15);
+            color: #E91E63;
+        }
+
+        .copy-btn {
+            cursor: pointer;
+            color: var(--text-sub);
+            margin-left: 6px;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn:hover {
+            color: var(--primary);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .info-box {
+            background: #F9FAFB;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .info-box i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .info-box .label {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .info-box .val {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        /* 일정별 예산 표시 */
+        .day-budget-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 12px 8px;
+            /* 패딩 축소 */
+            margin-bottom: 20px;
+            border: 1px solid #e5e8eb;
+        }
+
+        .day-budget-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 0;
+            padding: 0 2px;
+        }
+
+        .day-budget-item .label {
+            font-size: 0.7rem;
+            /* 폰트 축소 */
+            color: var(--text-sub);
+            margin-bottom: 2px;
+            white-space: nowrap;
+            letter-spacing: -0.5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            text-align: center;
+        }
+
+        .day-budget-item .val {
+            font-size: 0.9rem;
+            /* 폰트 축소 */
+            font-weight: 700;
+            color: var(--text-main);
+            white-space: nowrap;
+            letter-spacing: -0.5px;
+        }
+
+        .day-budget-item .val.spent {
+            color: #E91E63;
+        }
+
+        .day-budget-item .val.remain {
+            color: #4CAF50;
+        }
+
+        .day-budget-divider {
+            width: 1px;
+            height: 24px;
+            background: #dee2e6;
+            margin: 0 4px;
+            /* 마진 축소 */
+            flex-shrink: 0;
+        }
+
+        /* 일정 비용 태그 */
+        .cost-tag {
+            display: inline-block;
+            background: rgba(233, 30, 99, 0.1);
+            color: #E91E63;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .remain-tag {
+            display: inline-block;
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        /* 예산 계산기 */
+        .budget-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .budget-input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e5e8eb;
+        }
+
+        .budget-label {
+            flex: 1;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .budget-input {
+            width: 100px;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: right;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .budget-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .budget-unit {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            min-width: 20px;
+        }
+
+        .budget-result {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #fed7aa;
+        }
+
+        .budget-result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .remain-tag {
+            display: none !important;
+        }
+
+        /* DB 저장 상태 표시 */
+        .db-status {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-left: 8px;
+            display: inline-block;
+        }
+
+        .db-status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .db-status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .db-status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .save-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .save-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .save-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <header>
+            <div class="header-content">
+                <span class="header-tag">🍊 Jeju Team Day</span>
+                <h1>SDx 플랫폼팀<br>제주도 워크샵</h1>
+                <div class="header-info">
+                    <span><i class="far fa-calendar"></i> 2.5(목) ~ 2.7(토)</span>
+                    <span><i class="far fa-user"></i> 10명</span>
+                    <span><i class="fas fa-map-marker-alt"></i> 씨사이드 아덴</span>
+                </div>
+            </div>
+        </header>
+
+        <nav class="nav-sticky">
+            <button class="nav-btn active" onclick="switchTab('day1', this)">
+                <span>Day 1</span>
+                <span class="date">2.5 (목)</span>
+            </button>
+            <button class="nav-btn" onclick="switchTab('day2', this)">
+                <span>Day 2</span>
+                <span class="date">2.6 (금)</span>
+            </button>
+            <button class="nav-btn" onclick="switchTab('day3', this)">
+                <span>Day 3</span>
+                <span class="date">2.7 (토)</span>
+            </button>
+            <button class="nav-btn" onclick="switchTab('info', this)">
+                <span>Info</span>
+                <span class="date">정보/예산</span>
+            </button>
+            <button class="nav-btn" onclick="switchTab('recreation', this)">
+                <span>REC</span>
+                <span class="date">게임</span>
+            </button>
+        </nav>
+
+        <div id="day1" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-plane-departure"></i> 도착 및 체크인</div>
+                </div>
+                <div class="day-budget-bar" id="day1-budget-bar">
+                    <div class="day-budget-item">
+                        <span class="label">Day1 예상비용</span>
+                        <span class="val spent" id="day1-cost">~22만원</span>
+                    </div>
+                    <div class="day-budget-divider"></div>
+                    <div class="day-budget-item">
+                        <span class="label">누적 사용</span>
+                        <span class="val" id="day1-total">~22만원</span>
+                    </div>
+                    <div class="day-budget-divider"></div>
+                    <div class="day-budget-item">
+                        <span class="label">1인당 남은예산</span>
+                        <span class="val remain" id="day1-remain">~10만원</span>
+                    </div>
+                </div>
+                <div
+                    style="background:#fff3e0; padding:10px 14px; border-radius:8px; margin-bottom:16px; font-size:0.8rem; color:#e65100;">
+                    💡 총 예산 300만원 (1인 30만원) | 항공 + 렌트/기름 포함<br>
+                    🏠 숙소비: 1인 2만원 (별도, 예산 미포함) - 이재환 선임에게 2만원 입금 🙏
+                </div>
+                <div class="timeline">
+                    <div class="time-item highlight">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">17:40</span>
+                            <span class="time-title">공항 출발</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">✈️ 2026-02-05 (목) 17:40 → 18:55</div>
+                            <div class="badge blue">비행시간 약 75분</div>
+                            <div class="cost-tag" style="margin-top:6px;">항공 1인 10만원</div>
+                        </div>
+                    </div>
+
+                    <div class="time-item">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">19:30</span>
+                            <span class="time-title">렌터카 수령 & 이동</span>
+                            <span class="cost-tag">렌트+기름 1인 4만원</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">빌리카 셔틀 탑승 → 차량 인수 (싼타페/쏘렌토)</div>
+                            <div class="time-desc">🚙 숙소로 이동 (약 50분)</div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#E91E63; margin-top:4px;">💰 총 40만원
+                                (10명 기준)</div>
+                        </div>
+                    </div>
+
+                    <div class="time-item">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">21:00</span>
+                            <span class="time-title">저녁식사: 신우성 흑돼지</span>
+                            <span class="cost-tag" data-cost="day1-dinner">~5.0만원</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">🐷 중문 흑돼지 맛집에서 저녁</div>
+                            <div class="options-grid">
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag rec">확정</span><span class="opt-name">신우성 흑돼지</span>
+                                        </div>
+                                        <div class="opt-price">인당 5만원</div>
+                                        <div style="font-size:0.75rem; color:#888;">중문 흑돼지 맛집 🔥</div>
+                                    </div>
+                                    <a href="https://map.naver.com/p/search/신우성흑돼지%20중문" target="_blank"
+                                        class="btn-map"><i class="fas fa-map"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="time-item">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">23:00</span>
+                            <span class="time-title">보드게임</span>
+                            <span class="cost-tag" data-cost="whiskey">~2.0만원</span>
+                        </div>
+                        <div class="time-card">
+
+                            <div class="time-desc">🎲 추천 게임: 달무티, 코드네임</div>
+                            <div class="time-desc" style="color:#673AB7; font-weight:600; margin-top:6px;">🍷 양주 구매 예정
+                                (총 20만원)</div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#888;">예산에서 1인당 2만원 차감</div>
+                            <div class="time-desc" style="color:#E91E63; font-weight:600; margin-top:6px;">👕 벌칙: 테무옷 입기
+                                (꼴찌는 다음날 착용!)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 1 이동경로 지도 (이미지 약도) -->
+
+            </div>
+        </div>
+
+        <div id="day2" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-flag-checkered"></i> 9.81파크 & 액티비티</div>
+                </div>
+                <div class="day-budget-bar" id="day2-budget-bar">
+                    <div class="day-budget-item">
+                        <span class="label">Day2 예상비용</span>
+                        <span class="val spent" id="day2-cost">~8.2만원</span>
+                    </div>
+                    <div class="day-budget-divider"></div>
+                    <div class="day-budget-item">
+                        <span class="label">누적 사용</span>
+                        <span class="val" id="day2-total">~24.2만원</span>
+                    </div>
+                    <div class="day-budget-divider"></div>
+                    <div class="day-budget-item">
+                        <span class="label">1인당 남은예산</span>
+                        <span class="val remain" id="day2-remain">~5.8만원</span>
+                    </div>
+                </div>
+                <div class="timeline">
+                    <div class="time-item">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">08:00</span>
+                            <span class="time-title">아침 (선택)</span>
+                            <span class="badge blue">팀 선택</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">중문 관광 및 아침식사 or 휴식</div>
+                            <div class="options-grid">
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag rec">추천</span><span class="opt-name">수두리보말칼국수</span>
+                                        </div>
+                                        <div class="opt-price">~1.3만원</div>
+                                        <div style="font-size:0.75rem; color:#888;">웨이팅 필수 맛집 🍜</div>
+                                    </div>
+                                    <a href="https://map.naver.com/p/search/수두리보말칼국수" target="_blank" class="btn-map"><i
+                                            class="fas fa-map"></i></a>
+                                </div>
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag normal">옵션2</span><span class="opt-name">제주한라국수</span>
+                                        </div>
+                                        <div class="opt-price">~1.0만원</div>
+                                        <div style="font-size:0.75rem; color:#888;">고기국수/국밥</div>
+                                    </div>
+                                    <a href="https://map.naver.com/p/search/제주한라국수" target="_blank" class="btn-map"><i
+                                            class="fas fa-map"></i></a>
+                                </div>
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag normal">옵션3</span><span class="opt-name">새우시
+                                                (김밥)</span></div>
+                                        <div class="opt-price">~0.8만원</div>
+                                        <div style="font-size:0.75rem; color:#888;">딱새우김밥 포장</div>
+                                    </div>
+                                    <a href="https://map.naver.com/p/search/새우시" target="_blank" class="btn-map"><i
+                                            class="fas fa-map"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="time-item">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">11:30</span>
+                            <span class="time-title">점심 식당 도착</span>
+                            <span class="cost-tag" data-cost="day2-lunch">~2.4만원</span>
+                            <span class="remain-tag" id="remain-day2-lunch">잔액 8.6만원</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">📍 중문관광단지 맛집 후보군 (택1)</div>
+                            <div class="options-grid">
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag rec">추천</span><span class="opt-name">고집돌우럭</span>
+                                        </div>
+                                        <div class="opt-price">~2.4만원</div>
+                                        <div style="font-size:0.75rem; color:#888;">우럭조림 런치세트 🐟</div>
+                                    </div>
+                                    <a href="https://map.naver.com/p/search/고집돌우럭중문점" target="_blank" class="btn-map"><i
+                                            class="fas fa-map"></i></a>
+                                </div>
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag normal">후보2</span><span class="opt-name">제주오성</span>
+                                        </div>
+                                        <div class="opt-price">~2.5만원</div>
+                                        <div style="font-size:0.75rem; color:#888;">통갈치조림/구이 정식</div>
+                                    </div>
+                                    <a href="https://map.naver.com/p/search/제주오성" target="_blank" class="btn-map"><i
+                                            class="fas fa-map"></i></a>
+                                </div>
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag normal">후보3</span><span class="opt-name">예지원</span>
+                                        </div>
+                                        <div class="opt-price">~2.0만원</div>
+                                        <div style="font-size:0.75rem; color:#888;">전복뚝배기/성게미역국</div>
+                                    </div>
+                                    <a href="https://map.naver.com/p/search/예지원%20중문" target="_blank" class="btn-map"><i
+                                            class="fas fa-map"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="time-item highlight">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">13:00</span>
+                            <span class="time-title">9.81파크 레이싱</span>
+                            <span class="badge red">확정</span>
+                            <span class="cost-tag" data-cost="981">~3.7만원</span>
+                            <span class="remain-tag" id="remain-981">잔액 5만원</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">🏎️ 3시간 풀패키지 (레이싱 + 서바이벌)</div>
+                            <div class="time-desc" style="font-size:0.85rem; color:#666; margin-top:4px;">📍 제주시 애월읍 천덕로
+                                880-24</div>
+                            <div style="margin-top:10px;">
+                                <a href="https://map.naver.com/p/search/9.81파크" target="_blank" class="badge blue"
+                                    style="text-decoration:none;">지도보기</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="time-item">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">16:00</span>
+                            <span class="time-title">카페 휴식 (9.81파크 or 서귀포)</span>
+                            <span class="cost-tag" data-cost="day2-tour">~0.8만원</span>
+                            <span class="remain-tag" id="remain-day2-tour">잔액 3.5만원</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">☕ 액티비티 후 카페에서 휴식</div>
+                            <div class="options-grid" style="margin-top:8px;">
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag rec">기본</span><span class="opt-name">Space Zero</span>
+                                        </div>
+                                        <div style="font-size:0.75rem; color:#888;">9.81파크 내 위치, 빈백 휴식</div>
+                                    </div>
+                                </div>
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag normal">후보</span><span class="opt-name">카페 루시아</span>
+                                        </div>
+                                        <div style="font-size:0.75rem; color:#888;">서귀포 안덕면, 박수기정 뷰 🌊</div>
+                                    </div>
+                                    <a href="https://map.naver.com/p/search/카페루시아 본점" target="_blank" class="btn-map"><i
+                                            class="fas fa-map"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="time-item">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">17:00</span>
+                            <span class="time-title">천제연 폭포 구경</span>
+                            <span class="badge blue">관광</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">🌊 천제연 폭포 산책 (약 30분)</div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#888;">중문 근처 3대 폭포 중 하나, 선녀 전설로 유명
+                            </div>
+                            <div style="margin-top:10px;">
+                                <a href="https://map.naver.com/p/search/천제연폭포" target="_blank" class="badge blue"
+                                    style="text-decoration:none;">지도보기</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="time-item">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">17:45</span>
+                            <span class="time-title">서귀포 올레시장 이동</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">천제연 → 서귀포 (약 15분 소요)</div>
+                        </div>
+                    </div>
+
+                    <div class="time-item">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">18:30</span>
+                            <span class="time-title">올레시장 장보기 → 숙소 파티</span>
+                            <span class="cost-tag" data-cost="day2-dinner">~4.0만원</span>
+                            <span class="remain-tag" id="remain-day2-dinner">잔액 1.5만원</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">🛒 올레시장에서 장보기 후 숙소 파티</div>
+                            <div class="options-grid">
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag rec">확정</span><span class="opt-name">매일올레시장</span>
+                                        </div>
+                                        <div class="opt-price">인당 4만원</div>
+                                        <div style="font-size:0.75rem; color:#888;">회/흑돼지/먹거리 포장 🍢</div>
+                                    </div>
+                                    <a href="https://map.naver.com/p/search/서귀포매일올레시장" target="_blank"
+                                        class="btn-map"><i class="fas fa-map"></i></a>
+                                </div>
+                            </div>
+                            <div class="time-desc" style="margin-top:10px;">🎲 숙소에서 게임 타임!</div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 2 이동경로 지도 (이미지 약도) -->
+
+            </div>
+        </div>
+
+        <div id="day3" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-plane-arrival"></i> 체크아웃 및 귀가</div>
+                </div>
+                <div class="day-budget-bar" id="day3-budget-bar">
+                    <div class="day-budget-item">
+                        <span class="label">Day3 예상비용</span>
+                        <span class="val spent" id="day3-cost">0원</span>
+                    </div>
+                    <div class="day-budget-divider"></div>
+                    <div class="day-budget-item">
+                        <span class="label">총 사용</span>
+                        <span class="val" id="day3-total">~24.2만원</span>
+                    </div>
+                    <div class="day-budget-divider"></div>
+                    <div class="day-budget-item">
+                        <span class="label">1인당 최종잔액</span>
+                        <span class="val remain" id="day3-remain">~5.8만원</span>
+                    </div>
+                </div>
+                <div class="timeline">
+                    <div class="time-item">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">07:30</span>
+                            <span class="time-title">조기 복귀팀 반납</span>
+                            <span class="badge blue">선택</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">🚗 빌리카 반납 (오전 비행기)</div>
+                            <div class="time-desc">셔틀 탑승 → 공항 이동</div>
+                        </div>
+                    </div>
+
+                    <div class="time-item">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">10:00</span>
+                            <span class="time-title">숙소 체크아웃</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">🏠 짐 정리 및 숙소 퇴실</div>
+                        </div>
+                    </div>
+
+                    <div class="time-item">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
+                            <span class="time-time">12:00</span>
+                            <span class="time-title">렌트카 최종 반납</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">🚗 빌리카 반납 (오후 비행기)</div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#888;">운전자: 신우성 전임, 김지섭 전임</div>
+                        </div>
+                    </div>
+
+                    <div class="time-item highlight free">
+                        <div class="time-dot" style="background:var(--secondary); border-color:var(--secondary);"></div>
+                        <div class="time-header">
+                            <span class="time-time" style="color:var(--secondary);">12:00 ~</span>
+                            <span class="time-title">개별 귀가</span>
+                        </div>
+                        <div class="time-card" style="border-left: 4px solid var(--secondary); background: #F0F9FF;">
+                            <div class="time-desc" style="font-weight:600; color:#005580;">🎉 공식 일정 종료! 수고하셨습니다!</div>
+                            <div class="time-desc">각자 항공편에 맞춰 개별 귀가</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="info" class="tab-content">
+            <div class="card budget-card">
+                <div class="budget-total">
+                    <h3>1인당 예산</h3>
+                    <div class="amount">350,000원</div>
+                </div>
+                <div class="budget-details">
+                    <div class="budget-col">
+                        <span class="label">항공권</span>
+                        <div class="val">10만원</div>
+                    </div>
+                    <div class="budget-col">
+                        <span class="label">렌트+기름</span>
+                        <div class="val">4만원</div>
+                    </div>
+                    <div class="budget-col">
+                        <span class="label">식비/활동</span>
+                        <div class="val">~16만원</div>
+                    </div>
+                </div>
+                <div
+                    style="padding:12px 16px; background:rgba(255,255,255,0.1); text-align:center; font-size:0.8rem; opacity:0.7;">
+                    숙소: 1인 2만원 (이재환 선임에게 2만원 입금) | 총 예산: 350만원 (10명)
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🏠 숙소 & 차량 정보</div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-box">
+                        <i class="fas fa-hotel"></i>
+                        <span class="label">숙소명</span>
+                        <div class="val">씨사이드 아덴</div>
+                        <div style="font-size:0.7rem; color:#9C27B0; margin-top:4px;">1인 2만원 | 이재환 선임에게 2만원 입금 �</div>
+                    </div>
+                    <div class="info-box">
+                        <i class="fas fa-car"></i>
+                        <span class="label">운전자</span>
+                        <div class="val">신우성, 김지섭</div>
+                    </div>
+                </div>
+                <div style="margin-top:12px; text-align:center;">
+                    <a href="https://map.naver.com/p/search/씨사이드아덴" target="_blank" class="btn-link"
+                        style="color:var(--primary); text-decoration:none; font-weight:600;">📍 네이버 지도 보기</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">💰 예산 계산기</div>
+                    <button id="unlock-btn" onclick="unlockBudget()"
+                        style="padding:6px 12px; background:#f0f0f0; border:1px solid #ddd; border-radius:8px; font-size:0.8rem; cursor:pointer;">
+                        🔒 잠금해제
+                    </button>
+                </div>
+                <div style="padding: 10px 0;">
+                    <div style="font-size:0.8rem; color:var(--text-sub); margin-bottom:12px;">
+                        <span id="budget-status">🔒 수정하려면 잠금해제를 눌러주세요</span>
+                    </div>
+
+                    <div class="budget-input-group">
+                        <div class="budget-input-row">
+                            <span class="budget-label">항공권</span>
+                            <input type="number" id="cost-flight" value="100000" class="budget-input"
+                                oninput="onBudgetChange()" disabled>
+                            <span class="budget-unit">원</span>
+                        </div>
+                        <div class="budget-input-row">
+                            <span class="budget-label">렌트+기름</span>
+                            <input type="number" id="cost-rent" value="40000" class="budget-input"
+                                oninput="onBudgetChange()" disabled>
+                            <span class="budget-unit">원</span>
+                        </div>
+                        <div class="budget-input-row">
+                            <span class="budget-label">Day1 저녁</span>
+                            <input type="number" id="cost-day1-dinner" value="50000" class="budget-input"
+                                oninput="onBudgetChange()" disabled>
+                            <span class="budget-unit">원</span>
+                        </div>
+                        <div class="budget-input-row">
+                            <span class="budget-label">양주 구매</span>
+                            <input type="number" id="cost-whiskey" value="20000" class="budget-input"
+                                oninput="onBudgetChange()" disabled>
+                            <span class="budget-unit">원</span>
+                        </div>
+                        <div class="budget-input-row">
+                            <span class="budget-label">Day2 9.81파크</span>
+                            <input type="number" id="cost-981" value="37000" class="budget-input"
+                                oninput="onBudgetChange()" disabled>
+                            <span class="budget-unit">원</span>
+                        </div>
+                        <div class="budget-input-row">
+                            <span class="budget-label">Day2 점심 (후보선택)</span>
+                            <input type="number" id="cost-day2-lunch" value="24000" class="budget-input"
+                                oninput="onBudgetChange()" disabled>
+                            <span class="budget-unit">원</span>
+                        </div>
+                        <div class="budget-input-row">
+                            <span class="budget-label">Day2 오후(카페)</span>
+                            <input type="number" id="cost-day2-tour" value="8000" class="budget-input"
+                                oninput="onBudgetChange()" disabled>
+                            <span class="budget-unit">원</span>
+                        </div>
+                        <div class="budget-input-row">
+                            <span class="budget-label">Day2 저녁(장보기)</span>
+                            <input type="number" id="cost-day2-dinner" value="40000" class="budget-input"
+                                oninput="onBudgetChange()" disabled>
+                            <span class="budget-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="budget-result">
+                        <div class="budget-result-row">
+                            <span>총 예상 비용</span>
+                            <span id="total-cost"
+                                style="font-size:1.3rem; font-weight:700; color:var(--primary);">294,000원</span>
+                        </div>
+                        <div class="budget-result-row" style="margin-top:8px;">
+                            <span>예산 35만원 기준</span>
+                            <span id="remaining-budget" style="font-weight:600; color:#4CAF50;">+56,000원 여유</span>
+                        </div>
+                        <button class="save-btn" id="save-budget-btn" onclick="saveBudgetToDB()">
+                            💾 DB에 저장하기
+                        </button>
+                        <div id="db-status" style="text-align:center; margin-top:8px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="recreation" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🎱 순서 정하기</div>
+                </div>
+                <div class="roulette-container">
+                    <div class="race-container">
+                        <div id="matter-container"></div>
+                    </div>
+
+                    <div class="rank-board" id="rankBoard">
+                        <div style="text-align:center; font-weight:bold; margin-bottom:10px;">🏆 도착 순위</div>
+                        <div id="rankList"></div>
+                    </div>
+
+                    <div style="margin-bottom:20px; margin-top:20px;">
+                        <input type="text" id="rouletteNames" value="김지섭,박범진,손영길,신예리,신우성,이재환,임혜정,장민한,조옥래,홍예진"
+                            style="width:80%; padding:10px; border:1px solid #ddd; border-radius:8px; text-align:center;">
+                    </div>
+                    <button class="spin-btn" id="raceBtn" onclick="startMarbleRun()">START RUN</button>
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+        <div class="fab" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+
+    </div>
+
+    <script>
+        // ========================================
+        // 💰 예산 중앙 관리 시스템
+        // ========================================
+        const BUDGET_CONFIG = {
+            totalBudgetPerPerson: 350000, // 1인당 총 예산 35만원
+            costs: {
+                flight: 100000,      // 항공권
+                rent: 40000,         // 렌트+기름
+                day1Dinner: 50000,   // Day1 저녁 (신우성 흑돼지)
+                whiskey: 20000,      // 양주 (20만원/10명)
+                day2Lunch: 24000,    // Day2 점심
+                park981: 37000,      // Day2 9.81파크
+                day2Cafe: 8000,      // Day2 카페
+                day2Dinner: 40000    // Day2 저녁 (올레시장)
+            }
+        };
+
+        // Day별 비용 계산
+        function calcDayBudgets() {
+            const c = BUDGET_CONFIG.costs;
+            const day1 = c.flight + c.rent + c.day1Dinner + c.whiskey;
+            const day2 = c.day2Lunch + c.park981 + c.day2Cafe + c.day2Dinner;
+            const day3 = 0;
+            const total = day1 + day2 + day3;
+            // 항공권(10만원)은 선결제/고정비용으로 간주하여 잔액 계산에서 제외 (User Request: 남은예산 13만원 맞춰야 함)
+            const remaining = BUDGET_CONFIG.totalBudgetPerPerson - (total - c.flight);
+
+            return {
+                day1: { cost: day1, cumulative: day1, remaining: BUDGET_CONFIG.totalBudgetPerPerson - day1 },
+                day2: { cost: day2, cumulative: day1 + day2, remaining: BUDGET_CONFIG.totalBudgetPerPerson - day1 - day2 },
+                day3: { cost: day3, cumulative: total, remaining: remaining },
+                total: total,
+                remaining: remaining
+            };
+        }
+
+        // 금액 포맷 (만원 단위)
+        function formatWon(amount) {
+            if (amount >= 10000) {
+                const man = amount / 10000;
+                return man % 1 === 0 ? `${man}만원` : `${man.toFixed(1)}만원`;
+            }
+            return `${amount.toLocaleString()}원`;
+        }
+
+        // 모든 예산 표시 업데이트
+        function updateAllBudgetDisplays() {
+            const budgets = calcDayBudgets();
+
+            // Day 1 예산바
+            const day1Cost = document.getElementById('day1-cost');
+            const day1Total = document.getElementById('day1-total');
+            const day1Remain = document.getElementById('day1-remain');
+            if (day1Cost) day1Cost.textContent = '~' + formatWon(budgets.day1.cost);
+            if (day1Total) day1Total.textContent = '~' + formatWon(budgets.day1.cumulative);
+            if (day1Remain) day1Remain.textContent = '~' + formatWon(budgets.day1.remaining);
+
+            // Day 2 예산바
+            const day2Cost = document.getElementById('day2-cost');
+            const day2Total = document.getElementById('day2-total');
+            const day2Remain = document.getElementById('day2-remain');
+            if (day2Cost) day2Cost.textContent = '~' + formatWon(budgets.day2.cost);
+            if (day2Total) day2Total.textContent = '~' + formatWon(budgets.day2.cumulative);
+            if (day2Remain) day2Remain.textContent = '~' + formatWon(budgets.day2.remaining);
+
+            // Day 3 예산바
+            const day3Cost = document.getElementById('day3-cost');
+            const day3Total = document.getElementById('day3-total');
+            const day3Remain = document.getElementById('day3-remain');
+            if (day3Cost) day3Cost.textContent = formatWon(budgets.day3.cost);
+            if (day3Total) day3Total.textContent = '~' + formatWon(budgets.day3.cumulative);
+            if (day3Remain) day3Remain.textContent = '~' + formatWon(budgets.day3.remaining);
+
+            // Info 페이지 예산 계산기
+            const totalCost = document.getElementById('total-cost');
+            const remainingBudget = document.getElementById('remaining-budget');
+            if (totalCost) totalCost.textContent = budgets.total.toLocaleString() + '원';
+            if (remainingBudget) {
+                if (budgets.remaining >= 0) {
+                    remainingBudget.textContent = '+' + budgets.remaining.toLocaleString() + '원 여유';
+                    remainingBudget.style.color = '#4CAF50';
+                } else {
+                    remainingBudget.textContent = budgets.remaining.toLocaleString() + '원 초과';
+                    remainingBudget.style.color = '#E91E63';
+                }
+            }
+
+            // 예산 계산기 input 기본값 동기화
+            const costInputs = {
+                'cost-flight': BUDGET_CONFIG.costs.flight,
+                'cost-rent': BUDGET_CONFIG.costs.rent,
+                'cost-day1-dinner': BUDGET_CONFIG.costs.day1Dinner,
+                'cost-981': BUDGET_CONFIG.costs.park981,
+                'cost-day2-lunch': BUDGET_CONFIG.costs.day2Lunch,
+                'cost-day2-tour': BUDGET_CONFIG.costs.day2Cafe,
+                'cost-day2-dinner': BUDGET_CONFIG.costs.day2Dinner
+            };
+            for (const [id, value] of Object.entries(costInputs)) {
+                const input = document.getElementById(id);
+                if (input) input.value = value;
+            }
+        }
+
+        // ========================================
+        // 🔗 Neon DB API 연동
+        // ========================================
+        const API_BASE = '/.netlify/functions';
+
+        // DB에서 예산 데이터 로드
+        async function loadBudgetFromDB() {
+            const statusEl = document.getElementById('db-status');
+            try {
+                statusEl.innerHTML = '<span class="db-status loading">📡 DB 연결 중...</span>';
+
+                const response = await fetch(`${API_BASE}/get-budget`);
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    // BUDGET_CONFIG 업데이트
+                    BUDGET_CONFIG.totalBudgetPerPerson = result.data.totalBudgetPerPerson || 350000;
+                    Object.assign(BUDGET_CONFIG.costs, result.data.costs || {});
+
+                    updateAllBudgetDisplays();
+                    statusEl.innerHTML = '<span class="db-status success">✅ DB에서 불러옴</span>';
+
+                    setTimeout(() => { statusEl.innerHTML = ''; }, 3000);
+                } else {
+                    statusEl.innerHTML = '<span class="db-status error">⚠️ 기본값 사용 중</span>';
+                }
+            } catch (error) {
+                console.error('DB Load Error:', error);
+                statusEl.innerHTML = '<span class="db-status error">❌ DB 연결 실패 (기본값 사용)</span>';
+            }
+        }
+
+        // DB에 예산 데이터 저장
+        async function saveBudgetToDB() {
+            const statusEl = document.getElementById('db-status');
+            const saveBtn = document.getElementById('save-budget-btn');
+
+            try {
+                saveBtn.disabled = true;
+                saveBtn.textContent = '저장 중...';
+                statusEl.innerHTML = '<span class="db-status loading">📤 저장 중...</span>';
+
+                const response = await fetch(`${API_BASE}/save-budget`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(BUDGET_CONFIG)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    statusEl.innerHTML = '<span class="db-status success">✅ 저장 완료!</span>';
+                    setTimeout(() => { statusEl.innerHTML = ''; }, 3000);
+                } else {
+                    throw new Error(result.error || '저장 실패');
+                }
+            } catch (error) {
+                console.error('DB Save Error:', error);
+                statusEl.innerHTML = `<span class="db-status error">❌ ${error.message}</span>`;
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = '💾 DB에 저장하기';
+            }
+        }
+
+        // 페이지 로드시 예산 업데이트 및 지도 초기화
+        document.addEventListener('DOMContentLoaded', async function () {
+            // 먼저 DB에서 예산 데이터 로드 시도
+            await loadBudgetFromDB();
+
+            // 그 후 모든 표시 업데이트
+            updateAllBudgetDisplays();
+
+            // 지도 초기화
+            setTimeout(() => {
+                // Day 1 지도: 공항 → 숙소 → 식당
+                initJejuMap('map-day1', ['airport', 'accommodation', 'dinner1']);
+                // Day 2 지도: 9.81파크 → 천제연 폭포 → 올레시장 → 숙소
+                initJejuMap('map-day2', ['park981', 'waterfall', 'market', 'accommodation']);
+            }, 500);
+        });
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Matter.js Aliases
+        const Engine = Matter.Engine,
+            Render = Matter.Render,
+            Runner = Matter.Runner,
+            Bodies = Matter.Bodies,
+            Composite = Matter.Composite,
+            Events = Matter.Events,
+            Body = Matter.Body,
+            Constraint = Matter.Constraint;
+
+        let engine, render, runner;
+        let isRunning = false;
+        let rankings = [];
+        const colors = ['#FF6B00', '#2D9CDB', '#FFD700', '#4CAF50', '#9C27B0', '#E91E63', '#795548', '#607D8B'];
+
+        // 텍스트 렌더링
+        const renderText = function () {
+            if (!render) return;
+            const context = render.context;
+            const bodies = Composite.allBodies(engine.world);
+
+            context.font = "bold 12px Pretendard";
+            context.textAlign = "center";
+            context.textBaseline = "middle";
+            context.fillStyle = "#fff";
+
+            bodies.forEach(body => {
+                if (body.label && !['peg', 'wall', 'ground', 'spinner', 'slope'].includes(body.label)) {
+                    const { x, y } = body.position;
+                    context.save();
+                    context.translate(x, y);
+                    context.fillText(body.label.substring(0, 3), 0, 0);
+                    context.restore();
+                }
+            });
+        };
+
+        function startMarbleRun() {
+            const btn = document.getElementById('raceBtn');
+            if (isRunning) {
+                WorldClear();
+                btn.textContent = 'START RUN';
+                isRunning = false;
+                return;
+            }
+
+            const nameInput = document.getElementById('rouletteNames').value;
+            const names = nameInput.split(',').map(n => n.trim()).filter(n => n.length > 0);
+
+            if (names.length < 2) {
+                alert('최소 2명 이상의 이름을 입력해주세요!');
+                return;
+            }
+
+            const container = document.getElementById('matter-container');
+            const rankList = document.getElementById('rankList');
+            const board = document.getElementById('rankBoard');
+
+            container.innerHTML = '';
+            rankList.innerHTML = '';
+            board.style.display = 'none';
+            rankings = [];
+            isRunning = true;
+            btn.textContent = 'RESET';
+
+            // 1. 엔진
+            engine = Engine.create();
+            engine.world.gravity.y = 0.2; // 중력 낮춤 (느리게)
+
+            // 2. 렌더러
+            const width = container.offsetWidth;
+            const height = container.offsetHeight;
+
+            render = Render.create({
+                element: container,
+                engine: engine,
+                options: {
+                    width: width,
+                    height: height,
+                    wireframes: false,
+                    background: '#222'
+                }
+            });
+
+            // 3. 맵 구성 (3단 코스)
+            const wallOpts = { isStatic: true, render: { fillStyle: '#444' } };
+            const pegOpts = { isStatic: true, render: { fillStyle: '#888' }, restitution: 0.5 };
+            const bounceOpts = { isStatic: true, render: { fillStyle: '#666' }, restitution: 1.0 }; // 잘 튀는 벽
+
+            Composite.add(engine.world, [
+                Bodies.rectangle(0, height / 2, 20, height, wallOpts), // 좌벽
+                Bodies.rectangle(width, height / 2, 20, height, wallOpts), // 우벽
+            ]);
+
+            // [1구간] 상단 Plinko (핀)
+            const startY = 100;
+            for (let row = 0; row < 5; row++) {
+                const cols = row % 2 === 0 ? 6 : 5;
+                const spacingX = width / (cols + 1);
+                for (let col = 1; col <= cols; col++) {
+                    Composite.add(engine.world, Bodies.circle(col * spacingX, startY + row * 50, 5, pegOpts));
+                }
+            }
+
+            // [2구간] 중단 Spinners (회전 풍차)
+            const spinnerY = 400;
+            const createSpinner = (x, y) => {
+                const spinner = Bodies.rectangle(x, y, 120, 10, {
+                    label: 'spinner',
+                    render: { fillStyle: '#E91E63' }
+                });
+                const constraint = Constraint.create({
+                    pointA: { x: x, y: y },
+                    bodyB: spinner,
+                    stiffness: 1,
+                    length: 0
+                });
+                return [spinner, constraint];
+            };
+
+            Composite.add(engine.world, createSpinner(width * 0.3, spinnerY));
+            Composite.add(engine.world, createSpinner(width * 0.7, spinnerY));
+
+            // [3구간] 하단 Funnel (깔때기)
+            const slopeOpts = { isStatic: true, render: { fillStyle: '#555' }, angle: Math.PI * 0.15 };
+            const slopeY = 600;
+
+            Composite.add(engine.world, [
+                // 왼쪽 경사
+                Bodies.rectangle(width * 0.2, slopeY, width * 0.6, 20, {
+                    isStatic: true, angle: 0.5, render: { fillStyle: '#555' }, label: 'slope'
+                }),
+                // 오른쪽 경사
+                Bodies.rectangle(width * 0.8, slopeY, width * 0.6, 20, {
+                    isStatic: true, angle: -0.5, render: { fillStyle: '#555' }, label: 'slope'
+                }),
+                // 최종 깔때기 입구 (중앙) - 벽 크기 축소
+                Bodies.rectangle(width * 0.25, height - 100, width * 0.25, 15, { isStatic: true, angle: 0.6, render: { fillStyle: '#333' } }),
+                Bodies.rectangle(width * 0.75, height - 100, width * 0.25, 15, { isStatic: true, angle: -0.6, render: { fillStyle: '#333' } })
+            ]);
+
+            // 4. 구슬 생성
+            const marbleRadius = 8;
+            names.forEach((name, i) => {
+                const x = width / 2 + (Math.random() - 0.5) * 50;
+                const y = -100 - (i * 60); // 간격 넓힘
+
+                const marble = Bodies.circle(x, y, marbleRadius, {
+                    restitution: 0.7,
+                    friction: 0.001,
+                    frictionAir: 0.02, // 공기 저항 (천천히 떨어짐)
+                    label: name,
+                    render: { fillStyle: colors[i % colors.length] }
+                });
+                Composite.add(engine.world, marble);
+            });
+
+            // 5. 업데이트 & 센서
+            Events.on(render, 'afterRender', renderText);
+
+            Events.on(engine, 'afterUpdate', function () {
+                const bodies = Composite.allBodies(engine.world);
+                bodies.forEach(body => {
+                    // 구슬만 체크
+                    if (body.label && !['peg', 'wall', 'ground', 'spinner', 'slope'].includes(body.label)) {
+
+                        // 회전 풍차 돌리기 (강제 회전)
+                        if (body.label === 'spinner') {
+                            Body.setAngularVelocity(body, 0.15);
+                        }
+
+                        // 바닥 통과 (제거 & 랭킹)
+                        if (body.position.y > height + 20) {
+                            if (!rankings.includes(body.label)) {
+                                rankings.push(body.label);
+                                addRankItem(rankings.length, body.label);
+
+                                // 월드에서 제거 (사라짐 효과)
+                                Composite.remove(engine.world, body);
+                            }
+                        }
+                    }
+                });
+            });
+
+            Render.run(render);
+            runner = Runner.create();
+            Runner.run(runner, engine);
+        }
+
+        function WorldClear() {
+            if (render) {
+                Render.stop(render);
+                if (render.canvas) render.canvas.remove();
+            }
+            if (runner) Runner.stop(runner);
+            if (engine) Engine.clear(engine);
+            engine = null;
+            render = null;
+            runner = null;
+        }
+
+        function addRankItem(rank, name) {
+            const board = document.getElementById('rankBoard');
+            const list = document.getElementById('rankList');
+
+            if (board.style.display === 'none') {
+                board.style.display = 'block';
+            }
+
+            const item = document.createElement('div');
+            item.className = 'rank-item';
+
+            let medal = rank;
+            if (rank === 1) medal = '🥇 1st';
+            else if (rank === 2) medal = '🥈 2nd';
+            else if (rank === 3) medal = '🥉 3rd';
+            else medal = rank + 'th';
+
+            item.innerHTML = `<span>${medal}</span><span>${name}</span>`;
+            list.appendChild(item);
+            board.scrollTop = board.scrollHeight;
+        }
+
+
+
+        // 예산 잠금해제 함수
+        let budgetUnlocked = false;
+        function unlockBudget() {
+            const inputs = document.querySelectorAll('.budget-input');
+            const btn = document.getElementById('unlock-btn');
+            const status = document.getElementById('budget-status');
+
+            if (!budgetUnlocked) {
+                inputs.forEach(input => input.disabled = false);
+                btn.innerHTML = '🔓 잠금';
+                status.textContent = '✏️ 수정 가능! 값을 변경하면 자동 계산됩니다';
+                budgetUnlocked = true;
+            } else {
+                inputs.forEach(input => input.disabled = true);
+                btn.innerHTML = '🔒 잠금해제';
+                status.textContent = '🔒 수정하려면 잠금해제를 눌러주세요';
+                budgetUnlocked = false;
+            }
+        }
+
+        // 예산 계산 함수 (예산 계산기에서 값 변경시)
+        function onBudgetChange() {
+            // BUDGET_CONFIG 업데이트
+            BUDGET_CONFIG.costs.flight = parseInt(document.getElementById('cost-flight').value) || 0;
+            BUDGET_CONFIG.costs.rent = parseInt(document.getElementById('cost-rent').value) || 0;
+            BUDGET_CONFIG.costs.day1Dinner = parseInt(document.getElementById('cost-day1-dinner').value) || 0;
+            BUDGET_CONFIG.costs.park981 = parseInt(document.getElementById('cost-981').value) || 0;
+            BUDGET_CONFIG.costs.day2Lunch = parseInt(document.getElementById('cost-day2-lunch').value) || 0;
+            BUDGET_CONFIG.costs.day2Cafe = parseInt(document.getElementById('cost-day2-tour').value) || 0;
+            BUDGET_CONFIG.costs.day2Dinner = parseInt(document.getElementById('cost-day2-dinner').value) || 0;
+
+            // 모든 표시 업데이트
+            updateAllBudgetDisplays();
+        }
+
+        // 페이지 로드시 예산 업데이트
+        document.addEventListener('DOMContentLoaded', function () {
+            updateAllBudgetDisplays();
+        });
+
+    </script>
+</body>
+
+</html>
