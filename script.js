@@ -143,10 +143,10 @@ function updateAllBudgetDisplays() {
     if (totalCost) totalCost.textContent = budgets.total.toLocaleString() + '원';
     if (remainingBudget) {
         if (budgets.remaining >= 0) {
-            remainingBudget.textContent = '+' + budgets.remaining.toLocaleString() + '원 여유';
+            remainingBudget.textContent = '+' + budgets.remaining.toLocaleString() + '원 여유 (항공 제외)';
             remainingBudget.style.color = '#4CAF50';
         } else {
-            remainingBudget.textContent = budgets.remaining.toLocaleString() + '원 초과';
+            remainingBudget.textContent = budgets.remaining.toLocaleString() + '원 초과 (항공 제외)';
             remainingBudget.style.color = '#E91E63';
         }
     }
@@ -593,21 +593,52 @@ function addBudgetItem() {
 function addBudgetItemFromData(label, value, confirmed) {
     customItemCount++;
     const container = document.getElementById('custom-budget-items');
-    const itemId = `custom - item - ${customItemCount} `;
+    const itemId = `custom-item-${customItemCount}`;
 
     const row = document.createElement('div');
     row.className = 'budget-input-row';
     row.id = itemId;
-    row.innerHTML = `
-    < input type = "checkbox" class="custom-confirmed" ${confirmed ? 'checked' : ''} onchange = "onBudgetChange()"
-style = "width:20px; height:20px; margin-right:8px; accent-color:#4CAF50;" >
-    <input type="text" class="budget-label-input" placeholder="항목명" value="${label}"
-        style="flex:1; padding:8px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;" oninput="onBudgetChange()">
-        <input type="number" class="budget-input custom-cost" value="${value}" oninput="onBudgetChange()">
-            <span class="budget-unit">원</span>
-            <button onclick="removeBudgetItem('${itemId}')"
-                style="margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
-            `;
+
+    // Checkbox
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'custom-confirmed';
+    checkbox.checked = confirmed;
+    checkbox.style.cssText = "width:20px; height:20px; margin-right:8px; accent-color:#4CAF50;";
+    checkbox.onchange = onBudgetChange;
+
+    // Label Input
+    const labelInput = document.createElement('input');
+    labelInput.type = 'text';
+    labelInput.className = 'budget-label-input';
+    labelInput.placeholder = '항목명';
+    labelInput.value = label;
+    labelInput.style.cssText = "flex:1; padding:8px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;";
+    labelInput.oninput = onBudgetChange;
+
+    // Cost Input
+    const costInput = document.createElement('input');
+    costInput.type = 'number';
+    costInput.className = 'budget-input custom-cost';
+    costInput.value = value;
+    costInput.oninput = onBudgetChange;
+
+    // Unit
+    const unitSpan = document.createElement('span');
+    unitSpan.className = 'budget-unit';
+    unitSpan.textContent = '원';
+
+    // Delete Button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = '✕';
+    deleteBtn.style.cssText = "margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;";
+    deleteBtn.onclick = function () { removeBudgetItem(itemId); };
+
+    row.appendChild(checkbox);
+    row.appendChild(labelInput);
+    row.appendChild(costInput);
+    row.appendChild(unitSpan);
+    row.appendChild(deleteBtn);
 
     container.appendChild(row);
     onBudgetChange();
