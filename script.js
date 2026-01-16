@@ -26,8 +26,8 @@ function calcDayBudgets() {
     const day2 = c.day2Lunch + c.park981 + c.day2Cafe + c.day2Dinner;
     const day3 = customTotal; // 커스텀 항목은 Day3에 표시
     const total = day1 + day2 + day3;
-    // 항공권(10만원)은 선결제/고정비용으로 간주하여 잔액 계산에서 제외
-    const remaining = BUDGET_CONFIG.totalBudgetPerPerson - (total - c.flight);
+    // 총 예산에서 모든 비용 차감 (단순 계산)
+    const remaining = BUDGET_CONFIG.totalBudgetPerPerson - total;
 
     return {
         day1: { cost: day1, cumulative: day1, remaining: BUDGET_CONFIG.totalBudgetPerPerson - day1 },
@@ -143,10 +143,10 @@ function updateAllBudgetDisplays() {
     if (totalCost) totalCost.textContent = budgets.total.toLocaleString() + '원';
     if (remainingBudget) {
         if (budgets.remaining >= 0) {
-            remainingBudget.textContent = '+' + budgets.remaining.toLocaleString() + '원 여유 (항공 제외)';
+            remainingBudget.textContent = '+' + budgets.remaining.toLocaleString() + '원 여유';
             remainingBudget.style.color = '#4CAF50';
         } else {
-            remainingBudget.textContent = budgets.remaining.toLocaleString() + '원 초과 (항공 제외)';
+            remainingBudget.textContent = budgets.remaining.toLocaleString() + '원 초과';
             remainingBudget.style.color = '#E91E63';
         }
     }
