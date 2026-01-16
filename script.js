@@ -179,10 +179,14 @@ const SUPABASE_KEY = 'sb_publishable_n8CptUQG5FADwx5uHMDIdw_C9G6yUA-';
 async function supabaseRequest(table, method = 'GET', body = null, select = '*') {
     const headers = {
         'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
         'Content-Type': 'application/json',
         'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal'
     };
+
+    // JWT 키(ey...)인 경우에만 Bearer 인증 헤더 추가 (sb_publishable 키 대응)
+    if (SUPABASE_KEY.startsWith('ey')) {
+        headers['Authorization'] = `Bearer ${SUPABASE_KEY}`;
+    }
 
     let url = `${SUPABASE_URL}/rest/v1/${table}`;
     if (method === 'GET') {
