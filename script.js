@@ -63,7 +63,7 @@ function updateAllBudgetDisplays() {
     // Day1 Info Box
     const day1Info = document.getElementById('day1-info-box');
     if (day1Info) {
-        day1Info.innerHTML = `💡 총 예산 ${totalMan} 만원(1인 ${perPersonMan}만원) | 항공 + 렌트 / 기름 포함 < br >🏠 숙소비: 1인 2만원(별도, 예산 미포함) - 이재환 선임에게 2만원 입금 🙏`;
+        day1Info.innerHTML = `💡 총 예산 ${totalMan}만원 (1인 ${perPersonMan}만원) | 항공 + 렌트/기름 포함<br>🏠 숙소비: 1인 2만원 (별도, 예산 미포함) - 이재환 선임에게 2만원 입금 🙏`;
     }
 
     // Info Tab Per Person
@@ -73,13 +73,45 @@ function updateAllBudgetDisplays() {
     // Info Tab Footer
     const footerInfo = document.getElementById('info-footer-box');
     if (footerInfo) {
-        footerInfo.textContent = `숙소: 1인 2만원(이재환 선임에게 2만원 입금) | 총 예산: ${totalMan} 만원(${count}명)`;
+        footerInfo.textContent = `숙소: 1인 2만원 (이재환 선임에게 2만원 입금) | 총 예산: ${totalMan}만원 (${count}명)`;
     }
 
     // 예산 기준 텍스트
     const calcCriteria = document.getElementById('calc-criteria');
     if (calcCriteria) calcCriteria.textContent = perPersonMan + '만원';
 
+    // [NEW] Static Budget Texts Update (IDs & Data attributes)
+    const setText = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    };
+    const c = BUDGET_CONFIG.costs;
+
+    // IDs
+    setText('disp-flight', `항공 1인 ${(c.flight / 10000).toFixed(0)}만원`);
+    setText('disp-rent', `렌트+기름 1인 ${(c.rent / 10000).toFixed(0)}만원`);
+    setText('disp-rent-total', `💰 총 ${(c.rent * count / 10000).toFixed(0)}만원 (${count}명 기준)`);
+    setText('disp-day1-dinner-opt', `인당 ${(c.day1Dinner / 10000).toFixed(0)}만원`);
+    setText('disp-whiskey-total', `🍷 양주 구매 예정 (총 ${(c.whiskey * count / 10000).toFixed(0)}만원)`);
+    setText('disp-day2-dinner-opt', `인당 ${(c.day2Dinner / 10000).toFixed(0)}만원`);
+
+    // Data-cost attributes
+    const map = {
+        'day1-dinner': 'day1Dinner',
+        'whiskey': 'whiskey',
+        'day2-lunch': 'day2Lunch',
+        '981': 'park981',
+        'day2-tour': 'day2Cafe',
+        'day2-dinner': 'day2Dinner'
+    };
+    document.querySelectorAll('[data-cost]').forEach(el => {
+        const key = el.dataset.cost;
+        const configKey = map[key] || key;
+        const val = c[configKey];
+        if (val !== undefined) {
+            el.textContent = '~' + formatWon(val);
+        }
+    });
 
     // Day 1 예산바
     const day1Cost = document.getElementById('day1-cost');
@@ -147,14 +179,14 @@ const SUPABASE_KEY = 'sb_publishable_n8CptUQG5FADwx5uHMDIdw_C9G6yUA-';
 async function supabaseRequest(table, method = 'GET', body = null, select = '*') {
     const headers = {
         'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY} `,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
         'Content-Type': 'application/json',
         'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal'
     };
 
-    let url = `${SUPABASE_URL} /rest/v1 / ${table} `;
+    let url = `${SUPABASE_URL}/rest/v1/${table}`;
     if (method === 'GET') {
-        url += `? select = ${select}& order=created_at.desc & limit=1`;
+        url += `?select=${select}&order=created_at.desc&limit=1`;
     }
     if (method === 'PATCH') {
         url += '?id=eq.1'; // 항상 id=1 레코드 업데이트
@@ -165,7 +197,7 @@ async function supabaseRequest(table, method = 'GET', body = null, select = '*')
 
     const response = await fetch(url, options);
     if (!response.ok) {
-        throw new Error(`Supabase error: ${response.status} `);
+        throw new Error(`Supabase error: ${response.status}`);
     }
     return method === 'GET' ? response.json() : response;
 }
