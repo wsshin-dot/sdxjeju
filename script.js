@@ -631,6 +631,9 @@ function toggleLockState(unlock) {
         budgetUnlocked = false;
         staticDeleteBtns.forEach(b => b.style.display = 'none');
     }
+
+    // UI 상태 동기화를 위해 예산 계산 함수 호출 (커스텀 항목 삭제 버튼 표시 등)
+    onBudgetChange();
 }
 
 function addBudgetItem() {
