@@ -1,8 +1,11 @@
+
 // ========================================
 // 💰 예산 중앙 관리 시스템
 // ========================================
 const BUDGET_CONFIG = {
-    totalBudgetPerPerson: 350000, // 1인당 총 예산 35만원
+    totalBudget: 3500000, // 총 예산
+    personCount: 10,      // 인원 수
+    totalBudgetPerPerson: 350000, // 1인당 예산 (자동계산)
     costs: {
         flight: 100000,      // 항공권
         rent: 40000,         // 렌트+기름
@@ -39,14 +42,44 @@ function calcDayBudgets() {
 function formatWon(amount) {
     if (amount >= 10000) {
         const man = amount / 10000;
-        return man % 1 === 0 ? `${man}만원` : `${man.toFixed(1)}만원`;
+        return man % 1 === 0 ? `${man} 만원` : `${man.toFixed(1)} 만원`;
     }
-    return `${amount.toLocaleString()}원`;
+    return `${amount.toLocaleString()} 원`;
 }
 
 // 모든 예산 표시 업데이트
 function updateAllBudgetDisplays() {
     const budgets = calcDayBudgets();
+
+    // [NEW] 전역 예산 정보 텍스트 업데이트
+    const totalMan = (BUDGET_CONFIG.totalBudget / 10000).toFixed(0);
+    const perPersonMan = (BUDGET_CONFIG.totalBudgetPerPerson / 10000).toFixed(0);
+    const count = BUDGET_CONFIG.personCount;
+
+    // Header 인원
+    const headerPerson = document.getElementById('header-person-count');
+    if (headerPerson) headerPerson.textContent = count;
+
+    // Day1 Info Box
+    const day1Info = document.getElementById('day1-info-box');
+    if (day1Info) {
+        day1Info.innerHTML = `💡 총 예산 ${totalMan} 만원(1인 ${perPersonMan}만원) | 항공 + 렌트 / 기름 포함 < br >🏠 숙소비: 1인 2만원(별도, 예산 미포함) - 이재환 선임에게 2만원 입금 🙏`;
+    }
+
+    // Info Tab Per Person
+    const infoPerPerson = document.getElementById('info-per-person-budget');
+    if (infoPerPerson) infoPerPerson.textContent = BUDGET_CONFIG.totalBudgetPerPerson.toLocaleString() + '원';
+
+    // Info Tab Footer
+    const footerInfo = document.getElementById('info-footer-box');
+    if (footerInfo) {
+        footerInfo.textContent = `숙소: 1인 2만원(이재환 선임에게 2만원 입금) | 총 예산: ${totalMan} 만원(${count}명)`;
+    }
+
+    // 예산 기준 텍스트
+    const calcCriteria = document.getElementById('calc-criteria');
+    if (calcCriteria) calcCriteria.textContent = perPersonMan + '만원';
+
 
     // Day 1 예산바
     const day1Cost = document.getElementById('day1-cost');
@@ -88,6 +121,8 @@ function updateAllBudgetDisplays() {
 
     // 예산 계산기 input 기본값 동기화
     const costInputs = {
+        'config-total-budget': BUDGET_CONFIG.totalBudget,
+        'config-person-count': BUDGET_CONFIG.personCount,
         'cost-flight': BUDGET_CONFIG.costs.flight,
         'cost-rent': BUDGET_CONFIG.costs.rent,
         'cost-day1-dinner': BUDGET_CONFIG.costs.day1Dinner,
@@ -112,14 +147,14 @@ const SUPABASE_KEY = 'sb_publishable_n8CptUQG5FADwx5uHMDIdw_C9G6yUA-';
 async function supabaseRequest(table, method = 'GET', body = null, select = '*') {
     const headers = {
         'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Authorization': `Bearer ${SUPABASE_KEY} `,
         'Content-Type': 'application/json',
         'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal'
     };
 
-    let url = `${SUPABASE_URL}/rest/v1/${table}`;
+    let url = `${SUPABASE_URL} /rest/v1 / ${table} `;
     if (method === 'GET') {
-        url += `?select=${select}&order=created_at.desc&limit=1`;
+        url += `? select = ${select}& order=created_at.desc & limit=1`;
     }
     if (method === 'PATCH') {
         url += '?id=eq.1'; // 항상 id=1 레코드 업데이트
@@ -130,7 +165,7 @@ async function supabaseRequest(table, method = 'GET', body = null, select = '*')
 
     const response = await fetch(url, options);
     if (!response.ok) {
-        throw new Error(`Supabase error: ${response.status}`);
+        throw new Error(`Supabase error: ${response.status} `);
     }
     return method === 'GET' ? response.json() : response;
 }
@@ -146,10 +181,23 @@ async function loadBudgetFromDB() {
         if (data && data.length > 0) {
             const budgetData = data[0];
             // BUDGET_CONFIG 업데이트
-            if (budgetData.total_budget_per_person) {
-                BUDGET_CONFIG.totalBudgetPerPerson = budgetData.total_budget_per_person;
-            }
             if (budgetData.costs) {
+                // 메타 데이터(총예산/인원) 복원
+                if (budgetData.costs._meta) {
+                    BUDGET_CONFIG.totalBudget = budgetData.costs._meta.totalBudget;
+                    BUDGET_CONFIG.personCount = budgetData.costs._meta.personCount;
+                    // 1인당 예산 재계산
+                    BUDGET_CONFIG.totalBudgetPerPerson = Math.floor(BUDGET_CONFIG.totalBudget / BUDGET_CONFIG.personCount);
+                } else if (budgetData.total_budget_per_person) {
+                    // 메타 없이 1인당 예산만 있는 경우 (구버전 호환)
+                    BUDGET_CONFIG.totalBudgetPerPerson = budgetData.total_budget_per_person;
+                    // totalBudget과 personCount는 기본값으로 유지하거나, totalBudgetPerPerson * personCount로 추정
+                    // 여기서는 기존 totalBudgetPerPerson만 복원하고, totalBudget/personCount는 기본값 유지
+                    // 또는, totalBudgetPerPerson을 기반으로 totalBudget을 역산 (기존 personCount 사용)
+                    BUDGET_CONFIG.totalBudget = BUDGET_CONFIG.totalBudgetPerPerson * BUDGET_CONFIG.personCount;
+                }
+
+                // 비용 데이터 복사
                 Object.assign(BUDGET_CONFIG.costs, budgetData.costs);
             }
 
@@ -193,7 +241,13 @@ async function saveBudgetToDB() {
 
         const budgetData = {
             total_budget_per_person: BUDGET_CONFIG.totalBudgetPerPerson,
-            costs: BUDGET_CONFIG.costs,
+            costs: {
+                ...BUDGET_CONFIG.costs,
+                _meta: {
+                    totalBudget: BUDGET_CONFIG.totalBudget,
+                    personCount: BUDGET_CONFIG.personCount
+                }
+            },
             updated_at: new Date().toISOString()
         };
 
@@ -209,7 +263,7 @@ async function saveBudgetToDB() {
         setTimeout(() => { statusEl.innerHTML = ''; }, 3000);
     } catch (error) {
         console.error('DB Save Error:', error);
-        statusEl.innerHTML = `<span class="db-status error">❌ ${error.message}</span>`;
+        statusEl.innerHTML = `< span class="db-status error" >❌ ${error.message}</span > `;
     } finally {
         saveBtn.disabled = false;
         saveBtn.textContent = '💾 DB에 저장하기';
@@ -455,7 +509,7 @@ function addRankItem(rank, name) {
     else if (rank === 3) medal = '🥉 3rd';
     else medal = rank + 'th';
 
-    item.innerHTML = `<span>${medal}</span><span>${name}</span>`;
+    item.innerHTML = `< span > ${medal}</span > <span>${name}</span>`;
     list.appendChild(item);
     board.scrollTop = board.scrollHeight;
 }
@@ -469,6 +523,7 @@ let customItemCount = 0;
 
 function unlockBudget() {
     const inputs = document.querySelectorAll('.budget-input');
+    const configInputs = document.querySelectorAll('.config-input'); // New: config inputs
     const btn = document.getElementById('unlock-btn');
     const status = document.getElementById('budget-status');
     const addBtn = document.getElementById('add-item-btn');
@@ -480,12 +535,14 @@ function unlockBudget() {
             return;
         }
         inputs.forEach(input => input.disabled = false);
+        configInputs.forEach(input => input.disabled = false); // New: enable config inputs
         btn.innerHTML = '🔓 잠금';
         status.textContent = '✏️ 수정 가능! 값을 변경하면 자동 계산됩니다';
         addBtn.style.display = 'block';
         budgetUnlocked = true;
     } else {
         inputs.forEach(input => input.disabled = true);
+        configInputs.forEach(input => input.disabled = true); // New: disable config inputs
         btn.innerHTML = '🔒 잠금해제';
         status.textContent = '🔒 수정하려면 잠금해제를 눌러주세요';
         addBtn.style.display = 'none';
@@ -500,27 +557,21 @@ function addBudgetItem() {
 function addBudgetItemFromData(label, value, confirmed) {
     customItemCount++;
     const container = document.getElementById('custom-budget-items');
-    const itemId = `custom-item-${customItemCount}`;
+    const itemId = `custom - item - ${customItemCount} `;
 
     const row = document.createElement('div');
     row.className = 'budget-input-row';
     row.id = itemId;
     row.innerHTML = `
-                <input type="checkbox" class="custom-confirmed" ${confirmed ? 'checked' : ''} onchange="onBudgetChange()"
-                    style="width:20px; height:20px; margin-right:8px; accent-color:#4CAF50;">
-                <input type="text" class="budget-label-input" placeholder="항목명" value="${label}"
-                    style="flex:1; padding:8px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;" oninput="onBudgetChange()">
-                <input type="number" class="budget-input custom-cost" value="${value}" oninput="onBudgetChange()">
-                <span class="budget-unit">원</span>
-                <button onclick="removeBudgetItem('${itemId}')" 
-                    style="margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
+    < input type = "checkbox" class="custom-confirmed" ${confirmed ? 'checked' : ''} onchange = "onBudgetChange()"
+style = "width:20px; height:20px; margin-right:8px; accent-color:#4CAF50;" >
+    <input type="text" class="budget-label-input" placeholder="항목명" value="${label}"
+        style="flex:1; padding:8px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;" oninput="onBudgetChange()">
+        <input type="number" class="budget-input custom-cost" value="${value}" oninput="onBudgetChange()">
+            <span class="budget-unit">원</span>
+            <button onclick="removeBudgetItem('${itemId}')"
+                style="margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
             `;
-
-    // 확정된 항목은 초록색 테두리
-    if (confirmed) {
-        row.style.border = '2px solid #4CAF50';
-        row.style.background = '#f0fff0';
-    }
 
     container.appendChild(row);
     onBudgetChange();
@@ -532,6 +583,21 @@ function removeBudgetItem(itemId) {
         item.remove();
         onBudgetChange();
     }
+}
+
+// 설정 변경 (총 예산 / 인원)
+function onConfigChange() {
+    const totalInput = document.getElementById('config-total-budget');
+    const personInput = document.getElementById('config-person-count');
+
+    const newTotal = parseInt(totalInput.value) || 0;
+    const newPerson = parseInt(personInput.value) || 1;
+
+    BUDGET_CONFIG.totalBudget = newTotal;
+    BUDGET_CONFIG.personCount = newPerson;
+    BUDGET_CONFIG.totalBudgetPerPerson = Math.floor(newTotal / newPerson);
+
+    updateAllBudgetDisplays();
 }
 
 // 예산 계산 함수 (예산 계산기에서 값 변경시)
@@ -561,14 +627,21 @@ function onBudgetChange() {
         customItems.push({ label, value, confirmed });
         customTotal += value;
 
-        // 확정된 항목 스타일 업데이트
+        // 확정된 항목 UI 업데이트 (회색처리, 비활성화, 삭제버튼 숨김)
+        const deleteBtn = row.querySelector('button');
         if (confirmed) {
-            row.style.border = '2px solid #4CAF50';
-            row.style.background = '#f0fff0';
+            if (labelInput) labelInput.disabled = true;
+            if (costInput) costInput.disabled = true;
+            if (deleteBtn) deleteBtn.style.display = 'none';
         } else {
-            row.style.border = '';
-            row.style.background = '';
+            if (labelInput) labelInput.disabled = false;
+            if (costInput) costInput.disabled = false;
+            if (deleteBtn) deleteBtn.style.display = '';
         }
+
+        // 스타일은 CSS 기본값(회색) 사용
+        row.style.border = '';
+        row.style.background = '';
     });
     BUDGET_CONFIG.costs.customItems = customItems;
     BUDGET_CONFIG.costs.customTotal = customTotal;
@@ -578,6 +651,9 @@ function onBudgetChange() {
 }
 
 // 페이지 로드시 예산 업데이트
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
+    // 먼저 DB에서 예산 데이터 로드 시도
+    await loadBudgetFromDB();
+    // 그 후 모든 표시 업데이트
     updateAllBudgetDisplays();
 });
