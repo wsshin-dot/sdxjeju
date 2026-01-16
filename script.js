@@ -224,14 +224,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // 그 후 모든 표시 업데이트
     updateAllBudgetDisplays();
-
-    // 지도 초기화
-    setTimeout(() => {
-        // Day 1 지도: 공항 → 숙소 → 식당
-        initJejuMap('map-day1', ['airport', 'accommodation', 'dinner1']);
-        // Day 2 지도: 9.81파크 → 천제연 폭포 → 올레시장 → 숙소
-        initJejuMap('map-day2', ['park981', 'waterfall', 'market', 'accommodation']);
-    }, 500);
 });
 
 function switchTab(tabId, btn) {
