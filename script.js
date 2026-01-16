@@ -558,27 +558,70 @@ const BUDGET_PASSWORD = '901210';
 let customItemCount = 0;
 
 function unlockBudget() {
+    if (!budgetUnlocked) {
+        // 잠금 해제 시도 -> 모달 열기
+        openPasswordModal();
+    } else {
+        // 잠금 하기
+        toggleLockState(false);
+    }
+}
+
+function openPasswordModal() {
+    const modal = document.getElementById('password-modal');
+    const input = document.getElementById('modal-password-input');
+    if (modal) {
+        modal.classList.add('show');
+        input.value = '';
+        setTimeout(() => input.focus(), 100); // 약간의 딜레이 후 포커스
+
+        // 엔터키 이벤트 추가
+        input.onkeydown = function (e) {
+            if (e.key === 'Enter') submitPassword();
+        };
+    }
+}
+
+function closePasswordModal() {
+    document.getElementById('password-modal').classList.remove('show');
+}
+
+function submitPassword() {
+    const input = document.getElementById('modal-password-input');
+    const password = input.value;
+
+    if (password === BUDGET_PASSWORD) {
+        toggleLockState(true);
+        closePasswordModal();
+    } else {
+        alert('비밀번호가 틀렸습니다!');
+        input.value = '';
+        input.focus();
+    }
+}
+
+function toggleLockState(unlock) {
     const inputs = document.querySelectorAll('.budget-input');
-    const configInputs = document.querySelectorAll('.config-input'); // New: config inputs
+    const configInputs = document.querySelectorAll('.config-input');
     const btn = document.getElementById('unlock-btn');
     const status = document.getElementById('budget-status');
     const addBtn = document.getElementById('add-item-btn');
+    const modalInput = document.getElementById('modal-password-input');
 
-    if (!budgetUnlocked) {
-        const password = prompt('비밀번호를 입력하세요:');
-        if (password !== BUDGET_PASSWORD) {
-            alert('비밀번호가 틀렸습니다!');
-            return;
-        }
-        inputs.forEach(input => input.disabled = false);
-        configInputs.forEach(input => input.disabled = false); // New: enable config inputs
+    if (unlock) {
+        inputs.forEach(input => {
+            if (input !== modalInput) input.disabled = false;
+        });
+        configInputs.forEach(input => input.disabled = false);
         btn.innerHTML = '🔓 잠금';
         status.textContent = '✏️ 수정 가능! 값을 변경하면 자동 계산됩니다';
         addBtn.style.display = 'block';
         budgetUnlocked = true;
     } else {
-        inputs.forEach(input => input.disabled = true);
-        configInputs.forEach(input => input.disabled = true); // New: disable config inputs
+        inputs.forEach(input => {
+            if (input !== modalInput) input.disabled = true;
+        });
+        configInputs.forEach(input => input.disabled = true);
         btn.innerHTML = '🔒 잠금해제';
         status.textContent = '🔒 수정하려면 잠금해제를 눌러주세요';
         addBtn.style.display = 'none';

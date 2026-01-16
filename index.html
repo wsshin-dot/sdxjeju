@@ -593,6 +593,19 @@
 
     </div>
 
+    <div id="password-modal">
+        <div class="modal-content">
+            <div class="modal-title">🔐 관리자 인증</div>
+            <div class="modal-desc">예산 수정을 위해 비밀번호를 입력해주세요.</div>
+            <input type="password" id="modal-password-input" class="budget-input"
+                style="width:100%; margin:15px 0; text-align:center;" placeholder="비밀번호 6자리">
+            <div class="modal-buttons">
+                <button onclick="closePasswordModal()" class="modal-btn cancel">취소</button>
+                <button onclick="submitPassword()" class="modal-btn confirm">확인</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 
