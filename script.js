@@ -613,8 +613,19 @@ function addBudgetItemFromData(label, value, confirmed) {
     labelInput.className = 'budget-label-input';
     labelInput.placeholder = '항목명';
     labelInput.value = label;
+    // 초기 스타일은 onBudgetChange에서 설정됨
     labelInput.style.cssText = "flex:1; padding:8px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;";
     labelInput.oninput = onBudgetChange;
+
+    // 클릭시 수정 모드로 전환 (확정된 상태일 때만)
+    labelInput.onclick = function () {
+        if (checkbox.checked) {
+            if (confirm('이 항목을 수정하시겠습니까?')) {
+                checkbox.checked = false;
+                onBudgetChange();
+            }
+        }
+    };
 
     // Cost Input
     const costInput = document.createElement('input');
@@ -697,18 +708,51 @@ function onBudgetChange() {
         // 확정된 항목 UI 업데이트 (회색처리, 비활성화, 삭제버튼 숨김)
         const deleteBtn = row.querySelector('button');
         if (confirmed) {
-            if (labelInput) labelInput.disabled = true;
+            // Label Styling: 텍스트처럼 보이게
+            if (labelInput) {
+                labelInput.disabled = true; // 수정 불가 (클릭 이벤트로 해제)
+                labelInput.style.border = 'none';
+                labelInput.style.background = 'transparent';
+                labelInput.style.padding = '0';
+                labelInput.style.fontWeight = '500';
+                labelInput.style.color = 'var(--text-main)';
+                labelInput.style.cursor = 'pointer'; // 클릭 가능 표시
+            }
+            // Checkbox 숨김
+            if (confirmedInput) {
+                confirmedInput.style.display = 'none';
+            }
+
             if (costInput) costInput.disabled = true;
             if (deleteBtn) deleteBtn.style.display = 'none';
+
+            // Row styling (Standard look)
+            row.style.background = '#f8f9fa';
+            row.style.border = '1px solid #e5e8eb';
+
         } else {
-            if (labelInput) labelInput.disabled = false;
+            // Edit Mode Styling
+            if (labelInput) {
+                labelInput.disabled = false;
+                labelInput.style.border = '1px solid #ddd';
+                labelInput.style.background = '#fff';
+                labelInput.style.padding = '8px';
+                labelInput.style.fontWeight = 'normal';
+                labelInput.style.color = '';
+                labelInput.style.cursor = 'text';
+            }
+            // Checkbox 보임
+            if (confirmedInput) {
+                confirmedInput.style.display = 'inline-block';
+            }
+
             if (costInput) costInput.disabled = false;
             if (deleteBtn) deleteBtn.style.display = '';
-        }
 
-        // 스타일은 CSS 기본값(회색) 사용
-        row.style.border = '';
-        row.style.background = '';
+            // Row styling (Edit look)
+            row.style.background = '#fff';
+            row.style.border = '1px solid #2D9CDB'; // Blue border for focus
+        }
     });
     BUDGET_CONFIG.costs.customItems = customItems;
     BUDGET_CONFIG.costs.customTotal = customTotal;
