@@ -1661,6 +1661,9 @@
                         Object.assign(BUDGET_CONFIG.costs, budgetData.costs);
                     }
 
+                    // 커스텀 항목들 UI에 렌더링
+                    renderCustomItemsFromDB();
+
                     updateAllBudgetDisplays();
                     statusEl.innerHTML = '<span class="db-status success">✅ DB에서 불러옴</span>';
 
@@ -1672,6 +1675,18 @@
                 console.error('DB Load Error:', error);
                 statusEl.innerHTML = '<span class="db-status error">❌ DB 연결 실패 (기본값 사용)</span>';
             }
+        }
+
+        // DB에서 불러온 커스텀 항목들을 UI에 렌더링
+        function renderCustomItemsFromDB() {
+            const container = document.getElementById('custom-budget-items');
+            container.innerHTML = ''; // 기존 항목 삭제
+            customItemCount = 0;
+
+            const customItems = BUDGET_CONFIG.costs.customItems || [];
+            customItems.forEach(item => {
+                addBudgetItemFromData(item.label, item.value, item.confirmed);
+            });
         }
 
         // DB에 예산 데이터 저장
@@ -1995,6 +2010,10 @@
         }
 
         function addBudgetItem() {
+            addBudgetItemFromData('', 0, false);
+        }
+
+        function addBudgetItemFromData(label, value, confirmed) {
             customItemCount++;
             const container = document.getElementById('custom-budget-items');
             const itemId = `custom-item-${customItemCount}`;
@@ -2003,13 +2022,22 @@
             row.className = 'budget-input-row';
             row.id = itemId;
             row.innerHTML = `
-                <input type="text" class="budget-label-input" placeholder="항목명" 
-                    style="flex:1; padding:8px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;">
-                <input type="number" class="budget-input custom-cost" value="0" oninput="onBudgetChange()">
+                <input type="checkbox" class="custom-confirmed" ${confirmed ? 'checked' : ''} onchange="onBudgetChange()"
+                    style="width:20px; height:20px; margin-right:8px; accent-color:#4CAF50;">
+                <input type="text" class="budget-label-input" placeholder="항목명" value="${label}"
+                    style="flex:1; padding:8px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;" oninput="onBudgetChange()">
+                <input type="number" class="budget-input custom-cost" value="${value}" oninput="onBudgetChange()">
                 <span class="budget-unit">원</span>
                 <button onclick="removeBudgetItem('${itemId}')" 
                     style="margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
             `;
+
+            // 확정된 항목은 초록색 테두리
+            if (confirmed) {
+                row.style.border = '2px solid #4CAF50';
+                row.style.background = '#f0fff0';
+            }
+
             container.appendChild(row);
             onBudgetChange();
         }
@@ -2033,18 +2061,32 @@
             BUDGET_CONFIG.costs.day2Cafe = parseInt(document.getElementById('cost-day2-tour').value) || 0;
             BUDGET_CONFIG.costs.day2Dinner = parseInt(document.getElementById('cost-day2-dinner').value) || 0;
 
-            // 커스텀 항목들 계산
-            const customInputs = document.querySelectorAll('.custom-cost');
+            // 커스텀 항목들 계산 (배열로 저장)
+            const customRows = document.querySelectorAll('#custom-budget-items .budget-input-row');
             let customTotal = 0;
-            BUDGET_CONFIG.costs.custom = {};
-            customInputs.forEach((input, idx) => {
-                const row = input.closest('.budget-input-row');
+            const customItems = [];
+            customRows.forEach((row) => {
                 const labelInput = row.querySelector('.budget-label-input');
-                const label = labelInput ? labelInput.value || `custom${idx}` : `custom${idx}`;
-                const value = parseInt(input.value) || 0;
-                BUDGET_CONFIG.costs.custom[label] = value;
+                const costInput = row.querySelector('.custom-cost');
+                const confirmedInput = row.querySelector('.custom-confirmed');
+
+                const label = labelInput ? labelInput.value || '' : '';
+                const value = parseInt(costInput?.value) || 0;
+                const confirmed = confirmedInput ? confirmedInput.checked : false;
+
+                customItems.push({ label, value, confirmed });
                 customTotal += value;
+
+                // 확정된 항목 스타일 업데이트
+                if (confirmed) {
+                    row.style.border = '2px solid #4CAF50';
+                    row.style.background = '#f0fff0';
+                } else {
+                    row.style.border = '';
+                    row.style.background = '';
+                }
             });
+            BUDGET_CONFIG.costs.customItems = customItems;
             BUDGET_CONFIG.costs.customTotal = customTotal;
 
             // 모든 표시 업데이트
