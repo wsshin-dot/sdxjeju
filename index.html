@@ -485,53 +485,69 @@
                                 oninput="onConfigChange()" disabled>
                             <span class="budget-unit">명</span>
                         </div>
-                        <div class="budget-input-row">
+                        <div class="budget-input-row" id="row-flight">
                             <span class="budget-label">항공권</span>
                             <input type="number" id="cost-flight" value="100000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
+                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-flight')"
+                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
                         </div>
-                        <div class="budget-input-row">
+                        <div class="budget-input-row" id="row-rent">
                             <span class="budget-label">렌트+기름</span>
                             <input type="number" id="cost-rent" value="40000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
+                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-rent')"
+                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
                         </div>
-                        <div class="budget-input-row">
+                        <div class="budget-input-row" id="row-day1-dinner">
                             <span class="budget-label">Day1 저녁</span>
                             <input type="number" id="cost-day1-dinner" value="50000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
+                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-day1-dinner')"
+                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
                         </div>
-                        <div class="budget-input-row">
+                        <div class="budget-input-row" id="row-whiskey">
                             <span class="budget-label">양주 구매</span>
                             <input type="number" id="cost-whiskey" value="20000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
+                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-whiskey')"
+                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
                         </div>
-                        <div class="budget-input-row">
+                        <div class="budget-input-row" id="row-981">
                             <span class="budget-label">Day2 9.81파크</span>
                             <input type="number" id="cost-981" value="37000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
+                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-981')"
+                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
                         </div>
-                        <div class="budget-input-row">
+                        <div class="budget-input-row" id="row-day2-lunch">
                             <span class="budget-label">Day2 점심 (후보선택)</span>
                             <input type="number" id="cost-day2-lunch" value="24000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
+                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-day2-lunch')"
+                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
                         </div>
-                        <div class="budget-input-row">
+                        <div class="budget-input-row" id="row-day2-tour">
                             <span class="budget-label">Day2 카페(9.81)</span>
                             <input type="number" id="cost-day2-tour" value="8000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
+                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-day2-tour')"
+                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
                         </div>
-                        <div class="budget-input-row">
+                        <div class="budget-input-row" id="row-day2-dinner">
                             <span class="budget-label">Day2 저녁(장보기)</span>
                             <input type="number" id="cost-day2-dinner" value="40000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
+                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-day2-dinner')"
+                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
                         </div>
                         <div id="custom-budget-items"></div>
                         <button id="add-item-btn" onclick="addBudgetItem()"

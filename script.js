@@ -608,6 +608,8 @@ function toggleLockState(unlock) {
     const addBtn = document.getElementById('add-item-btn');
     const modalInput = document.getElementById('modal-password-input');
 
+    const staticDeleteBtns = document.querySelectorAll('.static-delete-btn');
+
     if (unlock) {
         inputs.forEach(input => {
             if (input !== modalInput) input.disabled = false;
@@ -617,6 +619,7 @@ function toggleLockState(unlock) {
         status.textContent = '✏️ 수정 가능! 값을 변경하면 자동 계산됩니다';
         addBtn.style.display = 'block';
         budgetUnlocked = true;
+        staticDeleteBtns.forEach(b => b.style.display = 'inline-block');
     } else {
         inputs.forEach(input => {
             if (input !== modalInput) input.disabled = true;
@@ -626,6 +629,7 @@ function toggleLockState(unlock) {
         status.textContent = '🔒 수정하려면 잠금해제를 눌러주세요';
         addBtn.style.display = 'none';
         budgetUnlocked = false;
+        staticDeleteBtns.forEach(b => b.style.display = 'none');
     }
 }
 
@@ -685,6 +689,7 @@ function addBudgetItemFromData(label, value, confirmed) {
     // Delete Button
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = '✕';
+    deleteBtn.className = 'delete-btn'; // Add class for selection
     deleteBtn.style.cssText = "margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;";
     deleteBtn.onclick = function () { removeBudgetItem(itemId); };
 
@@ -723,14 +728,14 @@ function onConfigChange() {
 
 // 예산 계산 함수 (예산 계산기에서 값 변경시)
 function onBudgetChange() {
-    // BUDGET_CONFIG 업데이트
-    BUDGET_CONFIG.costs.flight = parseInt(document.getElementById('cost-flight').value) || 0;
-    BUDGET_CONFIG.costs.rent = parseInt(document.getElementById('cost-rent').value) || 0;
-    BUDGET_CONFIG.costs.day1Dinner = parseInt(document.getElementById('cost-day1-dinner').value) || 0;
-    BUDGET_CONFIG.costs.park981 = parseInt(document.getElementById('cost-981').value) || 0;
-    BUDGET_CONFIG.costs.day2Lunch = parseInt(document.getElementById('cost-day2-lunch').value) || 0;
-    BUDGET_CONFIG.costs.day2Cafe = parseInt(document.getElementById('cost-day2-tour').value) || 0;
-    BUDGET_CONFIG.costs.day2Dinner = parseInt(document.getElementById('cost-day2-dinner').value) || 0;
+    // BUDGET_CONFIG 업데이트 (Safe access with optional chaining)
+    BUDGET_CONFIG.costs.flight = parseInt(document.getElementById('cost-flight')?.value) || 0;
+    BUDGET_CONFIG.costs.rent = parseInt(document.getElementById('cost-rent')?.value) || 0;
+    BUDGET_CONFIG.costs.day1Dinner = parseInt(document.getElementById('cost-day1-dinner')?.value) || 0;
+    BUDGET_CONFIG.costs.park981 = parseInt(document.getElementById('cost-981')?.value) || 0;
+    BUDGET_CONFIG.costs.day2Lunch = parseInt(document.getElementById('cost-day2-lunch')?.value) || 0;
+    BUDGET_CONFIG.costs.day2Cafe = parseInt(document.getElementById('cost-day2-tour')?.value) || 0;
+    BUDGET_CONFIG.costs.day2Dinner = parseInt(document.getElementById('cost-day2-dinner')?.value) || 0;
 
     // 커스텀 항목들 계산 (배열로 저장)
     const customRows = document.querySelectorAll('#custom-budget-items .budget-input-row');
@@ -749,7 +754,7 @@ function onBudgetChange() {
         customTotal += value;
 
         // 확정된 항목 UI 업데이트 (회색처리, 비활성화, 삭제버튼 숨김)
-        const deleteBtn = row.querySelector('button');
+        const deleteBtn = row.querySelector('.delete-btn'); // Class selection
         if (confirmed) {
             // Label Styling: 텍스트처럼 보이게
             if (labelInput) {
@@ -774,14 +779,14 @@ function onBudgetChange() {
             row.style.border = '1px solid #e5e8eb';
 
         } else {
-            // Edit Mode Styling
+            // 수정 모드: 스타일 복원
             if (labelInput) {
                 labelInput.disabled = false;
                 labelInput.style.border = '1px solid #ddd';
-                labelInput.style.background = '#fff';
+                labelInput.style.background = 'white';
                 labelInput.style.padding = '8px';
-                labelInput.style.fontWeight = 'normal';
-                labelInput.style.color = '';
+                labelInput.style.fontWeight = '400';
+                labelInput.style.color = 'black';
                 labelInput.style.cursor = 'text';
             }
             // Checkbox 보임
@@ -790,7 +795,11 @@ function onBudgetChange() {
             }
 
             if (costInput) costInput.disabled = false;
-            if (deleteBtn) deleteBtn.style.display = '';
+            // 중요: 수정 모드일 때 삭제 버튼 보이기 (단, 잠금 상태가 아닐 때만 유효하지만 render 로직상 여기서 처리)
+            // 실제 visible 여부는 toggleLockState/CSS 가 관장하거나 여기서 강제할 수 있음.
+            // 하지만 custom item은 여기서 display를 설정하므로 여기서도 block 설정.
+            // 단, 잠겨있으면 안보여야 하는데... 'budgetUnlocked' 변수를 확인할 수 있음.
+            if (deleteBtn) deleteBtn.style.display = budgetUnlocked ? 'inline-block' : 'none';
 
             // Row styling (Edit look)
             row.style.background = '#fff';
@@ -802,6 +811,24 @@ function onBudgetChange() {
 
     // 모든 표시 업데이트
     updateAllBudgetDisplays();
+}
+
+function removeBudgetItem(itemId) {
+    const item = document.getElementById(itemId);
+    if (item) {
+        item.remove();
+        onBudgetChange();
+    }
+}
+
+function removeStaticItem(rowId) {
+    const item = document.getElementById(rowId);
+    if (item) {
+        if (confirm('이 항목을 정말 삭제하시겠습니까? (삭제후 값은 0원으로 계산됩니다)')) {
+            item.remove();
+            onBudgetChange();
+        }
+    }
 }
 
 // 페이지 로드시 예산 업데이트
