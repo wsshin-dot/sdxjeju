@@ -2,8 +2,5 @@
   "name": "jeju-team-day",
   "version": "1.0.0",
   "description": "SDx플랫폼팀 제주 팀데이 일정 페이지",
-  "private": true,
-  "dependencies": {
-    "@netlify/neon": "^0.2.0"
-  }
+  "private": true
 }
