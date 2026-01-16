@@ -1445,6 +1445,11 @@
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
                         </div>
+                        <div id="custom-budget-items"></div>
+                        <button id="add-item-btn" onclick="addBudgetItem()"
+                            style="display:none; width:100%; padding:10px; margin-top:10px; background:#f8f9fa; border:2px dashed #ddd; border-radius:10px; color:#888; font-size:0.9rem; cursor:pointer;">
+                            ➕ 항목 추가
+                        </button>
                     </div>
 
                     <div class="budget-result">
@@ -1521,11 +1526,12 @@
         // Day별 비용 계산
         function calcDayBudgets() {
             const c = BUDGET_CONFIG.costs;
+            const customTotal = c.customTotal || 0;
             const day1 = c.flight + c.rent + c.day1Dinner + c.whiskey;
             const day2 = c.day2Lunch + c.park981 + c.day2Cafe + c.day2Dinner;
-            const day3 = 0;
+            const day3 = customTotal; // 커스텀 항목은 Day3에 표시
             const total = day1 + day2 + day3;
-            // 항공권(10만원)은 선결제/고정비용으로 간주하여 잔액 계산에서 제외 (User Request: 남은예산 13만원 맞춰야 함)
+            // 항공권(10만원)은 선결제/고정비용으로 간주하여 잔액 계산에서 제외
             const remaining = BUDGET_CONFIG.totalBudgetPerPerson - (total - c.flight);
 
             return {
@@ -1959,21 +1965,60 @@
 
         // 예산 잠금해제 함수
         let budgetUnlocked = false;
+        const BUDGET_PASSWORD = '901210';
+        let customItemCount = 0;
+
         function unlockBudget() {
             const inputs = document.querySelectorAll('.budget-input');
             const btn = document.getElementById('unlock-btn');
             const status = document.getElementById('budget-status');
+            const addBtn = document.getElementById('add-item-btn');
 
             if (!budgetUnlocked) {
+                const password = prompt('비밀번호를 입력하세요:');
+                if (password !== BUDGET_PASSWORD) {
+                    alert('비밀번호가 틀렸습니다!');
+                    return;
+                }
                 inputs.forEach(input => input.disabled = false);
                 btn.innerHTML = '🔓 잠금';
                 status.textContent = '✏️ 수정 가능! 값을 변경하면 자동 계산됩니다';
+                addBtn.style.display = 'block';
                 budgetUnlocked = true;
             } else {
                 inputs.forEach(input => input.disabled = true);
                 btn.innerHTML = '🔒 잠금해제';
                 status.textContent = '🔒 수정하려면 잠금해제를 눌러주세요';
+                addBtn.style.display = 'none';
                 budgetUnlocked = false;
+            }
+        }
+
+        function addBudgetItem() {
+            customItemCount++;
+            const container = document.getElementById('custom-budget-items');
+            const itemId = `custom-item-${customItemCount}`;
+
+            const row = document.createElement('div');
+            row.className = 'budget-input-row';
+            row.id = itemId;
+            row.innerHTML = `
+                <input type="text" class="budget-label-input" placeholder="항목명" 
+                    style="flex:1; padding:8px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;">
+                <input type="number" class="budget-input custom-cost" value="0" oninput="onBudgetChange()">
+                <span class="budget-unit">원</span>
+                <button onclick="removeBudgetItem('${itemId}')" 
+                    style="margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
+            `;
+            container.appendChild(row);
+            onBudgetChange();
+        }
+
+        function removeBudgetItem(itemId) {
+            const item = document.getElementById(itemId);
+            if (item) {
+                item.remove();
+                onBudgetChange();
             }
         }
 
@@ -1987,6 +2032,20 @@
             BUDGET_CONFIG.costs.day2Lunch = parseInt(document.getElementById('cost-day2-lunch').value) || 0;
             BUDGET_CONFIG.costs.day2Cafe = parseInt(document.getElementById('cost-day2-tour').value) || 0;
             BUDGET_CONFIG.costs.day2Dinner = parseInt(document.getElementById('cost-day2-dinner').value) || 0;
+
+            // 커스텀 항목들 계산
+            const customInputs = document.querySelectorAll('.custom-cost');
+            let customTotal = 0;
+            BUDGET_CONFIG.costs.custom = {};
+            customInputs.forEach((input, idx) => {
+                const row = input.closest('.budget-input-row');
+                const labelInput = row.querySelector('.budget-label-input');
+                const label = labelInput ? labelInput.value || `custom${idx}` : `custom${idx}`;
+                const value = parseInt(input.value) || 0;
+                BUDGET_CONFIG.costs.custom[label] = value;
+                customTotal += value;
+            });
+            BUDGET_CONFIG.costs.customTotal = customTotal;
 
             // 모든 표시 업데이트
             updateAllBudgetDisplays();
