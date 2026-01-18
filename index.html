@@ -188,8 +188,19 @@
                         </div>
                         <div class="time-card">
                             <div class="time-desc">중문 관광 및 아침식사 or 휴식</div>
-                            <div class="time-desc" style="font-size:0.85rem; color:#666;">추천: 수두리보말칼국수, 제주한라국수, 새우시, 천제연
-                                폭포(도보15분), 주상절리</div>
+                            <div class="time-desc" style="font-size:0.85rem; color:#666;">
+                                추천:
+                                <a href="https://map.naver.com/p/search/수두리보말칼국수" target="_blank"
+                                    style="color:#666; text-decoration:underline;">수두리보말칼국수</a>,
+                                <a href="https://map.naver.com/p/search/제주한라국수" target="_blank"
+                                    style="color:#666; text-decoration:underline;">제주한라국수</a>,
+                                <a href="https://map.naver.com/p/search/새우시" target="_blank"
+                                    style="color:#666; text-decoration:underline;">새우시</a>,
+                                <a href="https://map.naver.com/p/search/천제연폭포" target="_blank"
+                                    style="color:#666; text-decoration:underline;">천제연폭포(도보15분)</a>,
+                                <a href="https://map.naver.com/p/search/대포주상절리" target="_blank"
+                                    style="color:#666; text-decoration:underline;">주상절리</a>
+                            </div>
                             <div class="time-desc" style="font-size:0.8rem; color:#666; margin-top:4px;">🚙 이동: 약 5분 /
                                 🚶 도보: 약 20분 (중문 시내)</div>
                             <div class="options-grid">
@@ -490,64 +501,54 @@
                             <input type="number" id="cost-flight" value="100000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
-                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-flight')"
-                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
                         </div>
                         <div class="budget-input-row" id="row-rent">
                             <span class="budget-label">렌트+기름</span>
                             <input type="number" id="cost-rent" value="40000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
-                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-rent')"
-                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
+
                         </div>
                         <div class="budget-input-row" id="row-day1-dinner">
                             <span class="budget-label">Day1 저녁</span>
                             <input type="number" id="cost-day1-dinner" value="50000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
-                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-day1-dinner')"
-                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
+
                         </div>
                         <div class="budget-input-row" id="row-whiskey">
                             <span class="budget-label">양주 구매</span>
                             <input type="number" id="cost-whiskey" value="20000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
-                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-whiskey')"
-                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
+
                         </div>
                         <div class="budget-input-row" id="row-981">
                             <span class="budget-label">Day2 9.81파크</span>
                             <input type="number" id="cost-981" value="37000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
-                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-981')"
-                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
+
                         </div>
                         <div class="budget-input-row" id="row-day2-lunch">
                             <span class="budget-label">Day2 점심 (후보선택)</span>
                             <input type="number" id="cost-day2-lunch" value="24000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
-                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-day2-lunch')"
-                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
+
                         </div>
                         <div class="budget-input-row" id="row-day2-tour">
                             <span class="budget-label">Day2 카페(9.81)</span>
                             <input type="number" id="cost-day2-tour" value="8000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
-                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-day2-tour')"
-                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
+
                         </div>
                         <div class="budget-input-row" id="row-day2-dinner">
                             <span class="budget-label">Day2 저녁(장보기)</span>
                             <input type="number" id="cost-day2-dinner" value="40000" class="budget-input"
                                 oninput="onBudgetChange()" disabled>
                             <span class="budget-unit">원</span>
-                            <button class="delete-btn static-delete-btn" onclick="removeStaticItem('row-day2-dinner')"
-                                style="display:none; margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;">✕</button>
                         </div>
                         <div id="custom-budget-items"></div>
                         <button id="add-item-btn" onclick="addBudgetItem()"

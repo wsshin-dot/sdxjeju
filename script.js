@@ -393,11 +393,12 @@ function startMarbleRun() {
 
     // 1. 엔진
     engine = Engine.create();
-    engine.world.gravity.y = 0.2; // 중력 낮춤 (느리게)
+    engine.world.gravity.y = 0.4; // 중력 약간 증가 (맵이 길어져서)
 
     // 2. 렌더러
+    // CSS에서 height를 1200px로 늘렸으므로, JS에서 해당 크기를 읽어와야 함
     const width = container.offsetWidth;
-    const height = container.offsetHeight;
+    const height = container.offsetHeight; // Should be ~1200px
 
     render = Render.create({
         element: container,
@@ -410,71 +411,74 @@ function startMarbleRun() {
         }
     });
 
-    // 3. 맵 구성 (3단 코스)
+    // 3. 맵 구성 (4단 코스: 핀 -> 튕기는 벽 -> 지그재그 -> 골인)
     const wallOpts = { isStatic: true, render: { fillStyle: '#444' } };
     const pegOpts = { isStatic: true, render: { fillStyle: '#888' }, restitution: 0.5 };
-    const bounceOpts = { isStatic: true, render: { fillStyle: '#666' }, restitution: 1.0 }; // 잘 튀는 벽
+    const bounceOpts = { isStatic: true, render: { fillStyle: '#E91E63' }, restitution: 1.6 }; // 강력하게 튀는 벽
+    const glassOpts = { isStatic: true, render: { fillStyle: '#2D9CDB', opacity: 0.6 }, angle: Math.PI * 0.15 };
 
+    // 좌우 벽 (전체 높이)
     Composite.add(engine.world, [
         Bodies.rectangle(0, height / 2, 20, height, wallOpts), // 좌벽
         Bodies.rectangle(width, height / 2, 20, height, wallOpts), // 우벽
     ]);
 
-    // [1구간] 상단 Plinko (핀)
+    // [1구간] 상단 Plinko (핀) - Start ~ 300px
     const startY = 100;
-    for (let row = 0; row < 5; row++) {
-        const cols = row % 2 === 0 ? 6 : 5;
+    for (let row = 0; row < 6; row++) {
+        const cols = row % 2 === 0 ? 7 : 6;
         const spacingX = width / (cols + 1);
         for (let col = 1; col <= cols; col++) {
-            Composite.add(engine.world, Bodies.circle(col * spacingX, startY + row * 50, 5, pegOpts));
+            Composite.add(engine.world, Bodies.circle(col * spacingX, startY + row * 45, 5, pegOpts));
         }
     }
 
-    // [2구간] 중단 Spinners (회전 풍차)
-    const spinnerY = 400;
-    const createSpinner = (x, y) => {
-        const spinner = Bodies.rectangle(x, y, 120, 10, {
-            label: 'spinner',
-            render: { fillStyle: '#E91E63' }
-        });
-        const constraint = Constraint.create({
-            pointA: { x: x, y: y },
-            bodyB: spinner,
-            stiffness: 1,
-            length: 0
-        });
-        return [spinner, constraint];
-    };
+    // [2구간] 중단 Bouncing Walls (튕기는 벽) - 400px ~ 700px
+    // 좌우에서 튀어나와서 공을 위로/옆으로 튕겨냄 (Pinball Bumper 느낌)
+    const bumperY = 500;
+    Composite.add(engine.world, [
+        // 왼쪽 범퍼 (삼각형 모양 비슷하게)
+        Bodies.polygon(width * 0.2, bumperY, 3, 40, { ...bounceOpts, angle: Math.PI / 2 }),
+        Bodies.polygon(width * 0.1, bumperY + 100, 3, 50, { ...bounceOpts, angle: Math.PI / 4 }),
 
-    Composite.add(engine.world, createSpinner(width * 0.3, spinnerY));
-    Composite.add(engine.world, createSpinner(width * 0.7, spinnerY));
+        // 오른쪽 범퍼
+        Bodies.polygon(width * 0.8, bumperY + 50, 3, 40, { ...bounceOpts, angle: -Math.PI / 2.5 }),
+        Bodies.polygon(width * 0.4, bumperY + 150, 3, 50, { ...bounceOpts, angle: -Math.PI / 4 }),
 
-    // [3구간] 하단 Funnel (깔때기)
-    const slopeOpts = { isStatic: true, render: { fillStyle: '#555' }, angle: Math.PI * 0.15 };
-    const slopeY = 600;
+        // 중앙 회전 장애물
+        Bodies.circle(width / 2, bumperY + 80, 25, { ...bounceOpts, label: 'spinner' })
+    ]);
+
+
+    // [3구간] 하단 ZigZags (지그재그 슬로프) - 800px ~ 1100px
+    const slopeY = 850;
+    const slopeW = width * 0.6;
+    const slopeH = 10;
 
     Composite.add(engine.world, [
-        // 왼쪽 경사
-        Bodies.rectangle(width * 0.2, slopeY, width * 0.6, 20, {
-            isStatic: true, angle: 0.5, render: { fillStyle: '#555' }, label: 'slope'
-        }),
-        // 오른쪽 경사
-        Bodies.rectangle(width * 0.8, slopeY, width * 0.6, 20, {
-            isStatic: true, angle: -0.5, render: { fillStyle: '#555' }, label: 'slope'
-        }),
-        // 최종 깔때기 입구 (중앙) - 벽 크기 축소
-        Bodies.rectangle(width * 0.25, height - 100, width * 0.25, 15, { isStatic: true, angle: 0.6, render: { fillStyle: '#333' } }),
-        Bodies.rectangle(width * 0.75, height - 100, width * 0.25, 15, { isStatic: true, angle: -0.6, render: { fillStyle: '#333' } })
+        // 왼쪽에서 오른쪽으로 내려가는 판
+        Bodies.rectangle(width * 0.3, slopeY, slopeW, slopeH, { isStatic: true, angle: Math.PI * 0.15, render: { fillStyle: '#FFC107' } }),
+        // 오른쪽에서 왼쪽으로
+        Bodies.rectangle(width * 0.7, slopeY + 150, slopeW, slopeH, { isStatic: true, angle: -Math.PI * 0.15, render: { fillStyle: '#FFC107' } }),
+        // 다시 왼쪽에서 오른쪽
+        Bodies.rectangle(width * 0.3, slopeY + 300, slopeW, slopeH, { isStatic: true, angle: Math.PI * 0.1, render: { fillStyle: '#FFC107' } })
+    ]);
+
+    // [4구간] 피니시 라인 가이드 (하단 중앙으로 유도)
+    Composite.add(engine.world, [
+        Bodies.rectangle(width * 0.15, height - 150, width * 0.4, 20, { isStatic: true, angle: 0.3, render: { fillStyle: '#444' } }),
+        Bodies.rectangle(width * 0.85, height - 150, width * 0.4, 20, { isStatic: true, angle: -0.3, render: { fillStyle: '#444' } })
     ]);
 
     // 4. 구슬 생성
     const marbleRadius = 8;
     names.forEach((name, i) => {
-        const x = width / 2 + (Math.random() - 0.5) * 50;
-        const y = -100 - (i * 60); // 간격 넓힘
+        // x: 화면 너비의 30% ~ 70% 사이에서 랜덤 분포
+        const x = width * 0.3 + Math.random() * (width * 0.4);
+        const y = -150; // 동시에 출발 (높이 통일)
 
         const marble = Bodies.circle(x, y, marbleRadius, {
-            restitution: 0.7,
+            restitution: 0.9,
             friction: 0.001,
             frictionAir: 0.02, // 공기 저항 (천천히 떨어짐)
             label: name,
@@ -545,7 +549,7 @@ function addRankItem(rank, name) {
     else if (rank === 3) medal = '🥉 3rd';
     else medal = rank + 'th';
 
-    item.innerHTML = `< span > ${medal}</span > <span>${name}</span>`;
+    item.innerHTML = `<span>${medal}</span> <span>${name}</span>`;
     list.appendChild(item);
     board.scrollTop = board.scrollHeight;
 }
@@ -663,11 +667,10 @@ function addBudgetItemFromData(label, value, confirmed) {
     labelInput.className = 'budget-label-input';
     labelInput.placeholder = '항목명';
     labelInput.value = label;
-    // 초기 스타일은 onBudgetChange에서 설정됨
     labelInput.style.cssText = "flex:1; padding:8px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;";
     labelInput.oninput = onBudgetChange;
 
-    // 클릭시 수정 모드로 전환 (확정된 상태일 때만)
+    // 수정 모드 전환
     labelInput.onclick = function () {
         if (checkbox.checked) {
             if (confirm('이 항목을 수정하시겠습니까?')) {
@@ -689,30 +692,124 @@ function addBudgetItemFromData(label, value, confirmed) {
     unitSpan.className = 'budget-unit';
     unitSpan.textContent = '원';
 
-    // Delete Button
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = '✕';
-    deleteBtn.className = 'delete-btn'; // Add class for selection
-    deleteBtn.style.cssText = "margin-left:8px; padding:6px 10px; background:#ff5252; color:white; border:none; border-radius:6px; cursor:pointer;";
-    deleteBtn.onclick = function () { removeBudgetItem(itemId); };
-
     row.appendChild(checkbox);
     row.appendChild(labelInput);
     row.appendChild(costInput);
     row.appendChild(unitSpan);
-    row.appendChild(deleteBtn);
+
+    // 스와이프 기능 추가
+    addSwipeListeners(row);
 
     container.appendChild(row);
     onBudgetChange();
 }
+
 
 function removeBudgetItem(itemId) {
     const item = document.getElementById(itemId);
     if (item) {
         item.remove();
         onBudgetChange();
+        return true;
+    }
+    return false;
+}
+
+function removeStaticItem(rowId) {
+    const item = document.getElementById(rowId);
+    if (item) {
+        if (confirm('이 항목을 정말 삭제하시겠습니까? (삭제후 값은 0원으로 계산됩니다)')) {
+            item.remove();
+            onBudgetChange();
+            return true;
+        }
+    }
+    return false;
+}
+
+// ==========================================
+// 👆 Swipe to Delete Logic
+// ==========================================
+function addSwipeListeners(row) {
+    let startX = 0;
+    let currentX = 0;
+    let isSwiping = false;
+
+    // Touch Events
+    row.addEventListener('touchstart', (e) => startSwipe(e.touches[0].clientX));
+    row.addEventListener('touchmove', (e) => moveSwipe(e, e.touches[0].clientX));
+    row.addEventListener('touchend', (e) => endSwipe());
+
+    // Mouse Events (Test/Desktop)
+    row.addEventListener('mousedown', (e) => startSwipe(e.clientX));
+    row.addEventListener('mousemove', (e) => { if (isSwiping) moveSwipe(e, e.clientX); });
+    row.addEventListener('mouseup', (e) => { if (isSwiping) endSwipe(); });
+    row.addEventListener('mouseleave', (e) => { if (isSwiping) endSwipe(); });
+
+    function startSwipe(x) {
+        if (!budgetUnlocked) return; // 잠금 상태면 동작 안함
+        isSwiping = true;
+        startX = x;
+        row.classList.add('swiping'); // Disable transition
+    }
+
+    function moveSwipe(e, x) {
+        if (!isSwiping) return;
+        currentX = x - startX;
+
+        // 수직 스크롤 방해 최소화: X축 이동이 작으면 무시? 
+        // CSS touch-action: pan-y 처리됨.
+
+        // 이동 제한 (너무 멀리 안가게? 혹은 자유롭게)
+        row.style.transform = `translateX(${currentX}px)`;
+
+        // 시각적 피드백 (배경색 변경 등) - 여기서는 CSS로 처리하거나 복잡도 낮춤
+    }
+
+    function endSwipe() {
+        if (!isSwiping) return;
+        isSwiping = false;
+        row.classList.remove('swiping');
+
+        const threshold = 100; // 삭제 기준 거리
+
+        if (Math.abs(currentX) > threshold) {
+            // 삭제 액션
+            const direction = currentX > 0 ? 1 : -1;
+            const endX = direction * window.innerWidth; // 화면 밖으로
+
+            row.style.transform = `translateX(${endX}px)`;
+            row.classList.add('deleting');
+
+            // 애니메이션 시간 후 실제 삭제 처리
+            setTimeout(() => {
+                let deleted = false;
+                // Static Item인지 Custom Item인지 구분
+                // Static Item은 ID가 row-... 형식
+                if (row.id.startsWith('row-')) {
+                    deleted = removeStaticItem(row.id);
+                } else {
+                    deleted = removeBudgetItem(row.id);
+                }
+
+                if (!deleted) {
+                    // 삭제 취소됨 (Static Item confirm 취소시)
+                    cancelDelete();
+                }
+            }, 300); // CSS transition time match
+
+        } else {
+            // 제자리 복귀
+            cancelDelete();
+        }
+    }
+
+    function cancelDelete() {
+        row.classList.remove('deleting');
+        row.style.transform = 'translateX(0)';
     }
 }
+
 
 // 설정 변경 (총 예산 / 인원)
 function onConfigChange() {
@@ -756,26 +853,20 @@ function onBudgetChange() {
         customItems.push({ label, value, confirmed });
         customTotal += value;
 
-        // 확정된 항목 UI 업데이트 (회색처리, 비활성화, 삭제버튼 숨김)
-        const deleteBtn = row.querySelector('.delete-btn'); // Class selection
+        // 확정된 항목 UI 업데이트 (회색처리, 비활성화) - 삭제 버튼 로직 제거됨
         if (confirmed) {
             // Label Styling: 텍스트처럼 보이게
             if (labelInput) {
-                labelInput.disabled = true; // 수정 불가 (클릭 이벤트로 해제)
+                labelInput.disabled = true;
                 labelInput.style.border = 'none';
                 labelInput.style.background = 'transparent';
                 labelInput.style.padding = '0';
                 labelInput.style.fontWeight = '500';
                 labelInput.style.color = 'var(--text-main)';
-                labelInput.style.cursor = 'pointer'; // 클릭 가능 표시
+                labelInput.style.cursor = 'pointer';
             }
-            // Checkbox 숨김
-            if (confirmedInput) {
-                confirmedInput.style.display = 'none';
-            }
-
+            if (confirmedInput) confirmedInput.style.display = 'none';
             if (costInput) costInput.disabled = true;
-            if (deleteBtn) deleteBtn.style.display = 'none';
 
             // Row styling (Standard look)
             row.style.background = '#f8f9fa';
@@ -792,52 +883,36 @@ function onBudgetChange() {
                 labelInput.style.color = 'black';
                 labelInput.style.cursor = 'text';
             }
-            // Checkbox 보임
-            if (confirmedInput) {
-                confirmedInput.style.display = 'inline-block';
-            }
-
+            if (confirmedInput) confirmedInput.style.display = 'inline-block';
             if (costInput) costInput.disabled = false;
-            // 중요: 수정 모드일 때 삭제 버튼 보이기 (단, 잠금 상태가 아닐 때만 유효하지만 render 로직상 여기서 처리)
-            // 실제 visible 여부는 toggleLockState/CSS 가 관장하거나 여기서 강제할 수 있음.
-            // 하지만 custom item은 여기서 display를 설정하므로 여기서도 block 설정.
-            // 단, 잠겨있으면 안보여야 하는데... 'budgetUnlocked' 변수를 확인할 수 있음.
-            if (deleteBtn) deleteBtn.style.display = budgetUnlocked ? 'inline-block' : 'none';
 
             // Row styling (Edit look)
             row.style.background = '#fff';
             row.style.border = '1px solid #2D9CDB'; // Blue border for focus
         }
     });
+
     BUDGET_CONFIG.costs.customItems = customItems;
     BUDGET_CONFIG.costs.customTotal = customTotal;
 
-    // 모든 표시 업데이트
     updateAllBudgetDisplays();
 }
 
-function removeBudgetItem(itemId) {
-    const item = document.getElementById(itemId);
-    if (item) {
-        item.remove();
-        onBudgetChange();
-    }
-}
-
-function removeStaticItem(rowId) {
-    const item = document.getElementById(rowId);
-    if (item) {
-        if (confirm('이 항목을 정말 삭제하시겠습니까? (삭제후 값은 0원으로 계산됩니다)')) {
-            item.remove();
-            onBudgetChange();
-        }
-    }
-}
-
-// 페이지 로드시 예산 업데이트
+// 페이지 로드시 예산 업데이트 및 초기화
 document.addEventListener('DOMContentLoaded', async function () {
-    // 먼저 DB에서 예산 데이터 로드 시도
+    // 1. DB 로드
     await loadBudgetFromDB();
-    // 그 후 모든 표시 업데이트
+
+    // 2. Static Rows에 스와이프 리스너 추가
+    const staticIds = [
+        'row-flight', 'row-rent', 'row-day1-dinner', 'row-whiskey',
+        'row-981', 'row-day2-lunch', 'row-day2-tour', 'row-day2-dinner'
+    ];
+    staticIds.forEach(id => {
+        const row = document.getElementById(id);
+        if (row) addSwipeListeners(row);
+    });
+
+    // 3. UI 업데이트
     updateAllBudgetDisplays();
 });
