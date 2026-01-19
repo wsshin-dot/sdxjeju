@@ -235,6 +235,18 @@ async function loadBudgetFromDB() {
 
                 // 비용 데이터 복사
                 Object.assign(BUDGET_CONFIG.costs, budgetData.costs);
+
+                // [NEW] 맵 데이터 로드
+                if (budgetData.costs.mapData) {
+                    if (budgetData.costs.mapData.locations) {
+                        Object.assign(LOCATIONS, budgetData.costs.mapData.locations);
+                    }
+                    if (budgetData.costs.mapData.routes) {
+                        Object.assign(ROUTES, budgetData.costs.mapData.routes);
+                    }
+                    // 지도 초기화 (데이터 로드 후)
+                    if (typeof initMaps === 'function') initMaps();
+                }
             }
 
             // 커스텀 항목들 UI에 렌더링
@@ -324,6 +336,11 @@ function switchTab(tabId, btn) {
     btn.classList.add('active');
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // 맵 리사이즈 (탭 전환 시 깨짐 방지)
+    if (typeof refreshMaps === 'function') {
+        setTimeout(refreshMaps, 100);
+    }
 }
 
 // Matter.js Aliases
@@ -915,4 +932,244 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // 3. UI 업데이트
     updateAllBudgetDisplays();
+
+    // 4. 지도 초기화 (약간의 딜레이 후 실행하여 탭 렌더링 안정화)
+    setTimeout(initMaps, 500);
 });
+
+
+// ========================================
+// 🗺️ 지도 초기화 및 편집 (Naver Maps API)
+// ========================================
+let LOCATIONS = {
+    airport: [33.5104, 126.4913],
+    shinwooseong: [33.2492, 126.4109],
+    lucete: [33.3190, 126.3853],
+    stay: [33.248, 126.418],
+    market: [33.2486, 126.5643],
+    park981: [33.3667, 126.3562],
+    letsrun: [33.41, 126.4],
+    center: [33.35, 126.5]
+};
+
+let ROUTES = {
+    day1: ['airport', 'shinwooseong', 'stay', 'market'],
+    day2: ['stay', 'lucete', 'park981', 'letsrun', 'market', 'stay'],
+    day3: ['stay', 'airport']
+};
+
+let isEditingMap = { day1: false, day2: false, day3: false };
+
+function initMaps() {
+    // 기존 맵 인스턴스 초기화 (재렌더링 시)
+    if (window.mapInstances) {
+        window.mapInstances.forEach(item => {
+            if (item.map) item.map.remove();
+        });
+        window.mapInstances = [];
+    }
+
+
+    const mapOptions = {
+        attributionControl: false,
+        zoomControl: true,
+        dragging: true,
+        scrollWheelZoom: false,
+        doubleClickZoom: false,
+        boxZoom: false
+    };
+
+    const createOrUpdateMap = (dayKey) => {
+        const elementId = `map-${dayKey}`;
+        const container = document.getElementById(elementId);
+        if (!container) return;
+
+        // 1. 맵 인스턴스 찾기 또는 생성
+        let mapInstance = window.mapInstances.find(m => m.id === dayKey);
+        let map, contentLayer;
+        let isNewMap = false;
+
+        if (!mapInstance) {
+            isNewMap = true;
+            map = L.map(elementId, mapOptions);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+            }).addTo(map);
+
+            contentLayer = L.layerGroup().addTo(map);
+
+            // 맵 클릭 (핀 추가)
+            map.on('click', (e) => {
+                if (isEditingMap[dayKey]) {
+                    addPin(dayKey, e.latlng);
+                }
+            });
+
+            window.mapInstances.push({ id: dayKey, map: map, contentLayer: contentLayer, bounds: null });
+        } else {
+            map = mapInstance.map;
+            contentLayer = mapInstance.contentLayer;
+            contentLayer.clearLayers();
+        }
+
+        const routeKeys = ROUTES[dayKey] || [];
+        const latlngs = routeKeys.map(key => LOCATIONS[key] || LOCATIONS.center);
+
+        // 경로 그리기
+        if (latlngs.length > 0) {
+            L.polyline(latlngs, {
+                color: '#FF6B00',
+                weight: 4,
+                opacity: 0.8,
+                dashArray: '10, 10',
+                lineCap: 'round'
+            }).addTo(contentLayer);
+        }
+
+        // 마커 찍기
+        routeKeys.forEach((key, index) => {
+            const latlng = LOCATIONS[key];
+            if (!latlng) return;
+
+            const number = index + 1;
+            const iconHtml = `<div style="
+                background-color: #FF6B00;
+                color: white;
+                border-radius: 50%;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid white;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            ">${number}</div>`;
+
+            const icon = L.divIcon({
+                className: 'custom-div-icon',
+                html: iconHtml,
+                iconSize: [30, 42],
+                iconAnchor: [15, 42]
+            });
+
+            const marker = L.marker(latlng, {
+                icon: icon,
+                draggable: isEditingMap[dayKey]
+            }).addTo(contentLayer);
+
+            marker.on('click', () => {
+                if (isEditingMap[dayKey]) {
+                    if (marker._dragMoved) { marker._dragMoved = false; return; }
+                    removePin(dayKey, index);
+                }
+            });
+
+            if (isEditingMap[dayKey]) {
+                marker.on('dragend', (e) => {
+                    const newPos = e.target.getLatLng();
+                    LOCATIONS[key] = [newPos.lat, newPos.lng];
+                    marker._dragMoved = true;
+                    setTimeout(() => initMaps(), 0);
+                });
+            }
+        });
+
+        // 5. 줌 설정
+        if (latlngs.length > 0) {
+            const bounds = L.latLngBounds(latlngs);
+            const instance = window.mapInstances.find(m => m.id === dayKey);
+            if (instance) instance.bounds = bounds;
+
+            if (isNewMap) {
+                map.fitBounds(bounds, { padding: [30, 30] });
+            }
+        }
+    };
+
+    createOrUpdateMap('day1');
+    createOrUpdateMap('day2');
+    createOrUpdateMap('day3');
+}
+
+function refreshMaps() {
+    if (window.mapInstances) {
+        window.mapInstances.forEach(item => {
+            item.map.invalidateSize();
+            if (item.bounds) {
+                setTimeout(() => {
+                    item.map.fitBounds(item.bounds, { padding: [30, 30] });
+                }, 200);
+            }
+        });
+    }
+}
+
+// 📌 핀 편집 기능
+// 📌 핀 편집 기능
+function toggleMapEdit(dayKey, btn) {
+    if (!isEditingMap[dayKey]) {
+        const password = prompt('지도 편집하려면 비밀번호를 입력하세요:');
+        if (password !== '901210') {
+            alert('비밀번호가 틀렸습니다.');
+            return;
+        }
+    }
+
+    const isEditing = !isEditingMap[dayKey];
+    isEditingMap[dayKey] = isEditing;
+
+    const mapContainer = document.getElementById(`map-${dayKey}`);
+
+    if (isEditing) {
+        btn.textContent = '✅ 완료';
+        btn.classList.add('editing');
+        mapContainer.classList.add('map-editing-border');
+        alert('지도 편집 모드 시작!\n\n🖱️ 핀 드래그: 위치 이동\n🖱️ 지도 클릭: 핀 추가\n🗑️ 핀 클릭: 핀 삭제');
+    } else {
+        btn.textContent = '✏️ 핀 편집';
+        btn.classList.remove('editing');
+        mapContainer.classList.remove('map-editing-border');
+        updateMapDataInConfig(); // 설정 객체 업데이트
+        saveBudgetToDB(); // DB 저장
+    }
+
+    // 편집 모드 변경 반영 (드래그 활성화 등)
+    initMaps();
+}
+
+function addPin(dayKey, latlng) {
+    const name = prompt('장소 이름을 입력하세요 (예: 맛집, 관광지)');
+    if (!name) return;
+
+    const id = 'custom_' + Date.now();
+    LOCATIONS[id] = [latlng.lat, latlng.lng];
+    ROUTES[dayKey].push(id);
+
+    // 재렌더링
+    initMaps();
+}
+
+function removePin(dayKey, index) {
+    if (confirm('이 핀을 경로에서 삭제하시겠습니까?')) {
+        const route = ROUTES[dayKey];
+        route.splice(index, 1); // 해당 인덱스 제거
+        initMaps();
+    }
+}
+
+// DB 데이터 연동 확장
+// saveBudgetToDB 내에서 호출될 hook 또는 saveBudgetToDB를 수정해야 함.
+// 기존 saveBudgetToDB는 BUDGET_CONFIG.costs만 저장하므로,
+// 비용 객체에 맵 데이터를 태워 보낸다.
+
+function updateMapDataInConfig() {
+    if (!BUDGET_CONFIG.costs.mapData) BUDGET_CONFIG.costs.mapData = {};
+    BUDGET_CONFIG.costs.mapData = {
+        locations: LOCATIONS,
+        routes: ROUTES
+    };
+}
+

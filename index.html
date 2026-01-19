@@ -11,6 +11,9 @@
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
+    <!-- Naver Maps API -->
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=dwh03fb8cl"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -57,7 +60,10 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title"><i class="fas fa-plane-departure"></i> 도착 및 체크인</div>
+                    <button class="btn-edit-map" onclick="toggleMapEdit('day1', this)">✏️ 핀 편집</button>
                 </div>
+                <!-- Day 1 Map -->
+                <div id="map-day1" class="day-map"></div>
                 <div class="day-budget-bar" id="day1-budget-bar">
                     <div class="day-budget-item">
                         <span class="label">Day1 예상비용</span>
@@ -102,6 +108,12 @@
                         <div class="time-card">
                             <div class="time-desc">빌리카 셔틀 탑승 → 차량 인수 (싼타페)</div>
                             <div class="time-desc">🚙 이동: 약 50분 (공항→숙소)</div>
+                            <div style="margin-top:8px;">
+                                <a href="https://map.naver.com/p/search/씨사이드아덴" target="_blank"
+                                    style="display:inline-flex; align-items:center; color:#1976D2; font-size:0.85rem; text-decoration:none;">
+                                    <i class="fas fa-map-marker-alt" style="margin-right:4px;"></i> 숙소(씨사이드아덴) 지도보기
+                                </a>
+                            </div>
                             <div class="time-desc" id="disp-rent-total"
                                 style="font-size:0.8rem; color:#E91E63; margin-top:4px;"></div>
                         </div>
@@ -136,13 +148,25 @@
                     <div class="time-item">
                         <div class="time-dot"></div>
                         <div class="time-header">
+                            <span class="time-time">22:50</span>
+                            <span class="time-title">숙소 복귀 (도보)</span>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-desc">🚶 도보: 약 15분 (식당→숙소)</div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#666;">소화시킬 겸 산책 🌙</div>
+                        </div>
+                    </div>
+
+                    <div class="time-item">
+                        <div class="time-dot"></div>
+                        <div class="time-header">
                             <span class="time-time">23:00</span>
-                            <span class="time-title">보드게임</span>
+                            <span class="time-title">보드게임 (숙소)</span>
                             <span class="cost-tag" data-cost="whiskey"></span>
                         </div>
                         <div class="time-card">
-
-                            <div class="time-desc">🎲 추천 게임: 달무티, 코드네임, 마피아 등</div>
+                            <div class="time-desc">🎲 숙소에서 보드게임 진행</div>
+                            <div class="time-desc">추천 게임: 달무티, 코드네임, 마피아 등</div>
                             <div class="time-desc" id="disp-whiskey-total"
                                 style="color:#673AB7; font-weight:600; margin-top:6px;"></div>
                             <div class="time-desc" style="font-size:0.8rem; color:#888;">예산에서 1인당 2만원 차감</div>
@@ -152,7 +176,7 @@
                     </div>
                 </div>
 
-                <!-- Day 1 이동경로 지도 (이미지 약도) -->
+
 
             </div>
         </div>
@@ -161,7 +185,10 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title"><i class="fas fa-flag-checkered"></i> 9.81파크 & 렛츠런파크</div>
+                    <button class="btn-edit-map" onclick="toggleMapEdit('day2', this)">✏️ 핀 편집</button>
                 </div>
+                <!-- Day 2 Map -->
+                <div id="map-day2" class="day-map"></div>
                 <div class="day-budget-bar" id="day2-budget-bar">
                     <div class="day-budget-item">
                         <span class="label">Day2 예상비용</span>
@@ -201,7 +228,8 @@
                                 <a href="https://map.naver.com/p/search/대포주상절리" target="_blank"
                                     style="color:#666; text-decoration:underline;">주상절리</a>
                             </div>
-                            <div class="time-desc" style="font-size:0.8rem; color:#666; margin-top:4px;">🚙 이동: 약 5분 /
+                            <div class="time-desc" style="font-size:0.8rem; color:#666; margin-top:4px;">🚙
+                                이동: 약 5분 /
                                 🚶 도보: 약 20분 (중문 시내)</div>
                             <div class="options-grid">
                                 <div class="option-item">
@@ -228,7 +256,8 @@
                         </div>
                         <div class="time-card">
                             <div class="time-desc">📍 중문관광단지 맛집 후보군 (택1)</div>
-                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 5분 / 🚶 도보: 약 15~20분
+                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 5분 / 🚶 도보:
+                                약 15~20분
                             </div>
                             <div class="options-grid">
                                 <div class="option-item">
@@ -277,8 +306,10 @@
                         <div class="time-card">
                             <div class="time-desc">🏎️ 레이싱 2회 + 서바이벌 1회</div>
                             <div class="time-desc">☕ 카페 9.81파크 내 Space Zero 이용</div>
-                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 30분 (중문→애월)</div>
-                            <div class="time-desc" style="font-size:0.85rem; color:#666; margin-top:4px;">📍 제주시 애월읍 천덕로
+                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 30분
+                                (중문→애월)</div>
+                            <div class="time-desc" style="font-size:0.85rem; color:#666; margin-top:4px;">📍
+                                제주시 애월읍 천덕로
                                 880-24</div>
                             <div style="margin-top:10px;">
                                 <a href="https://map.naver.com/p/search/9.81파크" target="_blank" class="badge blue"
@@ -295,7 +326,8 @@
                         </div>
                         <div class="time-card">
                             <div class="time-desc">🐎 경마 체험</div>
-                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 15분 (9.81→렛츠런)</div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 15분
+                                (9.81→렛츠런)</div>
                         </div>
                     </div>
 
@@ -307,7 +339,8 @@
                         </div>
                         <div class="time-card">
                             <div class="time-desc">렛츠런파크 → 서귀포</div>
-                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 50분 (애월→서귀포)</div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 50분
+                                (애월→서귀포)</div>
                         </div>
                     </div>
 
@@ -321,8 +354,10 @@
                         </div>
                         <div class="time-card">
                             <div class="time-desc">🛒 올레시장에서 장보기 후 숙소 저녁식사</div>
-                            <div class="time-desc" style="font-size:0.9rem; color:#666;">말육회, 방어회, 흑돼지 등 먹거리 포장</div>
-                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 복귀: 약 30분 (시장→숙소)</div>
+                            <div class="time-desc" style="font-size:0.9rem; color:#666;">말육회, 방어회, 흑돼지 등 먹거리
+                                포장</div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 복귀: 약 30분
+                                (시장→숙소)</div>
                             <div class="options-grid">
                                 <div class="option-item">
                                     <div class="opt-info">
@@ -340,7 +375,7 @@
                     </div>
                 </div>
 
-                <!-- Day 2 이동경로 지도 (이미지 약도) -->
+
 
             </div>
         </div>
@@ -349,7 +384,10 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title"><i class="fas fa-plane-arrival"></i> 체크아웃 및 귀가</div>
+                    <button class="btn-edit-map" onclick="toggleMapEdit('day3', this)">✏️ 핀 편집</button>
                 </div>
+                <!-- Day 3 Map -->
+                <div id="map-day3" class="day-map"></div>
                 <div class="day-budget-bar" id="day3-budget-bar">
                     <div class="day-budget-item">
                         <span class="label">Day3 예상비용</span>
@@ -377,7 +415,8 @@
                         <div class="time-card">
                             <div class="time-desc">🚗 빌리카 반납 (오전 비행기)</div>
                             <div class="time-desc">셔틀 탑승 → 공항 이동</div>
-                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 50분 (숙소→공항)</div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 50분
+                                (숙소→공항)</div>
                         </div>
                     </div>
 
@@ -401,8 +440,10 @@
                         </div>
                         <div class="time-card">
                             <div class="time-desc">🚗 빌리카 반납 (오후 비행기)</div>
-                            <div class="time-desc" style="font-size:0.8rem; color:#888;">운전자: 신우성 전임, 김지섭 전임</div>
-                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 50분 (숙소→공항)</div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#888;">운전자: 신우성 전임, 김지섭 전임
+                            </div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 50분
+                                (숙소→공항)</div>
                         </div>
                     </div>
 
@@ -413,7 +454,8 @@
                             <span class="time-title">개별 귀가</span>
                         </div>
                         <div class="time-card" style="border-left: 4px solid var(--secondary); background: #F0F9FF;">
-                            <div class="time-desc" style="font-weight:600; color:#005580;">🎉 공식 일정 종료! 수고하셨습니다!</div>
+                            <div class="time-desc" style="font-weight:600; color:#005580;">🎉 공식 일정 종료!
+                                수고하셨습니다!</div>
                             <div class="time-desc">각자 항공편에 맞춰 개별 귀가</div>
                         </div>
                     </div>
@@ -466,7 +508,8 @@
                 </div>
                 <div style="margin-top:12px; text-align:center;">
                     <a href="https://map.naver.com/p/search/씨사이드아덴" target="_blank" class="btn-link"
-                        style="color:var(--primary); text-decoration:none; font-weight:600;">📍 네이버 지도 보기</a>
+                        style="color:var(--primary); text-decoration:none; font-weight:600;">📍 네이버 지도
+                        보기</a>
                 </div>
             </div>
 
@@ -565,7 +608,8 @@
                         </div>
                         <div class="budget-result-row" style="margin-top:8px;">
                             <span>예산 <span id="calc-criteria">35만원</span> 기준</span>
-                            <span id="remaining-budget" style="font-weight:600; color:#4CAF50;">+56,000원 여유</span>
+                            <span id="remaining-budget" style="font-weight:600; color:#4CAF50;">+56,000원
+                                여유</span>
                         </div>
                         <button class="save-btn" id="save-budget-btn" onclick="saveBudgetToDB()">
                             💾 DB에 저장하기
@@ -624,6 +668,7 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="map.js"></script>
 </body>
 
 </html>

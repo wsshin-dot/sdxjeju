@@ -19,7 +19,9 @@ body {
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
     margin: 0;
     padding: 0;
-    background: var(--bg);
+    /* Background Image Update - Absolute Path Fallback */
+    background: url('file:///C:/Users/wooseong/.gemini/antigravity/brain/a11162fb-268d-4089-8b02-dc6213f5611d/uploaded_image_1768779731898.png') no-repeat center center fixed;
+    background-size: cover;
     color: var(--text-main);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
@@ -28,7 +30,10 @@ body {
 .app-container {
     max-width: 480px;
     margin: 0 auto;
-    background: var(--surface);
+    background: rgba(255, 255, 255, 0.85);
+    /* Increased transparency */
+    backdrop-filter: blur(10px);
+    /* Glass effect */
     min-height: 100vh;
     position: relative;
     box-shadow: var(--shadow-lg);
@@ -45,7 +50,7 @@ header {
     top: 0;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    z-index: 100;
+    z-index: 1000;
     padding: 12px 10px;
     display: flex;
     justify-content: space-between;
@@ -942,4 +947,50 @@ h1 {
     position: relative;
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
     margin-bottom: 20px;
+}
+
+/* Map Containers */
+.day-map {
+    width: 100%;
+    height: 300px;
+    border-radius: 12px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    background: #e0e0e0;
+    z-index: 1;
+}
+
+/* Naver Map z-index control */
+.day-map>div {
+    z-index: 1 !important;
+}
+
+/* Map Edit Button */
+.btn-edit-map {
+    border: 1px solid var(--border);
+    background: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: var(--text-sub);
+    transition: all 0.2s;
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 500;
+}
+
+.btn-edit-map:hover {
+    background: #f5f5f5;
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-edit-map.editing {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.map-editing-border {
+    border: 3px solid #FF6B00 !important;
 }
