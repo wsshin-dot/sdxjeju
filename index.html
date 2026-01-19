@@ -21,6 +21,26 @@
 </head>
 
 <body>
+    <!-- Intro Overlay -->
+    <div id="intro-overlay">
+        <div class="intro-title">SDx 플랫폼</div>
+        <div class="intro-subtitle">신나는 제주 팀데이 🍊</div>
+    </div>
+
+    <!-- Intro Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const overlay = document.getElementById('intro-overlay');
+                if (overlay) {
+                    overlay.classList.add('fade-out');
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                    }, 1200);
+                }
+            }, 1500); // 1.5초 후 페이드아웃 시작
+        });
+    </script>
 
     <div class="app-container">
         <header>
