@@ -1,0 +1,37 @@
+/* Custom SVG Map Styles */
+.custom-map-container {
+    width: 100%;
+    height: auto;
+    background: linear-gradient(to bottom, #E0F7FA, #B2EBF2);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0, 188, 212, 0.2);
+    position: relative;
+    /* Maintain aspect ratio / responsive */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.jeju-map-svg {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    display: block;
+}
+
+/* Island Hover Effect */
+.island-shape {
+    transition: fill 0.3s;
+}
+.island-shape:hover {
+    fill: url(#landGradient);
+    filter: brightness(1.05);
+}
+
+/* Animations */
+@keyframes dash {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
