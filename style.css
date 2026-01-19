@@ -19,8 +19,8 @@ body {
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
     margin: 0;
     padding: 0;
-    /* Background Image Update - Absolute Path Fallback */
-    background: url('file:///C:/Users/wooseong/.gemini/antigravity/brain/a11162fb-268d-4089-8b02-dc6213f5611d/uploaded_image_1768779731898.png') no-repeat center center fixed;
+    /* Background Image - Jeju Tangerine Theme */
+    background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('./jeju_bg.png') no-repeat center center fixed;
     background-size: cover;
     color: var(--text-main);
     line-height: 1.6;
