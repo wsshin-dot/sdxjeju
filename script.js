@@ -1,32 +1,32 @@
-
+﻿
 // ========================================
-// 💰 예산 중앙 관리 시스템
+// ?뮥 ?덉궛 以묒븰 愿由??쒖뒪??
 // ========================================
 const BUDGET_CONFIG = {
-    totalBudget: 3500000, // 총 예산
-    personCount: 10,      // 인원 수
-    totalBudgetPerPerson: 350000, // 1인당 예산 (자동계산)
+    totalBudget: 3500000, // 珥??덉궛
+    personCount: 10,      // ?몄썝 ??
+    totalBudgetPerPerson: 350000, // 1?몃떦 ?덉궛 (?먮룞怨꾩궛)
     costs: {
-        flight: 100000,      // 항공권
-        rent: 40000,         // 렌트+기름
-        day1Dinner: 50000,   // Day1 저녁 (신우성 흑돼지)
-        whiskey: 20000,      // 양주 (20만원/10명)
-        day2Lunch: 24000,    // Day2 점심
-        park981: 37000,      // Day2 9.81파크
-        day2Cafe: 8000,      // Day2 카페
-        day2Dinner: 40000    // Day2 저녁 (올레시장)
+        flight: 100000,      // ??났沅?
+        rent: 40000,         // ?뚰듃+湲곕쫫
+        day1Dinner: 50000,   // Day1 ???(?좎슦???묐뤌吏)
+        whiskey: 20000,      // ?묒＜ (20留뚯썝/10紐?
+        day2Lunch: 24000,    // Day2 ?먯떖
+        park981: 37000,      // Day2 9.81?뚰겕
+        day2Cafe: 8000,      // Day2 移댄럹
+        day2Dinner: 40000    // Day2 ???(?щ젅?쒖옣)
     }
 };
 
-// Day별 비용 계산
+// Day蹂?鍮꾩슜 怨꾩궛
 function calcDayBudgets() {
     const c = BUDGET_CONFIG.costs;
     const customTotal = c.customTotal || 0;
     const day1 = c.flight + c.rent + c.day1Dinner + c.whiskey;
     const day2 = c.day2Lunch + c.park981 + c.day2Cafe + c.day2Dinner;
-    const day3 = customTotal; // 커스텀 항목은 Day3에 표시
+    const day3 = customTotal; // 而ㅼ뒪? ??ぉ? Day3???쒖떆
     const total = day1 + day2 + day3;
-    // 총 예산에서 모든 비용 차감 (단순 계산)
+    // 珥??덉궛?먯꽌 紐⑤뱺 鍮꾩슜 李④컧 (?⑥닚 怨꾩궛)
     const remaining = BUDGET_CONFIG.totalBudgetPerPerson - total;
 
     return {
@@ -38,47 +38,47 @@ function calcDayBudgets() {
     };
 }
 
-// 금액 포맷 (만원 단위)
+// 湲덉븸 ?щ㎎ (留뚯썝 ?⑥쐞)
 function formatWon(amount) {
     if (amount >= 10000) {
         const man = amount / 10000;
-        return man % 1 === 0 ? `${man} 만원` : `${man.toFixed(1)} 만원`;
+        return man % 1 === 0 ? `${man} 留뚯썝` : `${man.toFixed(1)} 留뚯썝`;
     }
-    return `${amount.toLocaleString()} 원`;
+    return `${amount.toLocaleString()} ??;
 }
 
-// 모든 예산 표시 업데이트
+// 紐⑤뱺 ?덉궛 ?쒖떆 ?낅뜲?댄듃
 function updateAllBudgetDisplays() {
     const budgets = calcDayBudgets();
 
-    // [NEW] 전역 예산 정보 텍스트 업데이트
+    // [NEW] ?꾩뿭 ?덉궛 ?뺣낫 ?띿뒪???낅뜲?댄듃
     const totalMan = (BUDGET_CONFIG.totalBudget / 10000).toFixed(0);
     const perPersonMan = (BUDGET_CONFIG.totalBudgetPerPerson / 10000).toFixed(0);
     const count = BUDGET_CONFIG.personCount;
 
-    // Header 인원
+    // Header ?몄썝
     const headerPerson = document.getElementById('header-person-count');
     if (headerPerson) headerPerson.textContent = count;
 
     // Day1 Info Box
     const day1Info = document.getElementById('day1-info-box');
     if (day1Info) {
-        day1Info.innerHTML = `💡 총 예산 ${totalMan}만원 (1인 ${perPersonMan}만원) | 항공 + 렌트/기름 포함<br>🏠 숙소비: 1인 2만원 (별도, 예산 미포함) - 이재환 선임에게 2만원 입금 🙏`;
+        day1Info.innerHTML = `?뮕 珥??덉궛 ${totalMan}留뚯썝 (1??${perPersonMan}留뚯썝) | ??났 + ?뚰듃/湲곕쫫 ?ы븿<br>?룧 ?숈냼鍮? 1??2留뚯썝 (蹂꾨룄, ?덉궛 誘명룷?? - ?댁옱???좎엫?먭쾶 2留뚯썝 ?낃툑 ?솋`;
     }
 
     // Info Tab Per Person
     const infoPerPerson = document.getElementById('info-per-person-budget');
-    if (infoPerPerson) infoPerPerson.textContent = BUDGET_CONFIG.totalBudgetPerPerson.toLocaleString() + '원';
+    if (infoPerPerson) infoPerPerson.textContent = BUDGET_CONFIG.totalBudgetPerPerson.toLocaleString() + '??;
 
     // Info Tab Footer
     const footerInfo = document.getElementById('info-footer-box');
     if (footerInfo) {
-        footerInfo.textContent = `숙소: 1인 2만원 (이재환 선임에게 2만원 입금) | 총 예산: ${totalMan}만원 (${count}명)`;
+        footerInfo.textContent = `?숈냼: 1??2留뚯썝 (?댁옱???좎엫?먭쾶 2留뚯썝 ?낃툑) | 珥??덉궛: ${totalMan}留뚯썝 (${count}紐?`;
     }
 
-    // 예산 기준 텍스트
+    // ?덉궛 湲곗? ?띿뒪??
     const calcCriteria = document.getElementById('calc-criteria');
-    if (calcCriteria) calcCriteria.textContent = perPersonMan + '만원';
+    if (calcCriteria) calcCriteria.textContent = perPersonMan + '留뚯썝';
 
     // [NEW] Static Budget Texts Update (IDs & Data attributes)
     const setText = (id, text) => {
@@ -88,12 +88,12 @@ function updateAllBudgetDisplays() {
     const c = BUDGET_CONFIG.costs;
 
     // IDs
-    setText('disp-flight', `항공 1인 ${(c.flight / 10000).toFixed(0)}만원`);
-    setText('disp-rent', `렌트+기름 1인 ${(c.rent / 10000).toFixed(0)}만원`);
-    setText('disp-rent-total', `💰 총 ${(c.rent * count / 10000).toFixed(0)}만원 (${count}명 기준)`);
-    setText('disp-day1-dinner-opt', `인당 ${(c.day1Dinner / 10000).toFixed(0)}만원`);
-    setText('disp-whiskey-total', `🍷 양주 구매 예정 (총 ${(c.whiskey * count / 10000).toFixed(0)}만원)`);
-    setText('disp-day2-dinner-opt', `인당 ${(c.day2Dinner / 10000).toFixed(0)}만원`);
+    setText('disp-flight', `??났 1??${(c.flight / 10000).toFixed(0)}留뚯썝`);
+    setText('disp-rent', `?뚰듃+湲곕쫫 1??${(c.rent / 10000).toFixed(0)}留뚯썝`);
+    setText('disp-rent-total', `?뮥 珥?${(c.rent * count / 10000).toFixed(0)}留뚯썝 (${count}紐?湲곗?)`);
+    setText('disp-day1-dinner-opt', `?몃떦 ${(c.day1Dinner / 10000).toFixed(0)}留뚯썝`);
+    setText('disp-whiskey-total', `?뜼 ?묒＜ 援щℓ ?덉젙 (珥?${(c.whiskey * count / 10000).toFixed(0)}留뚯썝)`);
+    setText('disp-day2-dinner-opt', `?몃떦 ${(c.day2Dinner / 10000).toFixed(0)}留뚯썝`);
 
     // Data-cost attributes
     const map = {
@@ -113,7 +113,7 @@ function updateAllBudgetDisplays() {
         }
     });
 
-    // Day 1 예산바
+    // Day 1 ?덉궛諛?
     const day1Cost = document.getElementById('day1-cost');
     const day1Total = document.getElementById('day1-total');
     const day1Remain = document.getElementById('day1-remain');
@@ -121,7 +121,7 @@ function updateAllBudgetDisplays() {
     if (day1Total) day1Total.textContent = '~' + formatWon(budgets.day1.cumulative);
     if (day1Remain) day1Remain.textContent = '~' + formatWon(budgets.day1.remaining);
 
-    // Day 2 예산바
+    // Day 2 ?덉궛諛?
     const day2Cost = document.getElementById('day2-cost');
     const day2Total = document.getElementById('day2-total');
     const day2Remain = document.getElementById('day2-remain');
@@ -129,7 +129,7 @@ function updateAllBudgetDisplays() {
     if (day2Total) day2Total.textContent = '~' + formatWon(budgets.day2.cumulative);
     if (day2Remain) day2Remain.textContent = '~' + formatWon(budgets.day2.remaining);
 
-    // Day 3 예산바
+    // Day 3 ?덉궛諛?
     const day3Cost = document.getElementById('day3-cost');
     const day3Total = document.getElementById('day3-total');
     const day3Remain = document.getElementById('day3-remain');
@@ -137,21 +137,21 @@ function updateAllBudgetDisplays() {
     if (day3Total) day3Total.textContent = '~' + formatWon(budgets.day3.cumulative);
     if (day3Remain) day3Remain.textContent = '~' + formatWon(budgets.day3.remaining);
 
-    // Info 페이지 예산 계산기
+    // Info ?섏씠吏 ?덉궛 怨꾩궛湲?
     const totalCost = document.getElementById('total-cost');
     const remainingBudget = document.getElementById('remaining-budget');
-    if (totalCost) totalCost.textContent = budgets.total.toLocaleString() + '원';
+    if (totalCost) totalCost.textContent = budgets.total.toLocaleString() + '??;
     if (remainingBudget) {
         if (budgets.remaining >= 0) {
-            remainingBudget.textContent = '+' + budgets.remaining.toLocaleString() + '원 여유';
+            remainingBudget.textContent = '+' + budgets.remaining.toLocaleString() + '???ъ쑀';
             remainingBudget.style.color = '#4CAF50';
         } else {
-            remainingBudget.textContent = budgets.remaining.toLocaleString() + '원 초과';
+            remainingBudget.textContent = budgets.remaining.toLocaleString() + '??珥덇낵';
             remainingBudget.style.color = '#E91E63';
         }
     }
 
-    // 예산 계산기 input 기본값 동기화
+    // ?덉궛 怨꾩궛湲?input 湲곕낯媛??숆린??
     const costInputs = {
         'config-total-budget': BUDGET_CONFIG.totalBudget,
         'config-person-count': BUDGET_CONFIG.personCount,
@@ -170,12 +170,12 @@ function updateAllBudgetDisplays() {
 }
 
 // ========================================
-// 🔗 Supabase DB API 연동
+// ?뵕 Supabase DB API ?곕룞
 // ========================================
 const SUPABASE_URL = 'https://oiyzxdrssxobsqjtlyjf.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_n8CptUQG5FADwx5uHMDIdw_C9G6yUA-';
 
-// Supabase REST API 호출 헬퍼
+// Supabase REST API ?몄텧 ?ы띁
 async function supabaseRequest(table, method = 'GET', body = null, select = '*') {
     const headers = {
         'apikey': SUPABASE_KEY,
@@ -183,7 +183,7 @@ async function supabaseRequest(table, method = 'GET', body = null, select = '*')
         'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal'
     };
 
-    // JWT 키(ey...)인 경우에만 Bearer 인증 헤더 추가 (sb_publishable 키 대응)
+    // JWT ??ey...)??寃쎌슦?먮쭔 Bearer ?몄쬆 ?ㅻ뜑 異붽? (sb_publishable ?????
     if (SUPABASE_KEY.startsWith('ey')) {
         headers['Authorization'] = `Bearer ${SUPABASE_KEY}`;
     }
@@ -193,7 +193,7 @@ async function supabaseRequest(table, method = 'GET', body = null, select = '*')
         url += `?select=${select}&order=created_at.desc&limit=1`;
     }
     if (method === 'PATCH') {
-        url += '?id=eq.1'; // 항상 id=1 레코드 업데이트
+        url += '?id=eq.1'; // ??긽 id=1 ?덉퐫???낅뜲?댄듃
     }
 
     const options = { method, headers };
@@ -206,37 +206,37 @@ async function supabaseRequest(table, method = 'GET', body = null, select = '*')
     return method === 'GET' ? response.json() : response;
 }
 
-// DB에서 예산 데이터 로드
+// DB?먯꽌 ?덉궛 ?곗씠??濡쒕뱶
 async function loadBudgetFromDB() {
     const statusEl = document.getElementById('db-status');
     try {
-        statusEl.innerHTML = '<span class="db-status loading">📡 DB 연결 중...</span>';
+        statusEl.innerHTML = '<span class="db-status loading">?뱻 DB ?곌껐 以?..</span>';
 
         const data = await supabaseRequest('budget');
 
         if (data && data.length > 0) {
             const budgetData = data[0];
-            // BUDGET_CONFIG 업데이트
+            // BUDGET_CONFIG ?낅뜲?댄듃
             if (budgetData.costs) {
-                // 메타 데이터(총예산/인원) 복원
+                // 硫뷀? ?곗씠??珥앹삁???몄썝) 蹂듭썝
                 if (budgetData.costs._meta) {
                     BUDGET_CONFIG.totalBudget = budgetData.costs._meta.totalBudget;
                     BUDGET_CONFIG.personCount = budgetData.costs._meta.personCount;
-                    // 1인당 예산 재계산
+                    // 1?몃떦 ?덉궛 ?ш퀎??
                     BUDGET_CONFIG.totalBudgetPerPerson = Math.floor(BUDGET_CONFIG.totalBudget / BUDGET_CONFIG.personCount);
                 } else if (budgetData.total_budget_per_person) {
-                    // 메타 없이 1인당 예산만 있는 경우 (구버전 호환)
+                    // 硫뷀? ?놁씠 1?몃떦 ?덉궛留??덈뒗 寃쎌슦 (援щ쾭???명솚)
                     BUDGET_CONFIG.totalBudgetPerPerson = budgetData.total_budget_per_person;
-                    // totalBudget과 personCount는 기본값으로 유지하거나, totalBudgetPerPerson * personCount로 추정
-                    // 여기서는 기존 totalBudgetPerPerson만 복원하고, totalBudget/personCount는 기본값 유지
-                    // 또는, totalBudgetPerPerson을 기반으로 totalBudget을 역산 (기존 personCount 사용)
+                    // totalBudget怨?personCount??湲곕낯媛믪쑝濡??좎??섍굅?? totalBudgetPerPerson * personCount濡?異붿젙
+                    // ?ш린?쒕뒗 湲곗〈 totalBudgetPerPerson留?蹂듭썝?섍퀬, totalBudget/personCount??湲곕낯媛??좎?
+                    // ?먮뒗, totalBudgetPerPerson??湲곕컲?쇰줈 totalBudget????궛 (湲곗〈 personCount ?ъ슜)
                     BUDGET_CONFIG.totalBudget = BUDGET_CONFIG.totalBudgetPerPerson * BUDGET_CONFIG.personCount;
                 }
 
-                // 비용 데이터 복사
+                // 鍮꾩슜 ?곗씠??蹂듭궗
                 Object.assign(BUDGET_CONFIG.costs, budgetData.costs);
 
-                // [NEW] 맵 데이터 로드
+                // [NEW] 留??곗씠??濡쒕뱶
                 if (budgetData.costs.mapData) {
                     if (budgetData.costs.mapData.locations) {
                         Object.assign(LOCATIONS, budgetData.costs.mapData.locations);
@@ -244,31 +244,31 @@ async function loadBudgetFromDB() {
                     if (budgetData.costs.mapData.routes) {
                         Object.assign(ROUTES, budgetData.costs.mapData.routes);
                     }
-                    // 지도 초기화 (데이터 로드 후)
+                    // 吏??珥덇린??(?곗씠??濡쒕뱶 ??
                     if (typeof initMaps === 'function') initMaps();
                 }
             }
 
-            // 커스텀 항목들 UI에 렌더링
+            // 而ㅼ뒪? ??ぉ??UI???뚮뜑留?
             renderCustomItemsFromDB();
 
             updateAllBudgetDisplays();
-            statusEl.innerHTML = '<span class="db-status success">✅ DB에서 불러옴</span>';
+            statusEl.innerHTML = '<span class="db-status success">??DB?먯꽌 遺덈윭??/span>';
 
             setTimeout(() => { statusEl.innerHTML = ''; }, 3000);
         } else {
-            statusEl.innerHTML = '<span class="db-status error">⚠️ 기본값 사용 중</span>';
+            statusEl.innerHTML = '<span class="db-status error">?좑툘 湲곕낯媛??ъ슜 以?/span>';
         }
     } catch (error) {
         console.error('DB Load Error:', error);
-        statusEl.innerHTML = '<span class="db-status error">❌ DB 연결 실패 (기본값 사용)</span>';
+        statusEl.innerHTML = '<span class="db-status error">??DB ?곌껐 ?ㅽ뙣 (湲곕낯媛??ъ슜)</span>';
     }
 }
 
-// DB에서 불러온 커스텀 항목들을 UI에 렌더링
+// DB?먯꽌 遺덈윭??而ㅼ뒪? ??ぉ?ㅼ쓣 UI???뚮뜑留?
 function renderCustomItemsFromDB() {
     const container = document.getElementById('custom-budget-items');
-    container.innerHTML = ''; // 기존 항목 삭제
+    container.innerHTML = ''; // 湲곗〈 ??ぉ ??젣
     customItemCount = 0;
 
     const customItems = BUDGET_CONFIG.costs.customItems || [];
@@ -277,15 +277,15 @@ function renderCustomItemsFromDB() {
     });
 }
 
-// DB에 예산 데이터 저장
+// DB???덉궛 ?곗씠?????
 async function saveBudgetToDB() {
     const statusEl = document.getElementById('db-status');
     const saveBtn = document.getElementById('save-budget-btn');
 
     try {
         saveBtn.disabled = true;
-        saveBtn.textContent = '저장 중...';
-        statusEl.innerHTML = '<span class="db-status loading">📤 저장 중...</span>';
+        saveBtn.textContent = '???以?..';
+        statusEl.innerHTML = '<span class="db-status loading">?뱾 ???以?..</span>';
 
         const budgetData = {
             total_budget_per_person: BUDGET_CONFIG.totalBudgetPerPerson,
@@ -299,32 +299,32 @@ async function saveBudgetToDB() {
             updated_at: new Date().toISOString()
         };
 
-        // 먼저 PATCH 시도 (기존 레코드 업데이트)
+        // 癒쇱? PATCH ?쒕룄 (湲곗〈 ?덉퐫???낅뜲?댄듃)
         try {
             await supabaseRequest('budget', 'PATCH', budgetData);
         } catch (e) {
-            // PATCH 실패시 POST로 새 레코드 생성
+            // PATCH ?ㅽ뙣??POST濡????덉퐫???앹꽦
             await supabaseRequest('budget', 'POST', { id: 1, ...budgetData });
         }
 
-        statusEl.innerHTML = '<span class="db-status success">✅ 저장 완료!</span>';
+        statusEl.innerHTML = '<span class="db-status success">??????꾨즺!</span>';
         setTimeout(() => { statusEl.innerHTML = ''; }, 3000);
     } catch (error) {
         console.error('DB Save Error:', error);
-        statusEl.innerHTML = `< span class="db-status error" >❌ ${error.message}</span > `;
+        statusEl.innerHTML = `< span class="db-status error" >??${error.message}</span > `;
     } finally {
         saveBtn.disabled = false;
-        saveBtn.textContent = '💾 DB에 저장하기';
+        saveBtn.textContent = '?뮶 DB????ν븯湲?;
     }
 }
 
 
-// 페이지 로드시 예산 업데이트 및 지도 초기화
+// ?섏씠吏 濡쒕뱶???덉궛 ?낅뜲?댄듃 諛?吏??珥덇린??
 document.addEventListener('DOMContentLoaded', async function () {
-    // 먼저 DB에서 예산 데이터 로드 시도
+    // 癒쇱? DB?먯꽌 ?덉궛 ?곗씠??濡쒕뱶 ?쒕룄
     await loadBudgetFromDB();
 
-    // 그 후 모든 표시 업데이트
+    // 洹???紐⑤뱺 ?쒖떆 ?낅뜲?댄듃
     updateAllBudgetDisplays();
 });
 
@@ -337,7 +337,7 @@ function switchTab(tabId, btn) {
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // 맵 리사이즈 (탭 전환 시 깨짐 방지)
+    // 留?由ъ궗?댁쫰 (???꾪솚 ??源⑥쭚 諛⑹?)
     if (typeof refreshMaps === 'function') {
         setTimeout(refreshMaps, 100);
     }
@@ -358,7 +358,7 @@ let isRunning = false;
 let rankings = [];
 const colors = ['#FF6B00', '#2D9CDB', '#FFD700', '#4CAF50', '#9C27B0', '#E91E63', '#795548', '#607D8B'];
 
-// 텍스트 렌더링
+// ?띿뒪???뚮뜑留?
 const renderText = function () {
     if (!render) return;
     const context = render.context;
@@ -393,7 +393,7 @@ function startMarbleRun() {
     const names = nameInput.split(',').map(n => n.trim()).filter(n => n.length > 0);
 
     if (names.length < 2) {
-        alert('최소 2명 이상의 이름을 입력해주세요!');
+        alert('理쒖냼 2紐??댁긽???대쫫???낅젰?댁＜?몄슂!');
         return;
     }
 
@@ -408,12 +408,12 @@ function startMarbleRun() {
     isRunning = true;
     btn.textContent = 'RESET';
 
-    // 1. 엔진
+    // 1. ?붿쭊
     engine = Engine.create();
-    engine.world.gravity.y = 0.4; // 중력 약간 증가 (맵이 길어져서)
+    engine.world.gravity.y = 0.4; // 以묐젰 ?쎄컙 利앷? (留듭씠 湲몄뼱?몄꽌)
 
-    // 2. 렌더러
-    // CSS에서 height를 1200px로 늘렸으므로, JS에서 해당 크기를 읽어와야 함
+    // 2. ?뚮뜑??
+    // CSS?먯꽌 height瑜?1200px濡??섎졇?쇰?濡? JS?먯꽌 ?대떦 ?ш린瑜??쎌뼱?????
     const width = container.offsetWidth;
     const height = container.offsetHeight; // Should be ~1200px
 
@@ -428,19 +428,19 @@ function startMarbleRun() {
         }
     });
 
-    // 3. 맵 구성 (4단 코스: 핀 -> 튕기는 벽 -> 지그재그 -> 골인)
+    // 3. 留?援ъ꽦 (4??肄붿뒪: ? -> ?뺢린??踰?-> 吏洹몄옱洹?-> 怨⑥씤)
     const wallOpts = { isStatic: true, render: { fillStyle: '#444' } };
     const pegOpts = { isStatic: true, render: { fillStyle: '#888' }, restitution: 0.5 };
-    const bounceOpts = { isStatic: true, render: { fillStyle: '#E91E63' }, restitution: 1.6 }; // 강력하게 튀는 벽
+    const bounceOpts = { isStatic: true, render: { fillStyle: '#E91E63' }, restitution: 1.6 }; // 媛뺣젰?섍쾶 ???踰?
     const glassOpts = { isStatic: true, render: { fillStyle: '#2D9CDB', opacity: 0.6 }, angle: Math.PI * 0.15 };
 
-    // 좌우 벽 (전체 높이)
+    // 醫뚯슦 踰?(?꾩껜 ?믪씠)
     Composite.add(engine.world, [
-        Bodies.rectangle(0, height / 2, 20, height, wallOpts), // 좌벽
-        Bodies.rectangle(width, height / 2, 20, height, wallOpts), // 우벽
+        Bodies.rectangle(0, height / 2, 20, height, wallOpts), // 醫뚮꼍
+        Bodies.rectangle(width, height / 2, 20, height, wallOpts), // ?곕꼍
     ]);
 
-    // [1구간] 상단 Plinko (핀) - Start ~ 300px
+    // [1援ш컙] ?곷떒 Plinko (?) - Start ~ 300px
     const startY = 100;
     for (let row = 0; row < 6; row++) {
         const cols = row % 2 === 0 ? 7 : 6;
@@ -450,81 +450,81 @@ function startMarbleRun() {
         }
     }
 
-    // [2구간] 중단 Bouncing Walls (튕기는 벽) - 400px ~ 700px
-    // 좌우에서 튀어나와서 공을 위로/옆으로 튕겨냄 (Pinball Bumper 느낌)
+    // [2援ш컙] 以묐떒 Bouncing Walls (?뺢린??踰? - 400px ~ 700px
+    // 醫뚯슦?먯꽌 ??대굹???怨듭쓣 ?꾨줈/?놁쑝濡??뺢꺼??(Pinball Bumper ?먮굦)
     const bumperY = 500;
     Composite.add(engine.world, [
-        // 왼쪽 범퍼 (삼각형 모양 비슷하게)
+        // ?쇱そ 踰뷀띁 (?쇨컖??紐⑥뼇 鍮꾩듂?섍쾶)
         Bodies.polygon(width * 0.2, bumperY, 3, 40, { ...bounceOpts, angle: Math.PI / 2 }),
         Bodies.polygon(width * 0.1, bumperY + 100, 3, 50, { ...bounceOpts, angle: Math.PI / 4 }),
 
-        // 오른쪽 범퍼
+        // ?ㅻⅨ履?踰뷀띁
         Bodies.polygon(width * 0.8, bumperY + 50, 3, 40, { ...bounceOpts, angle: -Math.PI / 2.5 }),
         Bodies.polygon(width * 0.4, bumperY + 150, 3, 50, { ...bounceOpts, angle: -Math.PI / 4 }),
 
-        // 중앙 회전 장애물
+        // 以묒븰 ?뚯쟾 ?μ븷臾?
         Bodies.circle(width / 2, bumperY + 80, 25, { ...bounceOpts, label: 'spinner' })
     ]);
 
 
-    // [3구간] 하단 ZigZags (지그재그 슬로프) - 800px ~ 1100px
+    // [3援ш컙] ?섎떒 ZigZags (吏洹몄옱洹??щ줈?? - 800px ~ 1100px
     const slopeY = 850;
     const slopeW = width * 0.6;
     const slopeH = 10;
 
     Composite.add(engine.world, [
-        // 왼쪽에서 오른쪽으로 내려가는 판
+        // ?쇱そ?먯꽌 ?ㅻⅨ履쎌쑝濡??대젮媛????
         Bodies.rectangle(width * 0.3, slopeY, slopeW, slopeH, { isStatic: true, angle: Math.PI * 0.15, render: { fillStyle: '#FFC107' } }),
-        // 오른쪽에서 왼쪽으로
+        // ?ㅻⅨ履쎌뿉???쇱そ?쇰줈
         Bodies.rectangle(width * 0.7, slopeY + 150, slopeW, slopeH, { isStatic: true, angle: -Math.PI * 0.15, render: { fillStyle: '#FFC107' } }),
-        // 다시 왼쪽에서 오른쪽
+        // ?ㅼ떆 ?쇱そ?먯꽌 ?ㅻⅨ履?
         Bodies.rectangle(width * 0.3, slopeY + 300, slopeW, slopeH, { isStatic: true, angle: Math.PI * 0.1, render: { fillStyle: '#FFC107' } })
     ]);
 
-    // [4구간] 피니시 라인 가이드 (하단 중앙으로 유도)
+    // [4援ш컙] ?쇰땲???쇱씤 媛?대뱶 (?섎떒 以묒븰?쇰줈 ?좊룄)
     Composite.add(engine.world, [
         Bodies.rectangle(width * 0.15, height - 150, width * 0.4, 20, { isStatic: true, angle: 0.3, render: { fillStyle: '#444' } }),
         Bodies.rectangle(width * 0.85, height - 150, width * 0.4, 20, { isStatic: true, angle: -0.3, render: { fillStyle: '#444' } })
     ]);
 
-    // 4. 구슬 생성
+    // 4. 援ъ뒳 ?앹꽦
     const marbleRadius = 8;
     names.forEach((name, i) => {
-        // x: 화면 너비의 30% ~ 70% 사이에서 랜덤 분포
+        // x: ?붾㈃ ?덈퉬??30% ~ 70% ?ъ씠?먯꽌 ?쒕뜡 遺꾪룷
         const x = width * 0.3 + Math.random() * (width * 0.4);
-        const y = -150; // 동시에 출발 (높이 통일)
+        const y = -150; // ?숈떆??異쒕컻 (?믪씠 ?듭씪)
 
         const marble = Bodies.circle(x, y, marbleRadius, {
             restitution: 0.9,
             friction: 0.001,
-            frictionAir: 0.02, // 공기 저항 (천천히 떨어짐)
+            frictionAir: 0.02, // 怨듦린 ???(泥쒖쿇???⑥뼱吏?
             label: name,
             render: { fillStyle: colors[i % colors.length] }
         });
         Composite.add(engine.world, marble);
     });
 
-    // 5. 업데이트 & 센서
+    // 5. ?낅뜲?댄듃 & ?쇱꽌
     Events.on(render, 'afterRender', renderText);
 
     Events.on(engine, 'afterUpdate', function () {
         const bodies = Composite.allBodies(engine.world);
         bodies.forEach(body => {
-            // 구슬만 체크
+            // 援ъ뒳留?泥댄겕
             if (body.label && !['peg', 'wall', 'ground', 'spinner', 'slope'].includes(body.label)) {
 
-                // 회전 풍차 돌리기 (강제 회전)
+                // ?뚯쟾 ?띿감 ?뚮━湲?(媛뺤젣 ?뚯쟾)
                 if (body.label === 'spinner') {
                     Body.setAngularVelocity(body, 0.15);
                 }
 
-                // 바닥 통과 (제거 & 랭킹)
+                // 諛붾떏 ?듦낵 (?쒓굅 & ??궧)
                 if (body.position.y > height + 20) {
                     if (!rankings.includes(body.label)) {
                         rankings.push(body.label);
                         addRankItem(rankings.length, body.label);
 
-                        // 월드에서 제거 (사라짐 효과)
+                        // ?붾뱶?먯꽌 ?쒓굅 (?щ씪吏??④낵)
                         Composite.remove(engine.world, body);
                     }
                 }
@@ -561,9 +561,9 @@ function addRankItem(rank, name) {
     item.className = 'rank-item';
 
     let medal = rank;
-    if (rank === 1) medal = '🥇 1st';
-    else if (rank === 2) medal = '🥈 2nd';
-    else if (rank === 3) medal = '🥉 3rd';
+    if (rank === 1) medal = '?쪍 1st';
+    else if (rank === 2) medal = '?쪎 2nd';
+    else if (rank === 3) medal = '?쪏 3rd';
     else medal = rank + 'th';
 
     item.innerHTML = `<span>${medal}</span> <span>${name}</span>`;
@@ -573,17 +573,17 @@ function addRankItem(rank, name) {
 
 
 
-// 예산 잠금해제 함수
+// ?덉궛 ?좉툑?댁젣 ?⑥닔
 let budgetUnlocked = false;
 const BUDGET_PASSWORD = '901210';
 let customItemCount = 0;
 
 function unlockBudget() {
     if (!budgetUnlocked) {
-        // 잠금 해제 시도 -> 모달 열기
+        // ?좉툑 ?댁젣 ?쒕룄 -> 紐⑤떖 ?닿린
         openPasswordModal();
     } else {
-        // 잠금 하기
+        // ?좉툑 ?섍린
         toggleLockState(false);
     }
 }
@@ -594,9 +594,9 @@ function openPasswordModal() {
     if (modal) {
         modal.classList.add('show');
         input.value = '';
-        setTimeout(() => input.focus(), 100); // 약간의 딜레이 후 포커스
+        setTimeout(() => input.focus(), 100); // ?쎄컙???쒕젅?????ъ빱??
 
-        // 엔터키 이벤트 추가
+        // ?뷀꽣???대깽??異붽?
         input.onkeydown = function (e) {
             if (e.key === 'Enter') submitPassword();
         };
@@ -615,7 +615,7 @@ function submitPassword() {
         toggleLockState(true);
         closePasswordModal();
     } else {
-        alert('비밀번호가 틀렸습니다!');
+        alert('鍮꾨?踰덊샇媛 ??몄뒿?덈떎!');
         input.value = '';
         input.focus();
     }
@@ -636,8 +636,8 @@ function toggleLockState(unlock) {
             if (input !== modalInput) input.disabled = false;
         });
         configInputs.forEach(input => input.disabled = false);
-        btn.innerHTML = '🔓 잠금';
-        status.textContent = '✏️ 수정 가능! 값을 변경하면 자동 계산됩니다';
+        btn.innerHTML = '?뵑 ?좉툑';
+        status.textContent = '?륅툘 ?섏젙 媛?? 媛믪쓣 蹂寃쏀븯硫??먮룞 怨꾩궛?⑸땲??;
         addBtn.style.display = 'block';
         budgetUnlocked = true;
         staticDeleteBtns.forEach(b => b.style.display = 'inline-block');
@@ -646,14 +646,14 @@ function toggleLockState(unlock) {
             if (input !== modalInput) input.disabled = true;
         });
         configInputs.forEach(input => input.disabled = true);
-        btn.innerHTML = '🔒 잠금해제';
-        status.textContent = '🔒 수정하려면 잠금해제를 눌러주세요';
+        btn.innerHTML = '?뵏 ?좉툑?댁젣';
+        status.textContent = '?뵏 ?섏젙?섎젮硫??좉툑?댁젣瑜??뚮윭二쇱꽭??;
         addBtn.style.display = 'none';
         budgetUnlocked = false;
         staticDeleteBtns.forEach(b => b.style.display = 'none');
     }
 
-    // UI 상태 동기화를 위해 예산 계산 함수 호출 (커스텀 항목 삭제 버튼 표시 등)
+    // UI ?곹깭 ?숆린?붾? ?꾪빐 ?덉궛 怨꾩궛 ?⑥닔 ?몄텧 (而ㅼ뒪? ??ぉ ??젣 踰꾪듉 ?쒖떆 ??
     onBudgetChange();
 }
 
@@ -682,15 +682,15 @@ function addBudgetItemFromData(label, value, confirmed) {
     const labelInput = document.createElement('input');
     labelInput.type = 'text';
     labelInput.className = 'budget-label-input';
-    labelInput.placeholder = '항목명';
+    labelInput.placeholder = '??ぉ紐?;
     labelInput.value = label;
     labelInput.style.cssText = "flex:1; padding:8px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;";
     labelInput.oninput = onBudgetChange;
 
-    // 수정 모드 전환
+    // ?섏젙 紐⑤뱶 ?꾪솚
     labelInput.onclick = function () {
         if (checkbox.checked) {
-            if (confirm('이 항목을 수정하시겠습니까?')) {
+            if (confirm('????ぉ???섏젙?섏떆寃좎뒿?덇퉴?')) {
                 checkbox.checked = false;
                 onBudgetChange();
             }
@@ -707,14 +707,14 @@ function addBudgetItemFromData(label, value, confirmed) {
     // Unit
     const unitSpan = document.createElement('span');
     unitSpan.className = 'budget-unit';
-    unitSpan.textContent = '원';
+    unitSpan.textContent = '??;
 
     row.appendChild(checkbox);
     row.appendChild(labelInput);
     row.appendChild(costInput);
     row.appendChild(unitSpan);
 
-    // 스와이프 기능 추가
+    // ?ㅼ??댄봽 湲곕뒫 異붽?
     addSwipeListeners(row);
 
     container.appendChild(row);
@@ -735,7 +735,7 @@ function removeBudgetItem(itemId) {
 function removeStaticItem(rowId) {
     const item = document.getElementById(rowId);
     if (item) {
-        if (confirm('이 항목을 정말 삭제하시겠습니까? (삭제후 값은 0원으로 계산됩니다)')) {
+        if (confirm('????ぉ???뺣쭚 ??젣?섏떆寃좎뒿?덇퉴? (??젣??媛믪? 0?먯쑝濡?怨꾩궛?⑸땲??')) {
             item.remove();
             onBudgetChange();
             return true;
@@ -745,7 +745,7 @@ function removeStaticItem(rowId) {
 }
 
 // ==========================================
-// 👆 Swipe to Delete Logic
+// ?몘 Swipe to Delete Logic
 // ==========================================
 function addSwipeListeners(row) {
     let startX = 0;
@@ -764,7 +764,7 @@ function addSwipeListeners(row) {
     row.addEventListener('mouseleave', (e) => { if (isSwiping) endSwipe(); });
 
     function startSwipe(x) {
-        if (!budgetUnlocked) return; // 잠금 상태면 동작 안함
+        if (!budgetUnlocked) return; // ?좉툑 ?곹깭硫??숈옉 ?덊븿
         isSwiping = true;
         startX = x;
         row.classList.add('swiping'); // Disable transition
@@ -774,13 +774,13 @@ function addSwipeListeners(row) {
         if (!isSwiping) return;
         currentX = x - startX;
 
-        // 수직 스크롤 방해 최소화: X축 이동이 작으면 무시? 
-        // CSS touch-action: pan-y 처리됨.
+        // ?섏쭅 ?ㅽ겕濡?諛⑺빐 理쒖냼?? X異??대룞???묒쑝硫?臾댁떆? 
+        // CSS touch-action: pan-y 泥섎━??
 
-        // 이동 제한 (너무 멀리 안가게? 혹은 자유롭게)
+        // ?대룞 ?쒗븳 (?덈Т 硫由??덇?寃? ?뱀? ?먯쑀濡?쾶)
         row.style.transform = `translateX(${currentX}px)`;
 
-        // 시각적 피드백 (배경색 변경 등) - 여기서는 CSS로 처리하거나 복잡도 낮춤
+        // ?쒓컖???쇰뱶諛?(諛곌꼍??蹂寃??? - ?ш린?쒕뒗 CSS濡?泥섎━?섍굅??蹂듭옟????땄
     }
 
     function endSwipe() {
@@ -788,21 +788,21 @@ function addSwipeListeners(row) {
         isSwiping = false;
         row.classList.remove('swiping');
 
-        const threshold = 100; // 삭제 기준 거리
+        const threshold = 100; // ??젣 湲곗? 嫄곕━
 
         if (Math.abs(currentX) > threshold) {
-            // 삭제 액션
+            // ??젣 ?≪뀡
             const direction = currentX > 0 ? 1 : -1;
-            const endX = direction * window.innerWidth; // 화면 밖으로
+            const endX = direction * window.innerWidth; // ?붾㈃ 諛뽰쑝濡?
 
             row.style.transform = `translateX(${endX}px)`;
             row.classList.add('deleting');
 
-            // 애니메이션 시간 후 실제 삭제 처리
+            // ?좊땲硫붿씠???쒓컙 ???ㅼ젣 ??젣 泥섎━
             setTimeout(() => {
                 let deleted = false;
-                // Static Item인지 Custom Item인지 구분
-                // Static Item은 ID가 row-... 형식
+                // Static Item?몄? Custom Item?몄? 援щ텇
+                // Static Item? ID媛 row-... ?뺤떇
                 if (row.id.startsWith('row-')) {
                     deleted = removeStaticItem(row.id);
                 } else {
@@ -810,13 +810,13 @@ function addSwipeListeners(row) {
                 }
 
                 if (!deleted) {
-                    // 삭제 취소됨 (Static Item confirm 취소시)
+                    // ??젣 痍⑥냼??(Static Item confirm 痍⑥냼??
                     cancelDelete();
                 }
             }, 300); // CSS transition time match
 
         } else {
-            // 제자리 복귀
+            // ?쒖옄由?蹂듦?
             cancelDelete();
         }
     }
@@ -828,7 +828,7 @@ function addSwipeListeners(row) {
 }
 
 
-// 설정 변경 (총 예산 / 인원)
+// ?ㅼ젙 蹂寃?(珥??덉궛 / ?몄썝)
 function onConfigChange() {
     const totalInput = document.getElementById('config-total-budget');
     const personInput = document.getElementById('config-person-count');
@@ -843,9 +843,9 @@ function onConfigChange() {
     updateAllBudgetDisplays();
 }
 
-// 예산 계산 함수 (예산 계산기에서 값 변경시)
+// ?덉궛 怨꾩궛 ?⑥닔 (?덉궛 怨꾩궛湲곗뿉??媛?蹂寃쎌떆)
 function onBudgetChange() {
-    // BUDGET_CONFIG 업데이트 (Safe access with optional chaining)
+    // BUDGET_CONFIG ?낅뜲?댄듃 (Safe access with optional chaining)
     BUDGET_CONFIG.costs.flight = parseInt(document.getElementById('cost-flight')?.value) || 0;
     BUDGET_CONFIG.costs.rent = parseInt(document.getElementById('cost-rent')?.value) || 0;
     BUDGET_CONFIG.costs.day1Dinner = parseInt(document.getElementById('cost-day1-dinner')?.value) || 0;
@@ -854,7 +854,7 @@ function onBudgetChange() {
     BUDGET_CONFIG.costs.day2Cafe = parseInt(document.getElementById('cost-day2-tour')?.value) || 0;
     BUDGET_CONFIG.costs.day2Dinner = parseInt(document.getElementById('cost-day2-dinner')?.value) || 0;
 
-    // 커스텀 항목들 계산 (배열로 저장)
+    // 而ㅼ뒪? ??ぉ??怨꾩궛 (諛곗뿴濡????
     const customRows = document.querySelectorAll('#custom-budget-items .budget-input-row');
     let customTotal = 0;
     const customItems = [];
@@ -870,9 +870,9 @@ function onBudgetChange() {
         customItems.push({ label, value, confirmed });
         customTotal += value;
 
-        // 확정된 항목 UI 업데이트 (회색처리, 비활성화) - 삭제 버튼 로직 제거됨
+        // ?뺤젙????ぉ UI ?낅뜲?댄듃 (?뚯깋泥섎━, 鍮꾪솢?깊솕) - ??젣 踰꾪듉 濡쒖쭅 ?쒓굅??
         if (confirmed) {
-            // Label Styling: 텍스트처럼 보이게
+            // Label Styling: ?띿뒪?몄쿂??蹂댁씠寃?
             if (labelInput) {
                 labelInput.disabled = true;
                 labelInput.style.border = 'none';
@@ -890,7 +890,7 @@ function onBudgetChange() {
             row.style.border = '1px solid #e5e8eb';
 
         } else {
-            // 수정 모드: 스타일 복원
+            // ?섏젙 紐⑤뱶: ?ㅽ???蹂듭썝
             if (labelInput) {
                 labelInput.disabled = false;
                 labelInput.style.border = '1px solid #ddd';
@@ -915,12 +915,12 @@ function onBudgetChange() {
     updateAllBudgetDisplays();
 }
 
-// 페이지 로드시 예산 업데이트 및 초기화
+// ?섏씠吏 濡쒕뱶???덉궛 ?낅뜲?댄듃 諛?珥덇린??
 document.addEventListener('DOMContentLoaded', async function () {
-    // 1. DB 로드
+    // 1. DB 濡쒕뱶
     await loadBudgetFromDB();
 
-    // 2. Static Rows에 스와이프 리스너 추가
+    // 2. Static Rows???ㅼ??댄봽 由ъ뒪??異붽?
     const staticIds = [
         'row-flight', 'row-rent', 'row-day1-dinner', 'row-whiskey',
         'row-981', 'row-day2-lunch', 'row-day2-tour', 'row-day2-dinner'
@@ -930,246 +930,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (row) addSwipeListeners(row);
     });
 
-    // 3. UI 업데이트
+    // 3. UI ?낅뜲?댄듃
     updateAllBudgetDisplays();
 
-    // 4. 지도 초기화 (약간의 딜레이 후 실행하여 탭 렌더링 안정화)
+    // 4. 吏??珥덇린??(?쎄컙???쒕젅?????ㅽ뻾?섏뿬 ???뚮뜑留??덉젙??
     setTimeout(initMaps, 500);
 });
-
-
-// ========================================
-// 🗺️ 지도 초기화 및 편집 (Naver Maps API)
-// ========================================
-let LOCATIONS = {
-    airport: [33.5104, 126.4913],
-    shinwooseong: [33.2492, 126.4109],
-    lucete: [33.3190, 126.3853],
-    stay: [33.248, 126.418],
-    market: [33.2486, 126.5643],
-    park981: [33.3667, 126.3562],
-    letsrun: [33.41, 126.4],
-    center: [33.35, 126.5]
-};
-
-let ROUTES = {
-    day1: ['airport', 'shinwooseong', 'stay', 'market'],
-    day2: ['stay', 'lucete', 'park981', 'letsrun', 'market', 'stay'],
-    day3: ['stay', 'airport']
-};
-
-let isEditingMap = { day1: false, day2: false, day3: false };
-
-function initMaps() {
-    // 기존 맵 인스턴스 초기화 (재렌더링 시)
-    if (window.mapInstances) {
-        window.mapInstances.forEach(item => {
-            if (item.map) item.map.remove();
-        });
-        window.mapInstances = [];
-    }
-
-
-    const mapOptions = {
-        attributionControl: false,
-        zoomControl: true,
-        dragging: true,
-        scrollWheelZoom: false,
-        doubleClickZoom: false,
-        boxZoom: false
-    };
-
-    const createOrUpdateMap = (dayKey) => {
-        const elementId = `map-${dayKey}`;
-        const container = document.getElementById(elementId);
-        if (!container) return;
-
-        // 1. 맵 인스턴스 찾기 또는 생성
-        let mapInstance = window.mapInstances.find(m => m.id === dayKey);
-        let map, contentLayer;
-        let isNewMap = false;
-
-        if (!mapInstance) {
-            isNewMap = true;
-            map = L.map(elementId, mapOptions);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-            }).addTo(map);
-
-            contentLayer = L.layerGroup().addTo(map);
-
-            // 맵 클릭 (핀 추가)
-            map.on('click', (e) => {
-                if (isEditingMap[dayKey]) {
-                    addPin(dayKey, e.latlng);
-                }
-            });
-
-            window.mapInstances.push({ id: dayKey, map: map, contentLayer: contentLayer, bounds: null });
-        } else {
-            map = mapInstance.map;
-            contentLayer = mapInstance.contentLayer;
-            contentLayer.clearLayers();
-        }
-
-        const routeKeys = ROUTES[dayKey] || [];
-        const latlngs = routeKeys.map(key => LOCATIONS[key] || LOCATIONS.center);
-
-        // 경로 그리기
-        if (latlngs.length > 0) {
-            L.polyline(latlngs, {
-                color: '#FF6B00',
-                weight: 4,
-                opacity: 0.8,
-                dashArray: '10, 10',
-                lineCap: 'round'
-            }).addTo(contentLayer);
-        }
-
-        // 마커 찍기
-        routeKeys.forEach((key, index) => {
-            const latlng = LOCATIONS[key];
-            if (!latlng) return;
-
-            const number = index + 1;
-            const iconHtml = `<div style="
-                background-color: #FF6B00;
-                color: white;
-                border-radius: 50%;
-                width: 24px;
-                height: 24px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: bold;
-                font-size: 14px;
-                border: 2px solid white;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            ">${number}</div>`;
-
-            const icon = L.divIcon({
-                className: 'custom-div-icon',
-                html: iconHtml,
-                iconSize: [30, 42],
-                iconAnchor: [15, 42]
-            });
-
-            const marker = L.marker(latlng, {
-                icon: icon,
-                draggable: isEditingMap[dayKey]
-            }).addTo(contentLayer);
-
-            marker.on('click', () => {
-                if (isEditingMap[dayKey]) {
-                    if (marker._dragMoved) { marker._dragMoved = false; return; }
-                    removePin(dayKey, index);
-                }
-            });
-
-            if (isEditingMap[dayKey]) {
-                marker.on('dragend', (e) => {
-                    const newPos = e.target.getLatLng();
-                    LOCATIONS[key] = [newPos.lat, newPos.lng];
-                    marker._dragMoved = true;
-                    setTimeout(() => initMaps(), 0);
-                });
-            }
-        });
-
-        // 5. 줌 설정
-        if (latlngs.length > 0) {
-            const bounds = L.latLngBounds(latlngs);
-            const instance = window.mapInstances.find(m => m.id === dayKey);
-            if (instance) instance.bounds = bounds;
-
-            if (isNewMap) {
-                map.fitBounds(bounds, { padding: [30, 30] });
-            }
-        }
-    };
-
-    createOrUpdateMap('day1');
-    createOrUpdateMap('day2');
-    createOrUpdateMap('day3');
-}
-
-function refreshMaps() {
-    if (window.mapInstances) {
-        window.mapInstances.forEach(item => {
-            item.map.invalidateSize();
-            if (item.bounds) {
-                setTimeout(() => {
-                    item.map.fitBounds(item.bounds, { padding: [30, 30] });
-                }, 200);
-            }
-        });
-    }
-}
-
-// 📌 핀 편집 기능
-// 📌 핀 편집 기능
-function toggleMapEdit(dayKey, btn) {
-    if (!isEditingMap[dayKey]) {
-        const password = prompt('지도 편집하려면 비밀번호를 입력하세요:');
-        if (password !== '901210') {
-            alert('비밀번호가 틀렸습니다.');
-            return;
-        }
-    }
-
-    const isEditing = !isEditingMap[dayKey];
-    isEditingMap[dayKey] = isEditing;
-
-    const mapContainer = document.getElementById(`map-${dayKey}`);
-
-    if (isEditing) {
-        btn.textContent = '✅ 완료';
-        btn.classList.add('editing');
-        mapContainer.classList.add('map-editing-border');
-        alert('지도 편집 모드 시작!\n\n🖱️ 핀 드래그: 위치 이동\n🖱️ 지도 클릭: 핀 추가\n🗑️ 핀 클릭: 핀 삭제');
-    } else {
-        btn.textContent = '✏️ 핀 편집';
-        btn.classList.remove('editing');
-        mapContainer.classList.remove('map-editing-border');
-        updateMapDataInConfig(); // 설정 객체 업데이트
-        saveBudgetToDB(); // DB 저장
-    }
-
-    // 편집 모드 변경 반영 (드래그 활성화 등)
-    initMaps();
-}
-
-function addPin(dayKey, latlng) {
-    const name = prompt('장소 이름을 입력하세요 (예: 맛집, 관광지)');
-    if (!name) return;
-
-    const id = 'custom_' + Date.now();
-    LOCATIONS[id] = [latlng.lat, latlng.lng];
-    ROUTES[dayKey].push(id);
-
-    // 재렌더링
-    initMaps();
-}
-
-function removePin(dayKey, index) {
-    if (confirm('이 핀을 경로에서 삭제하시겠습니까?')) {
-        const route = ROUTES[dayKey];
-        route.splice(index, 1); // 해당 인덱스 제거
-        initMaps();
-    }
-}
-
-// DB 데이터 연동 확장
-// saveBudgetToDB 내에서 호출될 hook 또는 saveBudgetToDB를 수정해야 함.
-// 기존 saveBudgetToDB는 BUDGET_CONFIG.costs만 저장하므로,
-// 비용 객체에 맵 데이터를 태워 보낸다.
-
-function updateMapDataInConfig() {
-    if (!BUDGET_CONFIG.costs.mapData) BUDGET_CONFIG.costs.mapData = {};
-    BUDGET_CONFIG.costs.mapData = {
-        locations: LOCATIONS,
-        routes: ROUTES
-    };
-}
-
