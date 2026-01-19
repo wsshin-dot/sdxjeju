@@ -20,7 +20,7 @@ body {
     margin: 0;
     padding: 0;
     /* Background Image - Jeju Tangerine Theme */
-    background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('./jeju_bg.png') no-repeat center center fixed;
+    background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('jeju_bg.png?v=1') no-repeat center center fixed;
     background-size: cover;
     color: var(--text-main);
     line-height: 1.6;
