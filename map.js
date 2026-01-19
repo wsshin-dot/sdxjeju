@@ -1,5 +1,5 @@
 // ========================================
-// 🗺️ 지도 초기화 및 편집 (Naver Maps API)
+// 🗺️ 지도 초기화 (Naver Maps API)
 // ========================================
 
 // 전역 변수 초기화 (script.js에서 이미 선언되었을 수 있으므로 덮어쓰기)
@@ -21,8 +21,6 @@ Object.assign(ROUTES, {
     day2: ['stay', 'lucete', 'park981', 'letsrun', 'market', 'stay'],
     day3: ['stay', 'airport']
 });
-
-var isEditingMap = isEditingMap || { day1: false, day2: false, day3: false };
 
 function initMaps() {
     if (!window.mapInstances) window.mapInstances = [];
@@ -61,13 +59,6 @@ function initMaps() {
                 scaleControl: false,
                 logoControl: false,
                 mapDataControl: false
-            });
-
-            // 클릭 이벤트 (핀 추가)
-            naver.maps.Event.addListener(map, 'click', (e) => {
-                if (isEditingMap[dayKey]) {
-                    addPin(dayKey, { lat: e.coord.lat(), lng: e.coord.lng() });
-                }
             });
 
             window.mapInstances.push({
@@ -126,32 +117,13 @@ function initMaps() {
                         font-size: 14px;
                         border: 2px solid white;
                         box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-                        cursor: ${isEditingMap[dayKey] ? 'move' : 'pointer'};
                     ">${number}</div>`,
                     anchor: new naver.maps.Point(14, 14)
-                },
-                draggable: isEditingMap[dayKey]
+                }
             };
 
             const marker = new naver.maps.Marker(markerOptions);
             mapInstance.markers.push(marker);
-
-            // 마커 클릭 이벤트 (삭제)
-            naver.maps.Event.addListener(marker, 'click', () => {
-                if (isEditingMap[dayKey]) {
-                    removePin(dayKey, index);
-                }
-            });
-
-            // 드래그 종료 이벤트 (위치 업데이트)
-            if (isEditingMap[dayKey]) {
-                naver.maps.Event.addListener(marker, 'dragend', (e) => {
-                    const newPos = marker.getPosition();
-                    LOCATIONS[key] = [newPos.lat(), newPos.lng()];
-                    // 폴리라인 업데이트
-                    setTimeout(() => initMaps(), 0);
-                });
-            }
         });
 
         // 5. 줌 설정 (처음 생성 시에만)
@@ -185,63 +157,11 @@ function refreshMaps() {
     }
 }
 
-// 📌 핀 편집 기능
-function toggleMapEdit(dayKey, btn) {
-    if (!isEditingMap[dayKey]) {
-        const password = prompt('지도 편집하려면 비밀번호를 입력하세요:');
-        if (password !== '901210') {
-            alert('비밀번호가 틀렸습니다.');
-            return;
-        }
-    }
-
-    const isEditing = !isEditingMap[dayKey];
-    isEditingMap[dayKey] = isEditing;
-
-    const mapContainer = document.getElementById(`map-${dayKey}`);
-
-    if (isEditing) {
-        btn.textContent = '✅ 완료';
-        btn.classList.add('editing');
-        mapContainer.classList.add('map-editing-border');
-        alert('지도 편집 모드 시작!\n\n🖱️ 핀 드래그: 위치 이동\n🖱️ 지도 클릭: 핀 추가\n🗑️ 핀 클릭: 핀 삭제');
-    } else {
-        btn.textContent = '✏️ 핀 편집';
-        btn.classList.remove('editing');
-        mapContainer.classList.remove('map-editing-border');
-        updateMapDataInConfig(); // 설정 객체 업데이트
-        saveBudgetToDB(); // DB 저장
-    }
-
-    // 편집 모드 변경 반영 (드래그 활성화 등)
+// 지도 초기화 실행
+if (typeof naver !== 'undefined') {
     initMaps();
-}
-
-function addPin(dayKey, latlng) {
-    const name = prompt('장소 이름을 입력하세요 (예: 맛집, 관광지)');
-    if (!name) return;
-
-    const id = 'custom_' + Date.now();
-    LOCATIONS[id] = [latlng.lat, latlng.lng];
-    ROUTES[dayKey].push(id);
-
-    // 재렌더링
-    initMaps();
-}
-
-function removePin(dayKey, index) {
-    if (confirm('이 핀을 경로에서 삭제하시겠습니까?')) {
-        const route = ROUTES[dayKey];
-        route.splice(index, 1);
-        initMaps();
-    }
-}
-
-// DB 데이터 연동
-function updateMapDataInConfig() {
-    if (!BUDGET_CONFIG.costs.mapData) BUDGET_CONFIG.costs.mapData = {};
-    BUDGET_CONFIG.costs.mapData = {
-        locations: LOCATIONS,
-        routes: ROUTES
-    };
+} else {
+    window.addEventListener('load', () => {
+        if (typeof naver !== 'undefined') initMaps();
+    });
 }
