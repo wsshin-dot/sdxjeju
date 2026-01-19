@@ -28,9 +28,6 @@ function initMaps() {
     if (!window.mapInstances) window.mapInstances = [];
 
     const createOrUpdateMap = (dayKey) => {
-        // Day 1, 2, 3 use static SVG maps, so we skip Naver Map initialization
-        if (dayKey === 'day1' || dayKey === 'day2' || dayKey === 'day3') return;
-
         const elementId = `map-${dayKey}`;
         const container = document.getElementById(elementId);
         if (!container) return;

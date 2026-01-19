@@ -173,7 +173,7 @@ function updateAllBudgetDisplays() {
 // 🔗 Supabase DB API 연동
 // ========================================
 const SUPABASE_URL = 'https://oiyzxdrssxobsqjtlyjf.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_n8CptUQG5FADwx5uHMDIdw_C9G6yUA-';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9peXp4ZHJzc3hvYnNxanRseWpmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODQ5NTUxMSwiZXhwIjoyMDg0MDcxNTExfQ.DAu3egzVedYCLLIZNL3toSl72EyuEnMGjqWgslPsXq4';
 
 // Supabase REST API 호출 헬퍼
 async function supabaseRequest(table, method = 'GET', body = null, select = '*') {
@@ -183,7 +183,7 @@ async function supabaseRequest(table, method = 'GET', body = null, select = '*')
         'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal'
     };
 
-    // JWT 키(ey...)인 경우에만 Bearer 인증 헤더 추가 (sb_publishable 키 대응)
+    // JWT 키(ey...)인 경우에만 Bearer 인증 헤더 추가
     if (SUPABASE_KEY.startsWith('ey')) {
         headers['Authorization'] = `Bearer ${SUPABASE_KEY}`;
     }
@@ -322,7 +322,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     await loadBudgetFromDB();
 
     // 그 후 모든 표시 업데이트
+    // 그 후 모든 표시 업데이트
     updateAllBudgetDisplays();
+
+    // 초기 상태에서 저장 버튼 비활성화 (잠금 상태이므로)
+    const saveBtn = document.getElementById('save-budget-btn');
+    if (saveBtn) saveBtn.disabled = true;
 });
 
 function switchTab(tabId, btn) {
@@ -625,6 +630,7 @@ function toggleLockState(unlock) {
     const modalInput = document.getElementById('modal-password-input');
 
     const staticDeleteBtns = document.querySelectorAll('.static-delete-btn');
+    const saveBtn = document.getElementById('save-budget-btn');
 
     if (unlock) {
         inputs.forEach(input => {
@@ -636,6 +642,7 @@ function toggleLockState(unlock) {
         addBtn.style.display = 'block';
         budgetUnlocked = true;
         staticDeleteBtns.forEach(b => b.style.display = 'inline-block');
+        if (saveBtn) saveBtn.disabled = false; // Enable Save Button
     } else {
         inputs.forEach(input => {
             if (input !== modalInput) input.disabled = true;
@@ -646,6 +653,7 @@ function toggleLockState(unlock) {
         addBtn.style.display = 'none';
         budgetUnlocked = false;
         staticDeleteBtns.forEach(b => b.style.display = 'none');
+        if (saveBtn) saveBtn.disabled = true; // Disable Save Button
     }
 
     // UI 상태 동기화를 위해 예산 계산 함수 호출 (커스텀 항목 삭제 버튼 표시 등)
