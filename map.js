@@ -7,7 +7,7 @@ var LOCATIONS = LOCATIONS || {};
 Object.assign(LOCATIONS, {
     airport: [33.5104, 126.4913],
     shinwooseong: [33.2492, 126.4109],
-    lucete: [33.3190, 126.3853],
+    gojip: [33.2579, 126.4168],
     stay: [33.248, 126.418],
     market: [33.2486, 126.5643],
     park981: [33.3667, 126.3562],
@@ -17,8 +17,8 @@ Object.assign(LOCATIONS, {
 
 var ROUTES = ROUTES || {};
 Object.assign(ROUTES, {
-    day1: ['airport', 'shinwooseong', 'stay', 'market'],
-    day2: ['stay', 'lucete', 'park981', 'letsrun', 'market', 'stay'],
+    day1: ['airport', 'stay', 'shinwooseong'],
+    day2: ['stay', 'gojip', 'park981', 'letsrun', 'market', 'stay'],
     day3: ['stay', 'airport']
 });
 
@@ -29,7 +29,7 @@ var LOCATION_INFO = {
     market: { name: "🍊 매일올레시장", desc: "Day 2 저녁: 맛있는 먹거리 포장" },
     park981: { name: "🏎️ 9.81 파크", desc: "스피드 레이싱 & 서바이벌" },
     letsrun: { name: "🐎 렛츠런 파크", desc: "승부의 세계 (경마)" },
-    lucete: { name: "🍴 중문 관광단지", desc: "Day 2 점심: 맛집 탐방" },
+    gojip: { name: "🐟 고집돌우럭", desc: "Day 2 점심: 우럭조림 맛집" },
     center: { name: "한라산", desc: "제주의 중심" }
 };
 
