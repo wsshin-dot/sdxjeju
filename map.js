@@ -22,6 +22,17 @@ Object.assign(ROUTES, {
     day3: ['stay', 'airport']
 });
 
+var LOCATION_INFO = {
+    airport: { name: "✈️ 제주국제공항", desc: "만남과 헤어짐의 장소" },
+    shinwooseong: { name: "🐷 신우성 흑돼지", desc: "Day 1 저녁: 흑돼지 맛집" },
+    stay: { name: "🏠 씨사이드 아덴", desc: "숙소: 편안한 휴식" },
+    market: { name: "🍊 매일올레시장", desc: "Day 2 저녁: 맛있는 먹거리 포장" },
+    park981: { name: "🏎️ 9.81 파크", desc: "스피드 레이싱 & 서바이벌" },
+    letsrun: { name: "🐎 렛츠런 파크", desc: "승부의 세계 (경마)" },
+    lucete: { name: "🍴 중문 관광단지", desc: "Day 2 점심: 맛집 탐방" },
+    center: { name: "한라산", desc: "제주의 중심" }
+};
+
 function initMaps() {
     if (!window.mapInstances) window.mapInstances = [];
 
@@ -35,7 +46,7 @@ function initMaps() {
         let map;
         let isNewMap = false;
 
-        // 기존 마커/선 제거 (재렌더링)
+        // 기존 마커/선/인포윈도우 제거 (재렌더링)
         if (mapInstance) {
             map = mapInstance.map;
             if (mapInstance.markers) {
@@ -44,8 +55,14 @@ function initMaps() {
             if (mapInstance.polyline) {
                 mapInstance.polyline.setMap(null);
             }
+            // 기존 인포윈도우 닫기
+            if (mapInstance.infoWindows) {
+                mapInstance.infoWindows.forEach(iw => iw.close());
+            }
+
             mapInstance.markers = [];
             mapInstance.polyline = null;
+            mapInstance.infoWindows = []; // 인포윈도우 배열 초기화
         } else {
             isNewMap = true;
             // 네이버 지도 생성
@@ -66,7 +83,8 @@ function initMaps() {
                 map: map,
                 markers: [],
                 polyline: null,
-                bounds: null
+                bounds: null,
+                infoWindows: []
             });
             mapInstance = window.mapInstances.find(m => m.id === dayKey);
         }
@@ -98,6 +116,7 @@ function initMaps() {
 
             const position = new naver.maps.LatLng(loc[0], loc[1]);
             const number = index + 1;
+            const info = LOCATION_INFO[key] || { name: "장소", desc: "" };
 
             // 커스텀 마커 아이콘 (번호 표시)
             const markerOptions = {
@@ -117,6 +136,7 @@ function initMaps() {
                         font-size: 14px;
                         border: 2px solid white;
                         box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+                        cursor: pointer;
                     ">${number}</div>`,
                     anchor: new naver.maps.Point(14, 14)
                 }
@@ -124,6 +144,37 @@ function initMaps() {
 
             const marker = new naver.maps.Marker(markerOptions);
             mapInstance.markers.push(marker);
+
+            // 💬 인포윈도우 (정보창) 생성
+            const contentString = `
+                <div style="padding:10px; min-width:150px; text-align:center; background:white; border-radius:8px; border:1px solid #ddd;">
+                    <h4 style="margin:0 0 5px; font-size:14px; color:#333;">${info.name}</h4>
+                    <p style="margin:0; font-size:12px; color:#666;">${info.desc}</p>
+                </div>
+            `;
+
+            const infoWindow = new naver.maps.InfoWindow({
+                content: contentString,
+                borderWidth: 0,
+                backgroundColor: 'transparent',
+                anchorSize: new naver.maps.Size(10, 10),
+                anchorSkew: true,
+                anchorColor: 'white',
+                pixelOffset: new naver.maps.Point(0, -5)
+            });
+
+            mapInstance.infoWindows.push(infoWindow);
+
+            // 클릭 이벤트: 정보창 열기/닫기
+            naver.maps.Event.addListener(marker, 'click', function () {
+                if (infoWindow.getMap()) {
+                    infoWindow.close();
+                } else {
+                    // 다른 열린 창 닫기 (선택 사항)
+                    mapInstance.infoWindows.forEach(iw => iw.close());
+                    infoWindow.open(map, marker);
+                }
+            });
         });
 
         // 5. 줌 설정 (처음 생성 시에만)
