@@ -1012,12 +1012,25 @@ h1 {
     justify-content: center;
     color: white;
     text-align: center;
-    transition: opacity 1.2s ease-out, visibility 1.2s;
+    overflow: hidden;
 }
 
-#intro-overlay.fade-out {
-    opacity: 0;
-    visibility: hidden;
+#intro-overlay.wipe-out {
+    animation: wipeDown 1s ease-in forwards;
+}
+
+@keyframes wipeDown {
+    0% {
+        clip-path: inset(0 0 0 0);
+    }
+
+    100% {
+        clip-path: inset(100% 0 0 0);
+    }
+}
+
+.intro-content {
+    z-index: 2;
 }
 
 .intro-title {
@@ -1044,5 +1057,43 @@ h1 {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* Falling Tangerine */
+.falling-tangerine {
+    position: absolute;
+    top: -120px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 6rem;
+    z-index: 10;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+    transition: none;
+}
+
+.falling-tangerine.drop {
+    animation: tangerineFall 1s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+@keyframes tangerineFall {
+    0% {
+        top: -120px;
+        transform: translateX(-50%) rotate(0deg);
+    }
+
+    60% {
+        transform: translateX(-50%) rotate(360deg);
+    }
+
+    80% {
+        top: 45%;
+        transform: translateX(-50%) rotate(400deg) scale(1.2);
+    }
+
+    100% {
+        top: 50%;
+        transform: translateX(-50%) rotate(360deg) scale(8);
+        opacity: 0.8;
     }
 }
