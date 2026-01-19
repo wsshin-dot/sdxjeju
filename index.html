@@ -694,23 +694,80 @@
         <div id="recreation" class="tab-content">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">🎱 순서 정하기</div>
+                    <div class="card-title" id="rec-title">🎱 순서 정하기</div>
+                    <div class="game-toggle">
+                        <button class="toggle-btn active" onclick="switchGame('marble', this)">마블런</button>
+                        <button class="toggle-btn" onclick="switchGame('car', this)">차량배치</button>
+                    </div>
                 </div>
-                <div class="roulette-container">
-                    <div class="race-container">
-                        <div id="matter-container"></div>
+
+                <!-- Marble Run Game -->
+                <div id="game-marble" class="game-container active">
+                    <div class="roulette-container">
+                        <div class="race-container">
+                            <div id="matter-container"></div>
+                        </div>
+
+                        <div class="rank-board" id="rankBoard">
+                            <div style="text-align:center; font-weight:bold; margin-bottom:10px;">🏆 도착 순위</div>
+                            <div id="rankList"></div>
+                        </div>
+
+                        <div style="margin-bottom:20px; margin-top:20px;">
+                            <input type="text" id="rouletteNames" value="김지섭,박범진,손영길,신예리,신우성,이재환,임혜정,장민한,조옥래,홍예진"
+                                style="width:80%; padding:10px; border:1px solid #ddd; border-radius:8px; text-align:center;">
+                        </div>
+                        <button class="spin-btn" id="raceBtn" onclick="startMarbleRun()">START RUN</button>
+                    </div>
+                </div>
+
+                <!-- Car Allocation Game -->
+                <div id="game-car" class="game-container" style="display:none;">
+                    <div class="car-area">
+                        <!-- Car 1 -->
+                        <div class="car-box">
+                            <div class="car-roof">
+                                <div class="car-label">1호차 (김지섭)</div>
+                                <div class="seats-row front">
+                                    <div class="seat driver filled">김지섭<br><small>(운전)</small></div>
+                                    <div class="seat passenger" id="c1-p1"></div>
+                                </div>
+                                <div class="seats-row middle">
+                                    <div class="seat passenger" id="c1-p2"></div>
+                                    <div class="seat passenger" id="c1-p3"></div>
+                                    <div class="seat passenger" id="c1-p4"></div>
+                                </div>
+                            </div>
+                            <div class="wheels left-front"></div>
+                            <div class="wheels right-front"></div>
+                            <div class="wheels left-rear"></div>
+                            <div class="wheels right-rear"></div>
+                        </div>
+
+                        <!-- Car 2 -->
+                        <div class="car-box">
+                            <div class="car-roof">
+                                <div class="car-label">2호차 (신우성)</div>
+                                <div class="seats-row front">
+                                    <div class="seat driver filled">신우성<br><small>(운전)</small></div>
+                                    <div class="seat passenger" id="c2-p1"></div>
+                                </div>
+                                <div class="seats-row middle">
+                                    <div class="seat passenger" id="c2-p2"></div>
+                                    <div class="seat passenger" id="c2-p3"></div>
+                                    <div class="seat passenger" id="c2-p4"></div>
+                                </div>
+                            </div>
+                            <div class="wheels left-front"></div>
+                            <div class="wheels right-front"></div>
+                            <div class="wheels left-rear"></div>
+                            <div class="wheels right-rear"></div>
+                        </div>
                     </div>
 
-                    <div class="rank-board" id="rankBoard">
-                        <div style="text-align:center; font-weight:bold; margin-bottom:10px;">🏆 도착 순위</div>
-                        <div id="rankList"></div>
+                    <div style="text-align:center; margin-top:30px;">
+                        <button class="spin-btn" onclick="assignCars()">자리 배치하기</button>
                     </div>
-
-                    <div style="margin-bottom:20px; margin-top:20px;">
-                        <input type="text" id="rouletteNames" value="김지섭,박범진,손영길,신예리,신우성,이재환,임혜정,장민한,조옥래,홍예진"
-                            style="width:80%; padding:10px; border:1px solid #ddd; border-radius:8px; text-align:center;">
-                    </div>
-                    <button class="spin-btn" id="raceBtn" onclick="startMarbleRun()">START RUN</button>
                 </div>
             </div>
 

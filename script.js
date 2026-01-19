@@ -799,25 +799,22 @@ function addSwipeListeners(row) {
             const endX = direction * window.innerWidth; // 화면 밖으로
 
             row.style.transform = `translateX(${endX}px)`;
-            row.classList.add('deleting');
+            row.style.opacity = '0';
+            row.style.transition = 'all 0.3s ease-out';
 
-            // 애니메이션 시간 후 실제 삭제 처리
             setTimeout(() => {
-                let deleted = false;
-                // Static Item인지 Custom Item인지 구분
-                // Static Item은 ID가 row-... 형식
-                if (row.id.startsWith('row-')) {
-                    deleted = removeStaticItem(row.id);
+                // 실제 DOM 삭제 (static item인지 custom item인지 구분)
+                if (row.id.startsWith('custom-item-')) {
+                    removeBudgetItem(row.id);
+                } else if (row.id.startsWith('row-') || row.id.startsWith('budget-')) {
+                    // 정적 아이템 삭제 로직 처리
+                    removeStaticItem(row.id);
                 } else {
-                    deleted = removeBudgetItem(row.id);
+                    // 기타
+                    row.remove();
                 }
-
-                if (!deleted) {
-                    // 삭제 취소됨 (Static Item confirm 취소시)
-                    cancelDelete();
-                }
-            }, 300); // CSS transition time match
-
+                onBudgetChange();
+            }, 300);
         } else {
             // 제자리 복귀
             cancelDelete();
@@ -939,3 +936,96 @@ document.addEventListener('DOMContentLoaded', async function () {
     // 4. 지도 초기화 (약간의 딜레이 후 실행하여 탭 렌더링 안정화)
     setTimeout(initMaps, 500);
 });
+
+
+// ========================================
+// 🎮 게임 전환 (Marble <-> Car)
+// ========================================
+function switchGame(gameId, btn) {
+    // 1. 모든 게임 컨테이너 숨기기
+    document.querySelectorAll('.game-container').forEach(el => {
+        el.style.display = 'none';
+        el.classList.remove('active');
+    });
+
+    // 2. 선택된 게임 보이기
+    const target = document.getElementById(`game-${gameId}`);
+    if (target) {
+        target.style.display = 'block';
+        setTimeout(() => target.classList.add('active'), 10);
+    }
+
+    // 3. 버튼 활성화 상태 변경
+    document.querySelectorAll('.toggle-btn').forEach(el => el.classList.remove('active'));
+    btn.classList.add('active');
+
+    // 4. 타이틀 변경
+    const title = document.getElementById('rec-title');
+    if (title) {
+        title.textContent = gameId === 'marble' ? '🎱 순서 정하기' : '🚗 차량 좌석 배치';
+    }
+}
+
+
+// ========================================
+// 🚗 차량 배치 로직
+// ========================================
+function assignCars() {
+    const fixedDrivers = ['김지섭', '신우성'];
+    const allMembers = ['김지섭', '박범진', '손영길', '신예리', '신우성', '이재환', '임혜정', '장민한', '조옥래', '홍예진'];
+    let passengers = allMembers.filter(name => !fixedDrivers.includes(name));
+
+    // Fisher-Yates Shuffle (최종 결과를 미리 정해둠)
+    for (let i = passengers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [passengers[i], passengers[j]] = [passengers[j], passengers[i]];
+    }
+
+    const seats = document.querySelectorAll('.seat.passenger');
+    const cars = document.querySelectorAll('.car-box');
+
+    // 1. Reset
+    seats.forEach(seat => {
+        seat.textContent = '';
+        seat.classList.remove('filled', 'shuffling');
+        seat.style.backgroundColor = '';
+    });
+
+    // 2. Start Shifting Effect (차량 떨림)
+    cars.forEach(car => car.classList.add('shaking'));
+
+    const intervalIds = [];
+    const pool = [...passengers]; // 룰렛용 이름 풀
+
+    // 각 좌석마다 룰렛 효과 시작
+    seats.forEach((seat, index) => {
+        seat.classList.add('shuffling');
+
+        // Rapidly change names
+        const intervalId = setInterval(() => {
+            const randomName = pool[Math.floor(Math.random() * pool.length)];
+            seat.textContent = randomName;
+        }, 50 + Math.random() * 50); // 속도 약간씩 다르게
+
+        intervalIds.push(intervalId);
+    });
+
+    // 3. 순차적으로 멈추기
+    seats.forEach((seat, index) => {
+        // 딜레이: 시작 1.5초 후부터 0.4초 간격으로 하나씩 확정
+        const delay = 1500 + index * 400;
+
+        setTimeout(() => {
+            clearInterval(intervalIds[index]); // 룰렛 중지
+            seat.classList.remove('shuffling');
+            seat.textContent = passengers[index]; // 최종 이름 할당
+            seat.classList.add('filled');
+        }, delay);
+    });
+
+    // 4. 모든 애니메이션 종료 후 떨림 멈춤
+    const totalDuration = 1500 + seats.length * 400 + 500;
+    setTimeout(() => {
+        cars.forEach(car => car.classList.remove('shaking'));
+    }, totalDuration);
+}

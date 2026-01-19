@@ -1097,3 +1097,252 @@ h1 {
         opacity: 0.8;
     }
 }
+
+/* Game Toggle */
+.game-toggle {
+    display: flex;
+    background: #f1f3f5;
+    padding: 4px;
+    border-radius: 8px;
+    gap: 4px;
+}
+
+.toggle-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-sub);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.toggle-btn.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.game-container {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Car Seat Game */
+.car-area {
+    display: flex;
+    flex-direction: column;
+    /* 세로 배치 */
+    align-items: center;
+    gap: 60px;
+    /* 간격 증가 */
+    margin: 40px 0;
+}
+
+.car-box {
+    position: relative;
+    width: 200px;
+    /* 차 너비 증가 */
+    height: 240px;
+    /* 차 높이 증가 */
+    transition: transform 0.1s;
+}
+
+.car-box.shaking {
+    /* 흔들림 강도 대폭 감소 (0.5s -> 0.3s duration, quieter keyframes) */
+    animation: shake 0.3s cubic-bezier(.36, .07, .19, .97) infinite both;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0) rotate(-1deg);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(1px, 0, 0) rotate(1deg);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-2px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(2px, 0, 0);
+    }
+}
+
+.car-roof {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: white;
+    border: 4px solid #333;
+    border-radius: 30px;
+    z-index: 2;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.car-label {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 4px 0;
+    border-radius: 8px;
+}
+
+.seats-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.seats-row.front {
+    margin-top: 15px;
+    justify-content: space-around;
+}
+
+.seats-row.middle {
+    margin-bottom: 25px;
+}
+
+.seat {
+    width: 52px;
+    /* 좌석 크기 더 증가 (48->52) */
+    height: 52px;
+    background: #f0f0f0;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    /* 세로 정렬 명시 */
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    color: #999;
+    border: 2px solid #ddd;
+    text-align: center;
+    line-height: 1.1;
+    overflow: hidden;
+    word-break: keep-all;
+    font-weight: 500;
+    transition: all 0.2s;
+    padding: 2px;
+    /* 내부 여백 */
+}
+
+.seat.driver {
+    background: #E3F2FD;
+    border-color: #2196F3;
+    color: #1565C0;
+    font-weight: 700;
+    font-size: 0.9rem;
+    /* 운전자 이름 강조 */
+}
+
+/* 운전자 라벨 (small 태그) 스타일링 */
+.seat.driver small {
+    display: block;
+    font-size: 0.6rem;
+    font-weight: 400;
+    margin-top: -2px;
+    opacity: 0.8;
+}
+
+.seat.passenger {
+    transition: all 0.2s;
+}
+
+.seat.shuffling {
+    background: #FFF8E1;
+    color: #FF6F00;
+    border-color: #ffe082;
+    transform: scale(0.95);
+}
+
+.seat.filled {
+    background: #FFF3E0;
+    border-color: #FF9800;
+    color: #E65100;
+    font-weight: 700;
+    animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 6px rgba(233, 30, 99, 0.1);
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+
+    70% {
+        transform: scale(0.9);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Wheels */
+.wheels {
+    position: absolute;
+    width: 16px;
+    /* 바퀴 크기 증가 */
+    height: 40px;
+    background: #222;
+    border-radius: 6px;
+    z-index: 1;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.wheels.left-front {
+    top: 40px;
+    left: -8px;
+}
+
+.wheels.right-front {
+    top: 40px;
+    right: -8px;
+}
+
+.wheels.left-rear {
+    bottom: 40px;
+    left: -8px;
+}
+
+.wheels.right-rear {
+    bottom: 40px;
+    right: -8px;
+}
