@@ -190,7 +190,7 @@ async function supabaseRequest(table, method = 'GET', body = null, select = '*')
 
     let url = `${SUPABASE_URL}/rest/v1/${table}`;
     if (method === 'GET') {
-        url += `?select=${select}&order=created_at.desc&limit=1`;
+        url += `?select=${select}&order=updated_at.desc&limit=1`;
     }
     if (method === 'PATCH') {
         url += '?id=eq.1'; // 항상 id=1 레코드 업데이트
