@@ -109,7 +109,7 @@ function updateAllBudgetDisplays() {
         const configKey = map[key] || key;
         const val = c[configKey];
         if (val !== undefined) {
-            el.textContent = '~' + formatWon(val);
+            el.textContent = '1인 ' + formatWon(val);
         }
     });
 
@@ -353,14 +353,17 @@ const Engine = Matter.Engine,
     Composite = Matter.Composite,
     Events = Matter.Events,
     Body = Matter.Body,
-    Constraint = Matter.Constraint;
+    Mouse = Matter.Mouse,
+    MouseConstraint = Matter.MouseConstraint;
 
 let engine, render, runner;
-let isRunning = false;
+let marbleGameState = 'IDLE'; // IDLE, READY, RUNNING
+let gateBody = null;
+let participantNames = [];
 let rankings = [];
 const colors = ['#FF6B00', '#2D9CDB', '#FFD700', '#4CAF50', '#9C27B0', '#E91E63', '#795548', '#607D8B'];
 
-// 텍스트 렌더링
+// 텍스트 렌더링 (참가자 이름만 표시)
 const renderText = function () {
     if (!render) return;
     const context = render.context;
@@ -372,51 +375,30 @@ const renderText = function () {
     context.fillStyle = "#fff";
 
     bodies.forEach(body => {
-        if (body.label && !['peg', 'wall', 'ground', 'spinner', 'slope'].includes(body.label)) {
+        // 참가자 이름 목록에 있는 경우에만 텍스트 렌더링
+        if (body.label && participantNames.includes(body.label)) {
             const { x, y } = body.position;
             context.save();
             context.translate(x, y);
-            context.fillText(body.label.substring(0, 3), 0, 0);
+            context.fillText(body.label.substring(0, 3), 0, 0); // 3글자까지만
             context.restore();
         }
     });
 };
 
-function startMarbleRun() {
-    const btn = document.getElementById('raceBtn');
-    if (isRunning) {
-        WorldClear();
-        btn.textContent = 'START RUN';
-        isRunning = false;
-        return;
-    }
-
-    const nameInput = document.getElementById('rouletteNames').value;
-    const names = nameInput.split(',').map(n => n.trim()).filter(n => n.length > 0);
-
-    if (names.length < 2) {
-        alert('최소 2명 이상의 이름을 입력해주세요!');
-        return;
-    }
+// 페이지 로드 시 또는 탭 전환 시 맵 초기화
+function initMarbleWorld() {
+    if (engine) return; // 이미 초기화됨
 
     const container = document.getElementById('matter-container');
-    const rankList = document.getElementById('rankList');
-    const board = document.getElementById('rankBoard');
+    if (!container) return; // 컨테이너가 없을 경우 방어
 
-    container.innerHTML = '';
-    rankList.innerHTML = '';
-    board.style.display = 'none';
-    rankings = [];
-    isRunning = true;
-    btn.textContent = 'RESET';
+    // 만약 탭이 숨겨져 있어서 offsetHeight가 0이면 CSS 높이(1200px)를 강제로 사용
+    const width = container.offsetWidth || container.clientWidth || 400;
+    const height = container.offsetHeight || 1200;
 
-    // 1. 엔진
     engine = Engine.create();
-    engine.world.gravity.y = 0.4; // 중력 약간 증가 (맵이 길어져서)
-
-    // 2. 렌더러
-    const width = container.offsetWidth;
-    const height = container.offsetHeight; // Should be ~1200px
+    engine.world.gravity.y = 0.5;
 
     render = Render.create({
         element: container,
@@ -425,116 +407,205 @@ function startMarbleRun() {
             width: width,
             height: height,
             wireframes: false,
-            background: '#222'
+            background: '#1a1a1a',
+            pixelRatio: window.devicePixelRatio
         }
     });
 
-    // 3. 맵 구성 (4단 코스: 핀 -> 튕기는 벽 -> 지그재그 -> 골인)
+    // 맵 구조물 생성
+    createMapStructures(width, height);
+
+    // 마우스 컨트롤
+    const mouse = Mouse.create(render.canvas);
+    const mouseConstraint = MouseConstraint.create(engine, {
+        mouse: mouse,
+        constraint: { stiffness: 0.2, render: { visible: false } }
+    });
+    Composite.add(engine.world, mouseConstraint);
+    render.mouse = mouse;
+
+    // 이벤트 루프
+    Events.on(render, 'afterRender', renderText);
+    Events.on(engine, 'beforeUpdate', animateSpinner);
+    Events.on(engine, 'afterUpdate', checkRankings);
+
+    Render.run(render);
+    runner = Runner.create();
+    Runner.run(runner, engine);
+}
+
+function createMapStructures(width, height) {
     const wallOpts = { isStatic: true, render: { fillStyle: '#444' } };
     const pegOpts = { isStatic: true, render: { fillStyle: '#888' }, restitution: 0.5 };
-    const bounceOpts = { isStatic: true, render: { fillStyle: '#E91E63' }, restitution: 1.6 }; // 강력하게 튀는 벽
-    const glassOpts = { isStatic: true, render: { fillStyle: '#2D9CDB', opacity: 0.6 }, angle: Math.PI * 0.15 };
+    const bounceOpts = { isStatic: true, render: { fillStyle: '#E91E63' }, restitution: 1.2 };
 
-    // 좌우 벽 (전체 높이)
+    // 벽 & 바닥
     Composite.add(engine.world, [
-        Bodies.rectangle(0, height / 2, 20, height, wallOpts), // 좌벽
-        Bodies.rectangle(width, height / 2, 20, height, wallOpts), // 우벽
+        Bodies.rectangle(0, height / 2, 20, height, wallOpts),
+        Bodies.rectangle(width, height / 2, 20, height, wallOpts),
+        Bodies.rectangle(width / 2, height + 100, width, 100, { isStatic: true, label: 'ground' })
     ]);
 
-    // [1구간] 상단 Plinko (핀) - Start ~ 300px
-    const startY = 100;
-    for (let row = 0; row < 6; row++) {
-        const cols = row % 2 === 0 ? 7 : 6;
+    // [1구간] 핀 (Plinko)
+    const startY = 120;
+    for (let row = 0; row < 7; row++) {
+        const cols = row % 2 === 0 ? 8 : 7;
         const spacingX = width / (cols + 1);
         for (let col = 1; col <= cols; col++) {
-            Composite.add(engine.world, Bodies.circle(col * spacingX, startY + row * 45, 5, pegOpts));
+            Composite.add(engine.world, Bodies.circle(col * spacingX, startY + row * 45, 4, pegOpts));
         }
     }
 
-    // [2구간] 중단 Bouncing Walls (튕기는 벽) - 400px ~ 700px
-    const bumperY = 500;
+    // [2구간] 회전 십자가
+    const spinnerX = width / 2;
+    const spinnerY = 550;
+    const bar1 = Bodies.rectangle(spinnerX, spinnerY, 160, 15, { isStatic: true, render: { fillStyle: '#FFD700' }, label: 'spinner_bar' });
+    const bar2 = Bodies.rectangle(spinnerX, spinnerY, 15, 160, { isStatic: true, render: { fillStyle: '#FFD700' }, label: 'spinner_bar' });
+    Composite.add(engine.world, [bar1, bar2]);
+    engine.spinnerBars = [bar1, bar2];
+
+    // [2-2구간] 범퍼
     Composite.add(engine.world, [
-        // 왼쪽 범퍼 (삼각형 모양 비슷하게)
-        Bodies.polygon(width * 0.2, bumperY, 3, 40, { ...bounceOpts, angle: Math.PI / 2 }),
-        Bodies.polygon(width * 0.1, bumperY + 100, 3, 50, { ...bounceOpts, angle: Math.PI / 4 }),
-
-        // 오른쪽 범퍼
-        Bodies.polygon(width * 0.8, bumperY + 50, 3, 40, { ...bounceOpts, angle: -Math.PI / 2.5 }),
-        Bodies.polygon(width * 0.4, bumperY + 150, 3, 50, { ...bounceOpts, angle: -Math.PI / 4 }),
-
-        // 중앙 회전 장애물
-        Bodies.circle(width / 2, bumperY + 80, 25, { ...bounceOpts, label: 'spinner' })
+        Bodies.polygon(width * 0.15, spinnerY - 50, 3, 30, { ...bounceOpts, angle: Math.PI / 3 }),
+        Bodies.polygon(width * 0.85, spinnerY - 50, 3, 30, { ...bounceOpts, angle: -Math.PI / 3 }),
     ]);
 
-
-    // [3구간] 하단 ZigZags (지그재그 슬로프) - 800px ~ 1100px
-    const slopeY = 850;
-    const slopeW = width * 0.6;
-    const slopeH = 10;
-
+    // [3구간] 슬로프
+    const slopeY = 800;
+    const slopeW = width * 0.55;
     Composite.add(engine.world, [
-        // 왼쪽에서 오른쪽으로 내려가는 판
-        Bodies.rectangle(width * 0.3, slopeY, slopeW, slopeH, { isStatic: true, angle: Math.PI * 0.15, render: { fillStyle: '#FFC107' } }),
-        // 오른쪽에서 왼쪽으로
-        Bodies.rectangle(width * 0.7, slopeY + 150, slopeW, slopeH, { isStatic: true, angle: -Math.PI * 0.15, render: { fillStyle: '#FFC107' } }),
-        // 다시 왼쪽에서 오른쪽
-        Bodies.rectangle(width * 0.3, slopeY + 300, slopeW, slopeH, { isStatic: true, angle: Math.PI * 0.1, render: { fillStyle: '#FFC107' } })
+        Bodies.rectangle(width * 0.3, slopeY, slopeW, 10, { isStatic: true, angle: 0.4, render: { fillStyle: '#2D9CDB' } }),
+        Bodies.rectangle(width * 0.7, slopeY + 120, slopeW, 10, { isStatic: true, angle: -0.4, render: { fillStyle: '#2D9CDB' } }),
+        Bodies.rectangle(width * 0.3, slopeY + 240, slopeW, 10, { isStatic: true, angle: 0.4, render: { fillStyle: '#2D9CDB' } })
     ]);
 
-    // [4구간] 피니시 라인 가이드 (하단 중앙으로 유도)
+    // [4구간] 깔때기
+    const funnelY = height - 120;
     Composite.add(engine.world, [
-        Bodies.rectangle(width * 0.15, height - 150, width * 0.4, 20, { isStatic: true, angle: 0.3, render: { fillStyle: '#444' } }),
-        Bodies.rectangle(width * 0.85, height - 150, width * 0.4, 20, { isStatic: true, angle: -0.3, render: { fillStyle: '#444' } })
+        Bodies.rectangle(width * 0.2, funnelY, 200, 10, { isStatic: true, angle: 0.5, render: { fillStyle: '#555' } }),
+        Bodies.rectangle(width * 0.8, funnelY, 200, 10, { isStatic: true, angle: -0.5, render: { fillStyle: '#555' } })
     ]);
+}
 
-    // 4. 구슬 생성
-    const marbleRadius = 8;
+function animateSpinner() {
+    if (engine && engine.spinnerBars) {
+        const rotationSpeed = 0.05;
+        engine.spinnerBars.forEach(bar => Body.rotate(bar, rotationSpeed));
+    }
+}
+
+function checkRankings() {
+    const bodies = Composite.allBodies(engine.world);
+    const height = render.options.height;
+
+    bodies.forEach((body) => {
+        if (participantNames.includes(body.label)) {
+            if (body.position.y > height + 20) {
+                if (!rankings.includes(body.label)) {
+                    rankings.push(body.label);
+                    addRankItem(rankings.length, body.label);
+                    Composite.remove(engine.world, body);
+                }
+            }
+        }
+    });
+}
+
+function startMarbleRun() {
+    initMarbleWorld();
+
+    const btn = document.getElementById('raceBtn');
+
+    if (marbleGameState === 'IDLE') {
+        const nameInput = document.getElementById('rouletteNames').value;
+        const names = nameInput.split(',').map(n => n.trim()).filter(n => n.length > 0);
+
+        if (names.length < 2) {
+            alert('최소 2명 이상 입력해주세요!');
+            return;
+        }
+
+        participantNames = names;
+        spawnMarblesWithGate(names);
+
+        marbleGameState = 'READY';
+        btn.textContent = '🚀 출발! (GO)';
+        btn.style.background = '#FF6B00';
+        btn.style.color = '#fff';
+
+    } else if (marbleGameState === 'READY') {
+        if (gateBody) {
+            Composite.remove(engine.world, gateBody);
+            gateBody = null;
+        }
+
+        marbleGameState = 'RUNNING';
+        btn.textContent = '🔄 리셋 (RESET)';
+        btn.style.background = '#555';
+
+    } else {
+        resetMarbleGame();
+        btn.textContent = '🎾 공 생성하기 (READY)';
+        btn.style.background = '';
+        btn.style.color = '';
+    }
+}
+
+function spawnMarblesWithGate(names) {
+    if (!engine) return;
+    const width = render.options.width;
+    rankings = [];
+    document.getElementById('rankList').innerHTML = '';
+    document.getElementById('rankBoard').style.display = 'none';
+
+    // Clear dynamic bodies
+    const bodies = Composite.allBodies(engine.world);
+    bodies.forEach(b => {
+        if (!b.isStatic && b.label !== 'mouseConstraint') {
+            Composite.remove(engine.world, b);
+        }
+    });
+
+    // Gate
+    gateBody = Bodies.rectangle(width / 2, 80, width * 0.8, 10, {
+        isStatic: true,
+        render: { fillStyle: '#FFF', opacity: 0.8 },
+        label: 'gate'
+    });
+    Composite.add(engine.world, gateBody);
+
+    // Marbles
+    const marbleRadius = 9;
     names.forEach((name, i) => {
-        // x: 화면 너비의 30% ~ 70% 사이에서 랜덤 분포
-        const x = width * 0.3 + Math.random() * (width * 0.4);
-        const y = -150; // 동시에 출발 (높이 통일)
+        const x = width / 2 + (Math.random() - 0.5) * 100;
+        const y = 30 - 30; // 0이 아니라 30 - 30 = 0? 아니 50 - something? 
+        // y=0이어도 중력때문에 떨어짐. Gate가 80에 있으니 OK.
 
-        const marble = Bodies.circle(x, y, marbleRadius, {
-            restitution: 0.9,
-            friction: 0.001,
-            frictionAir: 0.02, // 공기 저항 (천천히 떨어짐)
+        const marble = Bodies.circle(x, 0, marbleRadius, {
+            restitution: 0.7,
+            friction: 0.005,
+            density: 0.04,
             label: name,
             render: { fillStyle: colors[i % colors.length] }
         });
         Composite.add(engine.world, marble);
     });
+}
 
-    // 5. 업데이트 & 센서
-    Events.on(render, 'afterRender', renderText);
-
-    Events.on(engine, 'afterUpdate', function () {
-        const bodies = Composite.allBodies(engine.world);
-        bodies.forEach(body => {
-            // 구슬만 체크
-            if (body.label && !['peg', 'wall', 'ground', 'spinner', 'slope'].includes(body.label)) {
-
-                // 회전 풍차 돌리기 (강제 회전)
-                if (body.label === 'spinner') {
-                    Body.setAngularVelocity(body, 0.15);
-                }
-
-                // 바닥 통과 (제거 & 랭킹)
-                if (body.position.y > height + 20) {
-                    if (!rankings.includes(body.label)) {
-                        rankings.push(body.label);
-                        addRankItem(rankings.length, body.label);
-
-                        // 월드에서 제거 (사라짐 효과)
-                        Composite.remove(engine.world, body);
-                    }
-                }
-            }
-        });
+function resetMarbleGame() {
+    marbleGameState = 'IDLE';
+    if (!engine) return;
+    const bodies = Composite.allBodies(engine.world);
+    bodies.forEach(b => {
+        if (!b.isStatic && b.label !== 'mouseConstraint') Composite.remove(engine.world, b);
     });
-
-    Render.run(render);
-    runner = Runner.create();
-    Runner.run(runner, engine);
+    if (gateBody) {
+        Composite.remove(engine.world, gateBody);
+        gateBody = null;
+    }
+    rankings = [];
+    document.getElementById('rankList').innerHTML = '';
+    document.getElementById('rankBoard').style.display = 'none';
 }
 
 function WorldClear() {
@@ -935,6 +1006,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // 4. 지도 초기화 (약간의 딜레이 후 실행하여 탭 렌더링 안정화)
     setTimeout(initMaps, 500);
+    // 5. 마블런 맵 초기화 (기본 탭)
+    setTimeout(initMarbleWorld, 800);
 });
 
 
@@ -963,6 +1036,11 @@ function switchGame(gameId, btn) {
     const title = document.getElementById('rec-title');
     if (title) {
         title.textContent = gameId === 'marble' ? '🎱 순서 정하기' : '🚗 차량 좌석 배치';
+    }
+
+    // 5. 마블런 맵 초기화 (처음 진입 시)
+    if (gameId === 'marble') {
+        setTimeout(initMarbleWorld, 100);
     }
 }
 
