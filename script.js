@@ -137,6 +137,19 @@ function updateAllBudgetDisplays() {
     if (day3Total) day3Total.textContent = '~' + formatWon(budgets.day3.cumulative);
     if (day3Remain) day3Remain.textContent = '~' + formatWon(budgets.day3.remaining);
 
+    // Info 페이지 상세 예산 (Dynamic Update)
+    const bFlight = document.getElementById('budget-flight');
+    const bRent = document.getElementById('budget-rent');
+    const bFood = document.getElementById('budget-food');
+
+    if (bFlight) bFlight.textContent = formatWon(c.flight);
+    if (bRent) bRent.textContent = formatWon(c.rent);
+    if (bFood) {
+        // 식비/활동 = 전체 - 항공 - 렌트
+        const foodActivity = budgets.total - c.flight - c.rent;
+        bFood.textContent = '~' + formatWon(foodActivity);
+    }
+
     // Info 페이지 예산 계산기
     const totalCost = document.getElementById('total-cost');
     const remainingBudget = document.getElementById('remaining-budget');
