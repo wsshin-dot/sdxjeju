@@ -262,6 +262,11 @@ h1 {
     box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
 }
 
+.time-item.filled .time-dot {
+    background: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.3);
+}
+
 .time-item.highlight .time-dot {
     background: var(--primary);
     border-color: white;
