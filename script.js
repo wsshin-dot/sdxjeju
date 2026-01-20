@@ -1176,7 +1176,21 @@ function addPageSwipeNavigation() {
 }
 
 // Initialize Page Swipe
+// Initialize Page Swipe
 document.addEventListener('DOMContentLoaded', () => {
     addPageSwipeNavigation();
+
+    // Show Swipe Guide after initial intro
+    setTimeout(() => {
+        const guide = document.getElementById('swipe-guide');
+        if (guide) {
+            guide.classList.add('visible');
+
+            // Hide after 4 seconds
+            setTimeout(() => {
+                guide.classList.remove('visible');
+            }, 4000);
+        }
+    }, 3000); // 3 seconds delay (after intro overlay is gone)
 });
 
