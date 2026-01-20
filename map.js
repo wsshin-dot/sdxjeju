@@ -23,13 +23,13 @@ Object.assign(ROUTES, {
 });
 
 var LOCATION_INFO = {
-    airport: { name: "✈️ 제주국제공항", desc: "만남과 헤어짐의 장소" },
+    airport: { name: "✈️ 제주국제공항", desc: "공항항 공항항" },
     shinwooseong: { name: "🐷 신우성 흑돼지", desc: "Day 1 저녁: 흑돼지 맛집" },
     stay: { name: "🏠 씨사이드 아덴", desc: "숙소: 편안한 휴식" },
     market: { name: "🍊 매일올레시장", desc: "Day 2 저녁: 맛있는 먹거리 포장" },
     park981: { name: "🏎️ 9.81 파크", desc: "스피드 레이싱 & 서바이벌" },
     letsrun: { name: "🐎 렛츠런 파크", desc: "승부의 세계 (경마)" },
-    gojip: { name: "🐟 고집돌우럭", desc: "Day 2 점심: 우럭조림 맛집" },
+    gojip: { name: "🐟 고집돌우럭", desc: "Day 2 점심: 중문 맛집" },
     center: { name: "한라산", desc: "제주의 중심" }
 };
 
@@ -208,11 +208,4 @@ function refreshMaps() {
     }
 }
 
-// 지도 초기화 실행
-if (typeof naver !== 'undefined') {
-    initMaps();
-} else {
-    window.addEventListener('load', () => {
-        if (typeof naver !== 'undefined') initMaps();
-    });
-}
+// 지도 초기화 실행 로직 제거 (script.js에서 제어)

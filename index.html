@@ -67,7 +67,11 @@
         </header>
 
         <nav class="nav-sticky">
-            <button class="nav-btn active" onclick="switchTab('day1', this)">
+            <button class="nav-btn active" onclick="switchTab('info', this)">
+                <span>Info</span>
+                <span class="date">정보/예산</span>
+            </button>
+            <button class="nav-btn" onclick="switchTab('day1', this)">
                 <span>Day 1</span>
                 <span class="date">2.5 (목)</span>
             </button>
@@ -79,24 +83,20 @@
                 <span>Day 3</span>
                 <span class="date">2.7 (토)</span>
             </button>
-            <button class="nav-btn" onclick="switchTab('info', this)">
-                <span>Info</span>
-                <span class="date">정보/예산</span>
-            </button>
             <button class="nav-btn" onclick="switchTab('recreation', this)">
                 <span>REC</span>
                 <span class="date">게임</span>
             </button>
         </nav>
 
-        <div id="day1" class="tab-content active">
+        <div id="day1" class="tab-content">
             <div class="card">
                 <div class="card-header">
                     <div class="card-title"><i class="fas fa-plane-departure"></i> 도착 및 체크인</div>
 
                 </div>
                 <!-- Day 1 Map -->
-                <div id="map-day1" class="day-map"></div>
+                <!-- Day 1 Map Moved -->
                 <div class="day-budget-bar" id="day1-budget-bar">
                     <div class="day-budget-item">
                         <span class="label">Day1 예상비용</span>
@@ -113,10 +113,8 @@
                         <span class="val remain" id="day1-remain">~10만원</span>
                     </div>
                 </div>
-                <div id="day1-info-box"
-                    style="background:#fff3e0; padding:10px 14px; border-radius:8px; margin-bottom:16px; font-size:0.8rem; color:#e65100;">
-                    <!-- JS에서 업데이트 -->
-                </div>
+                <!-- Day 1 Map Moved Here -->
+
                 <div class="timeline">
                     <div class="time-item highlight">
                         <div class="time-dot"></div>
@@ -208,6 +206,7 @@
                         </div>
                     </div>
                 </div>
+                <div id="map-day1" class="day-map" style="margin-top: 20px;"></div>
 
 
 
@@ -221,7 +220,7 @@
 
                 </div>
                 <!-- Day 2 Map -->
-                <div id="map-day2" class="day-map"></div>
+                <!-- Day 2 Map Moved -->
                 <div class="day-budget-bar" id="day2-budget-bar">
                     <div class="day-budget-item">
                         <span class="label">Day2 예상비용</span>
@@ -238,6 +237,7 @@
                         <span class="val remain" id="day2-remain">~5.8만원</span>
                     </div>
                 </div>
+                <!-- Day 2 Map Moved Here -->
                 <div class="timeline">
                     <div class="time-item">
                         <div class="time-dot"></div>
@@ -410,6 +410,7 @@
                         </div>
                     </div>
                 </div>
+                <div id="map-day2" class="day-map" style="margin-top: 20px;"></div>
 
 
 
@@ -423,7 +424,7 @@
 
                 </div>
                 <!-- Day 3 Map -->
-                <div id="map-day3" class="day-map"></div>
+                <!-- Day 3 Map Moved -->
                 <div class="day-budget-bar" id="day3-budget-bar">
                     <div class="day-budget-item">
                         <span class="label">Day3 예상비용</span>
@@ -440,6 +441,7 @@
                         <span class="val remain" id="day3-remain">~5.8만원</span>
                     </div>
                 </div>
+                <!-- Day 3 Map Moved Here -->
                 <div class="timeline">
                     <div class="time-item">
                         <div class="time-dot"></div>
@@ -450,9 +452,10 @@
                         </div>
                         <div class="time-card">
                             <div class="time-desc">🚗 빌리카 반납 (오전 비행기)</div>
+                            <div class="time-desc" style="font-size:0.9rem; color:#666; margin-top:4px;">멤버: 조옥래, 김지섭,
+                                홍예진, 장민한, 박범진</div>
                             <div class="time-desc">셔틀 탑승 → 공항 이동</div>
-                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 50분
-                                (숙소→공항)</div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 50분 (숙소→공항)</div>
                         </div>
                     </div>
 
@@ -464,6 +467,8 @@
                         </div>
                         <div class="time-card">
                             <div class="time-desc">🏠 짐 정리 및 숙소 퇴실</div>
+                            <div class="time-desc" style="font-size:0.9rem; color:#666; margin-top:4px;">멤버: 손영길, 신우성,
+                                신예리, 이재환, 임혜정</div>
                             <div class="time-desc" style="margin-top:4px;">~ 빌리카 반납 (오후 비행기)</div>
                         </div>
                     </div>
@@ -477,7 +482,7 @@
                         </div>
                         <div class="time-card">
                             <div class="time-desc">🥄 제주시 애월읍 맛집 '탐나게'</div>
-                            <div class="time-desc" style="font-size:0.8rem; color:#666;">흑돼지 돈가스, 전복죽 등</div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#666;">참게장 맛집</div>
                             <div style="margin-top:8px;">
                                 <a href="https://map.naver.com/p/search/탐나게" target="_blank"
                                     style="display:inline-flex; align-items:center; color:#1976D2; font-size:0.85rem; text-decoration:none;">
@@ -522,13 +527,14 @@
                             <div class="time-desc">✈️ 비행기 탑승</div>
                             <div class="time-desc" style="font-size:0.9rem; font-weight:700; color:#E65100;">수고하셨습니다! 👋
                             </div>
+                            <div id="map-day3" class="day-map" style="margin-top: 20px;"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="info" class="tab-content">
+        <div id="info" class="tab-content active">
             <div class="card budget-card">
                 <div class="budget-total">
                     <h3>1인당 예산</h3>
@@ -548,8 +554,7 @@
                         <div class="val">~16만원</div>
                     </div>
                 </div>
-                <div id="info-footer-box"
-                    style="padding:12px 16px; background:rgba(255,255,255,0.1); text-align:center; font-size:0.8rem; opacity:0.7;">
+                <div id="info-footer-box" class="info-box-footer">
                     <!-- JS에서 업데이트 -->
                 </div>
             </div>
@@ -569,6 +574,7 @@
                         <i class="fas fa-car"></i>
                         <span class="label">운전자</span>
                         <div class="val">신우성, 김지섭</div>
+                        <div style="font-size:0.75rem; color:#666; margin-top:4px;">싼타페 디젤 DCT미션 (꿀렁임 있음)</div>
                     </div>
                 </div>
                 <div style="margin-top:12px; text-align:center;">
@@ -581,8 +587,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">💰 예산 계산기</div>
-                    <button id="unlock-btn" onclick="unlockBudget()"
-                        style="padding:6px 12px; background:#f0f0f0; border:1px solid #ddd; border-radius:8px; font-size:0.8rem; cursor:pointer;">
+                    <button id="unlock-btn" class="btn-unlock" onclick="unlockBudget()">
                         🔒 잠금해제
                     </button>
                 </div>
@@ -665,8 +670,7 @@
                             <span class="budget-unit">원</span>
                         </div>
                         <div id="custom-budget-items"></div>
-                        <button id="add-item-btn" onclick="addBudgetItem()"
-                            style="display:none; width:100%; padding:10px; margin-top:10px; background:#f8f9fa; border:2px dashed #ddd; border-radius:10px; color:#888; font-size:0.9rem; cursor:pointer;">
+                        <button id="add-item-btn" class="btn-add-item" onclick="addBudgetItem()">
                             ➕ 항목 추가
                         </button>
                     </div>
@@ -791,11 +795,10 @@
         <div class="modal-content">
             <div class="modal-title">🔐 관리자 인증</div>
             <div class="modal-desc">예산 수정을 위해 비밀번호를 입력해주세요.</div>
-            <input type="password" id="modal-password-input" class="budget-input"
-                style="width:100%; margin:15px 0; text-align:center;" placeholder="비밀번호 6자리">
+            <input type="password" id="modal-password-input" class="budget-input input-admin" placeholder="비밀번호 6자리">
             <div class="modal-buttons">
-                <button onclick="closePasswordModal()" class="modal-btn cancel">취소</button>
-                <button onclick="submitPassword()" class="modal-btn confirm">확인</button>
+                <button onclick="closePasswordModal()" class="btn-modal cancel">취소</button>
+                <button onclick="submitPassword()" class="btn-modal confirm">확인</button>
             </div>
         </div>
     </div>

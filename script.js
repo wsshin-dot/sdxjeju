@@ -749,7 +749,7 @@ function addBudgetItemFromData(label, value, confirmed) {
     checkbox.type = 'checkbox';
     checkbox.className = 'custom-confirmed';
     checkbox.checked = confirmed;
-    checkbox.style.cssText = "width:20px; height:20px; margin-right:8px; accent-color:#4CAF50;";
+    checkbox.className = 'custom-confirmed input-checkbox';
     checkbox.onchange = onBudgetChange;
 
     // Label Input
@@ -758,7 +758,7 @@ function addBudgetItemFromData(label, value, confirmed) {
     labelInput.className = 'budget-label-input';
     labelInput.placeholder = '항목명';
     labelInput.value = label;
-    labelInput.style.cssText = "flex:1; padding:8px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem;";
+    labelInput.className = 'budget-label-input input-modern';
     labelInput.oninput = onBudgetChange;
 
     // 수정 모드 전환
@@ -943,40 +943,38 @@ function onBudgetChange() {
 
         // 확정된 항목 UI 업데이트 (회색처리, 비활성화) - 삭제 버튼 로직 제거됨
         if (confirmed) {
-            // Label Styling: 텍스트처럼 보이게
+            // Label Styling
             if (labelInput) {
                 labelInput.disabled = true;
-                labelInput.style.border = 'none';
-                labelInput.style.background = 'transparent';
-                labelInput.style.padding = '0';
-                labelInput.style.fontWeight = '500';
-                labelInput.style.color = 'var(--text-main)';
-                labelInput.style.cursor = 'pointer';
+                labelInput.classList.add('input-readonly');
             }
             if (confirmedInput) confirmedInput.style.display = 'none';
             if (costInput) costInput.disabled = true;
 
-            // Row styling (Standard look)
-            row.style.background = '#f8f9fa';
-            row.style.border = '1px solid #e5e8eb';
+            // Row styling
+            row.classList.add('confirmed');
+            row.style.border = ''; // Clean up any inline style overrides
 
         } else {
-            // 수정 모드: 스타일 복원
+            // 수정 모드
             if (labelInput) {
                 labelInput.disabled = false;
-                labelInput.style.border = '1px solid #ddd';
-                labelInput.style.background = 'white';
-                labelInput.style.padding = '8px';
-                labelInput.style.fontWeight = '400';
-                labelInput.style.color = 'black';
-                labelInput.style.cursor = 'text';
+                labelInput.classList.remove('input-readonly');
+                // Remove inline styles if they were set by old code (safety)
+                labelInput.style.border = '';
+                labelInput.style.background = '';
+                labelInput.style.padding = '';
+                labelInput.style.fontWeight = '';
+                labelInput.style.color = '';
+                labelInput.style.cursor = '';
             }
             if (confirmedInput) confirmedInput.style.display = 'inline-block';
             if (costInput) costInput.disabled = false;
 
-            // Row styling (Edit look)
-            row.style.background = '#fff';
-            row.style.border = '1px solid #2D9CDB'; // Blue border for focus
+            // Row styling
+            row.classList.remove('confirmed');
+            row.style.background = ''; // Clean up
+            row.style.border = '1px solid #2D9CDB'; // Active border remains inline or could be class
         }
     });
 
