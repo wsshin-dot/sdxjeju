@@ -827,25 +827,28 @@ function addSwipeListeners(row) {
     let isSwiping = false;
 
     // Touch Events
-    row.addEventListener('touchstart', (e) => startSwipe(e.touches[0].clientX));
+    row.addEventListener('touchstart', (e) => startSwipe(e, e.touches[0].clientX));
     row.addEventListener('touchmove', (e) => moveSwipe(e, e.touches[0].clientX));
     row.addEventListener('touchend', (e) => endSwipe());
 
     // Mouse Events (Test/Desktop)
-    row.addEventListener('mousedown', (e) => startSwipe(e.clientX));
+    row.addEventListener('mousedown', (e) => startSwipe(e, e.clientX));
     row.addEventListener('mousemove', (e) => { if (isSwiping) moveSwipe(e, e.clientX); });
     row.addEventListener('mouseup', (e) => { if (isSwiping) endSwipe(); });
     row.addEventListener('mouseleave', (e) => { if (isSwiping) endSwipe(); });
 
-    function startSwipe(x) {
-        if (!budgetUnlocked) return; // 잠금 상태면 동작 안함
+    function startSwipe(e, x) {
+        if (!budgetUnlocked) return;
         isSwiping = true;
         startX = x;
-        row.classList.add('swiping'); // Disable transition
+        row.classList.add('swiping');
+        // 페이지 스와이프와 충돌 방지
+        e.stopPropagation();
     }
 
     function moveSwipe(e, x) {
         if (!isSwiping) return;
+        e.stopPropagation(); // 스와이프 중 이벤트 전파 중단
         currentX = x - startX;
 
         // 수직 스크롤 방해 최소화: X축 이동이 작으면 무시
@@ -1105,3 +1108,75 @@ function assignCars() {
         cars.forEach(car => car.classList.remove('shaking'));
     }, totalDuration);
 }
+
+// ==========================================
+// 📄 Page Swipe Navigation
+// ==========================================
+function addPageSwipeNavigation() {
+    let startX = 0;
+    let startY = 0;
+    const threshold = 60; // Swipe threshold
+    const allowedTabs = ['info', 'day1', 'day2', 'day3', 'recreation'];
+
+    document.addEventListener('touchstart', e => {
+        // 이미 스와이프가 처리되었거나(stopPropagation), 멀티터치인 경우 무시
+        if (e.touches.length > 1) return;
+
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+    }, { passive: false });
+
+    document.addEventListener('touchend', e => {
+        if (!startX || !startY) return;
+
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+        const diffX = startX - endX;
+        const diffY = startY - endY;
+
+        startX = 0;
+        startY = 0;
+
+        // 수직 스크롤이 주 목적이면 무시 (45도 각도 기준)
+        if (Math.abs(diffY) > Math.abs(diffX)) return;
+
+        if (Math.abs(diffX) > threshold) {
+            // 현재 활성 탭 찾기
+            const currentBtn = document.querySelector('.nav-btn.active');
+            if (!currentBtn) return;
+
+            const onclickVal = currentBtn.getAttribute('onclick');
+            if (!onclickVal) return;
+
+            const match = onclickVal.match(/'([^']+)'/);
+            if (!match) return;
+
+            const currentTabId = match[1];
+            const currentIndex = allowedTabs.indexOf(currentTabId);
+
+            if (currentIndex === -1) return;
+
+            if (diffX > 0) {
+                // Swipe Left (Next)
+                if (currentIndex < allowedTabs.length - 1) {
+                    const nextTab = allowedTabs[currentIndex + 1];
+                    const nextBtn = document.querySelectorAll('.nav-btn')[currentIndex + 1];
+                    switchTab(nextTab, nextBtn);
+                }
+            } else {
+                // Swipe Right (Prev)
+                if (currentIndex > 0) {
+                    const prevTab = allowedTabs[currentIndex - 1];
+                    const prevBtn = document.querySelectorAll('.nav-btn')[currentIndex - 1];
+                    switchTab(prevTab, prevBtn);
+                }
+            }
+        }
+    });
+}
+
+// Initialize Page Swipe
+document.addEventListener('DOMContentLoaded', () => {
+    addPageSwipeNavigation();
+});
+
