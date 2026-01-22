@@ -1205,7 +1205,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 4000);
         }
     }, 3000); // 3 seconds delay (after intro overlay is gone)
-});
+    // 5. 날씨 정보 가져오기
+    fetchJejuWeather();
+}); // End of DOMContentLoaded
 
 
 // Weather Toggle Logic
@@ -1253,5 +1255,37 @@ function showToast(message) {
     setTimeout(() => {
         toast.style.opacity = '0';
     }, 2500);
+}
+
+// Weather Fetching Logic
+async function fetchJejuWeather() {
+    const weatherElement = document.getElementById('current-weather');
+    if (!weatherElement) return;
+
+    try {
+        // Seogwipo Coordinates: 33.25, 126.56
+        const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=33.25&longitude=126.56&current=temperature_2m,weather_code&timezone=Asia%2FTokyo');
+        const data = await response.json();
+
+        const temp = Math.round(data.current.temperature_2m);
+        const code = data.current.weather_code;
+
+        let icon = 'fa-sun';
+        let text = '맑음';
+
+        if (code >= 1 && code <= 3) { icon = 'fa-cloud-sun'; text = '구름약간'; }
+        else if (code >= 45 && code <= 48) { icon = 'fa-smog'; text = '안개'; }
+        else if (code >= 51 && code <= 67) { icon = 'fa-cloud-rain'; text = '비'; }
+        else if (code >= 71) { icon = 'fa-snowflake'; text = '눈'; }
+        else if (code >= 95) { icon = 'fa-bolt'; text = '뇌우'; }
+        else if (code === 0) { icon = 'fa-sun'; text = '맑음'; }
+        else { icon = 'fa-cloud'; text = '흐림'; }
+
+        weatherElement.innerHTML = `<i class="fas ${icon}"></i> 서귀포 ${temp}°C`;
+    } catch (e) {
+        console.error("Weather fetch failed", e);
+        weatherElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> 날씨 정보 없음`;
+        weatherElement.style.color = '#aaa';
+    }
 }
 
