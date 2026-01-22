@@ -73,7 +73,7 @@ function updateAllBudgetDisplays() {
     // Info Tab Footer
     const footerInfo = document.getElementById('info-footer-box');
     if (footerInfo) {
-        footerInfo.textContent = `숙소: 1인 2만원 | 총 예산: ${totalMan}만원 (${count}명)`;
+        footerInfo.textContent = `숙소: 1인 2만원(예산 미포함)| 총 예산: ${totalMan}만원 (${count}명)`;
     }
 
     // 예산 기준 텍스트
