@@ -1488,10 +1488,10 @@ h1 {
    Rainy Mode Styles
    ========================================= */
 .weather-toggle {
-    position: fixed;
+    position: absolute;
     top: 20px;
     right: 20px;
-    z-index: 2000;
+    z-index: 10;
 }
 
 .weather-btn {
