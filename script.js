@@ -63,7 +63,7 @@ function updateAllBudgetDisplays() {
     // Day1 Info Box
     const day1Info = document.getElementById('day1-info-box');
     if (day1Info) {
-        day1Info.innerHTML = `💡 총 예산 ${totalMan}만원 (1인 ${perPersonMan}만원) | 항공 + 렌트/기름 포함<br>🏠 숙소비: 1인 2만원 (별도, 예산 미포함) - 이재환 선임에게 2만원 입금 🙏`;
+        day1Info.innerHTML = `💡 총 예산 ${totalMan}만원 (1인 ${perPersonMan}만원) | 항공 + 렌트/기름 포함<br>🏠 숙소비: 1인 2만원 (별도, 예산 미포함)`;
     }
 
     // Info Tab Per Person
@@ -73,7 +73,7 @@ function updateAllBudgetDisplays() {
     // Info Tab Footer
     const footerInfo = document.getElementById('info-footer-box');
     if (footerInfo) {
-        footerInfo.textContent = `숙소: 1인 2만원 (이재환 선임에게 2만원 입금) | 총 예산: ${totalMan}만원 (${count}명)`;
+        footerInfo.textContent = `숙소: 1인 2만원 | 총 예산: ${totalMan}만원 (${count}명)`;
     }
 
     // 예산 기준 텍스트
