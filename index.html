@@ -59,6 +59,13 @@
         <div class="guide-text">좌우로 밀어서 일정 확인</div>
     </div>
 
+    <!-- Weather Toggle -->
+    <div class="weather-toggle">
+        <button id="weather-btn" class="weather-btn" onclick="toggleRainMode()">
+            <i class="fas fa-sun"></i> 맑음 (기본)
+        </button>
+    </div>
+
     <div class="app-container">
         <header>
             <div class="header-content">
@@ -225,8 +232,12 @@
                             <span class="time-title">숙소 복귀 (도보)</span>
                         </div>
                         <div class="time-card">
-                            <div class="time-desc">🚶 도보: 약 15분 (식당→숙소)</div>
-                            <div class="time-desc" style="font-size:0.8rem; color:#666;">소화시킬 겸 산책 🌙</div>
+                            <div class="time-desc sunny-only">🚶 도보: 약 15분 (식당→숙소)</div>
+                            <div class="time-desc sunny-only" style="font-size:0.8rem; color:#666;">소화시킬 겸 산책 🌙 (우천 시
+                                택시이동)</div>
+                            <div class="time-desc rainy-only">🚕 <b>우천 시:</b> 카카오T 택시 호출</div>
+                            <div class="time-desc rainy-only" style="font-size:0.8rem; color:#4A6FA5;">이동: 약 3분 / 기본요금
+                                예상</div>
                         </div>
                     </div>
 
@@ -281,16 +292,30 @@
                 </div>
                 <!-- Day 2 Map Moved Here -->
                 <div class="timeline">
-                    <div class="time-item">
+                    <div class="time-item highlight">
                         <div class="time-dot"></div>
                         <div class="time-header">
                             <span class="time-time">08:00</span>
-                            <span class="time-title">아침 (자유시간)</span>
-                            <span class="badge blue">자유</span>
+                            <span class="time-title">자유 시간 & 아침 식사</span>
                         </div>
                         <div class="time-card">
                             <div class="time-desc">중문 관광 및 아침식사 or 휴식</div>
-                            <div class="time-desc" style="font-size:0.85rem; color:#666;">
+
+                            <!-- Fishing Option (Sunny Mode Only) -->
+                            <div class="options-grid sunny-only" style="margin-top:10px;">
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag rec" style="background:#4A6FA5;">선택</span><span
+                                                class="opt-name">새벽 낚시</span></div>
+                                        <div class="opt-price">개인 2~5만원</div>
+                                        <div style="font-size:0.75rem; color:#888;">서귀포/중문 선상 체험 🎣</div>
+                                    </div>
+                                    <a href="https://map.naver.com/p/search/서귀포배낚시" target="_blank" class="btn-map"><i
+                                            class="fas fa-map"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="time-desc sunny-only" style="margin-top:10px;">
                                 추천:
                                 <a href="https://map.naver.com/p/search/수두리보말칼국수" target="_blank"
                                     style="color:#666; text-decoration:underline;">수두리보말칼국수</a>,
@@ -302,6 +327,9 @@
                                     style="color:#666; text-decoration:underline;">천제연폭포(도보15분)</a>,
                                 <a href="https://map.naver.com/p/search/대포주상절리" target="_blank"
                                     style="color:#666; text-decoration:underline;">주상절리</a>
+                            </div>
+                            <div class="time-desc rainy-only">
+                                <span style="font-size:0.85rem; color:#666;">(오전 중문 자유 일정 유지 / 실내 위주)</span>
                             </div>
                             <div class="time-desc" style="font-size:0.8rem; color:#666; margin-top:4px;">🚙
                                 이동: 약 5분 /
@@ -390,16 +418,54 @@
                             <div class="time-desc"
                                 style="font-size:0.85rem; color:#E65100; font-weight:700; margin-top:4px;">⚠️ 샌들/슬리퍼 탑승
                                 금지 (앞뒤 막힌 신발)</div>
-                            <div class="time-desc" style="font-size:0.85rem; color:#1976D2; font-weight:600;">� 9.81파크 앱
+                            <div class="time-desc" style="font-size:0.85rem; color:#1976D2; font-weight:600;"> 9.81파크 앱
                                 미리 설치 필수 (티켓 연동)</div>
-                            <div class="time-desc" style="font-size:0.8rem; color:#666;">�🚙 이동: 약 30분
+                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 30분
                                 (중문→애월)</div>
                             <div class="time-desc" style="font-size:0.85rem; color:#666; margin-top:4px;">📍
                                 제주시 애월읍 천덕로
                                 880-24</div>
                             <div style="margin-top:10px;">
-                                <a href="https://map.naver.com/p/search/9.81파크" target="_blank" class="badge blue"
-                                    style="text-decoration:none;">지도보기</a>
+                                <a href="https://map.naver.com/p/search/9.81파크" target="_blank"
+                                    class="badge blue sunny-only" style="text-decoration:none;">지도보기</a>
+                            </div>
+                            <div class="options-grid rainy-only"
+                                style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
+                                <div style="width:100%; margin-bottom:8px; color:#E65100; font-weight:700;">☔ 우천 시 대체
+                                    액티비티 (택1)</div>
+
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag rec">추천1</span><span class="opt-name">대유랜드</span>
+                                        </div>
+                                        <div class="opt-price">~4.5만원(16발)</div>
+                                        <div style="font-size:0.75rem; color:#888;">반실내 클레이 사격 �</div>
+                                    </div>
+                                    <a href="https://map.naver.com/p/search/대유랜드" target="_blank" class="btn-map"><i
+                                            class="fas fa-map"></i></a>
+                                </div>
+
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag normal">추천2</span><span class="opt-name">9.81
+                                                실내게임</span></div>
+                                        <div class="opt-price">~3.0만원</div>
+                                        <div style="font-size:0.75rem; color:#888;">서바이벌/스포츠랩 (이동X)</div>
+                                    </div>
+                                    <a href="#" onclick="return false;" class="btn-map"
+                                        style="opacity:0.3; cursor:default;"><i class="fas fa-map-marker-alt"></i></a>
+                                </div>
+
+                                <div class="option-item">
+                                    <div class="opt-info">
+                                        <div><span class="opt-tag normal">추천3</span><span
+                                                class="opt-name">항공우주박물관</span></div>
+                                        <div class="opt-price">~1.0만원</div>
+                                        <div style="font-size:0.75rem; color:#888;">초대형 실내 전시/4D �</div>
+                                    </div>
+                                    <a href="https://map.naver.com/p/search/제주항공우주박물관" target="_blank"
+                                        class="btn-map"><i class="fas fa-map"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -411,10 +477,15 @@
                             <span class="time-title">렛츠런 파크 (선택)</span>
                             <span class="badge blue">시간되면</span>
                         </div>
-                        <div class="time-card">
+                        <div class="time-card sunny-only">
                             <div class="time-desc">🐎 경마 체험 (시간 여유 시 방문)</div>
                             <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 약 15분
                                 (9.81→렛츠런)</div>
+                        </div>
+                        <div class="time-card rainy-only">
+                            <div class="time-desc">☔ <b>우천 대안:</b> 오설록 티 뮤지엄</div>
+                            <div class="time-desc">녹차 아이스크림 & 티 타임 🍵</div>
+                            <div class="time-desc" style="font-size:0.8rem; color:#666;">🚙 이동: 9.81파크에서 20분</div>
                         </div>
                     </div>
 

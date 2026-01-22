@@ -1207,3 +1207,51 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000); // 3 seconds delay (after intro overlay is gone)
 });
 
+
+// Weather Toggle Logic
+function toggleRainMode() {
+    const body = document.body;
+    const btn = document.getElementById('weather-btn');
+    const isRainy = body.classList.toggle('rainy-mode');
+
+    if (isRainy) {
+        btn.classList.add('active');
+        btn.innerHTML = '<i class="fas fa-umbrella"></i> 우천 플랜 (ON)';
+        showToast('☔ 우천 시 플랜으로 전환되었습니다.');
+    } else {
+        btn.classList.remove('active');
+        btn.innerHTML = '<i class="fas fa-sun"></i> 맑음 (기본)';
+        showToast('☀️ 기본 일정으로 복귀했습니다.');
+    }
+}
+
+// Simple Toast Notification
+function showToast(message) {
+    let toast = document.getElementById('toast-msg');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast-msg';
+        toast.style.position = 'fixed';
+        toast.style.bottom = '80px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.background = 'rgba(0,0,0,0.8)';
+        toast.style.color = 'white';
+        toast.style.padding = '10px 20px';
+        toast.style.borderRadius = '20px';
+        toast.style.zIndex = '9999';
+        toast.style.fontSize = '0.9rem';
+        toast.style.transition = 'opacity 0.3s';
+        toast.style.opacity = '0';
+        toast.style.pointerEvents = 'none';
+        document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+    toast.style.opacity = '1';
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+    }, 2500);
+}
+
