@@ -3,6 +3,12 @@ export interface ScheduleItem {
     time: string;
     title: string;
     desc?: string[];
+    // Rain Mode Overrides
+    rainyTitle?: string;
+    rainyDesc?: string[];
+
+    condition?: 'sunny' | 'rainy'; // If set, only shows in that mode
+
     badges?: { text: string; color: 'blue' | 'red' | 'orange' }[];
     highlight?: boolean;
     costTag?: { id: string; label: string };
@@ -16,6 +22,7 @@ export interface ScheduleItem {
         desc: string;
         mapUrl?: string;
         onClick?: () => void;
+        condition?: 'sunny' | 'rainy'; // Option-level condition
     }[];
 }
 
@@ -71,10 +78,15 @@ export const SCHEDULE_DAY1: ScheduleItem[] = [
     {
         time: "22:50",
         title: "숙소 복귀 (도보)",
+        rainyTitle: "숙소 복귀 (택시)",
         highlight: true,
         desc: [
             "🚶 도보: 약 15분 (식당→숙소)",
-            "소화시킬 겸 산책 🌙 (우천 시 택시이동)"
+            "소화시킬 겸 산책 🌙"
+        ],
+        rainyDesc: [
+            "🚕 우천 시: 카카오T 택시 호출",
+            "이동: 약 3분 / 기본요금 예상"
         ],
         subItems: [
             { title: "우천 시", desc: "🚕 카카오T 택시 호출 (약 3분 / 기본요금)" }
@@ -106,6 +118,10 @@ export const SCHEDULE_DAY2: ScheduleItem[] = [
         desc: [
             "중문 관광 및 아침식사 or 휴식",
             "🚙 이동: 약 5분 / 🚶 도보: 약 20분 (중문 시내)"
+        ],
+        rainyDesc: [
+            "☔ 우천 시: 실내 위주 중문 자유 일정",
+            "🚙 이동: 약 5분 (중문 시내)"
         ],
         subItems: [
             { title: "새벽 낚시 (선택)", desc: "개인 2~5만원 / 서귀포 선상 체험 🎣" },
@@ -139,11 +155,21 @@ export const SCHEDULE_DAY2: ScheduleItem[] = [
             "🤡 꼴찌 벌칙: 이후 일정 테무 장신구 착용",
             "🚙 이동: 약 30분 (중문→애월)"
         ],
+        rainyDesc: [
+            "☔ 우천 시 대체 액티비티 진행",
+            "실내 게임 / 대유랜드 사격 / 항공우주박물관",
+            "숙소 이동 없음 (애월/중문 근처)"
+        ],
         subItems: [
             { title: "주의사항", desc: "⚠️ 샌들/슬리퍼 탑승 금지 (뒤 막힌 신발)\nAPP 미리 설치 필수" },
             { title: "우천 시 대안", desc: "대유랜드(사격), 9.81 실내게임, 항공우주박물관" }
         ],
-        mapLink: { name: "지도보기", url: "https://map.naver.com/p/search/9.81파크" }
+        mapLink: { name: "지도보기", url: "https://map.naver.com/p/search/9.81파크" },
+        options: [  // Add rainy options explicitly checkable
+            { tag: "우천1", tagName: "대유랜드", desc: "반실내 클레이 사격", price: "~4.5만원", mapUrl: "https://map.naver.com/p/search/대유랜드", condition: "rainy" },
+            { tag: "우천2", tagName: "9.81 실내게임", desc: "서바이벌/스포츠랩", price: "~3.0만원", condition: "rainy" },
+            { tag: "우천3", tagName: "항공우주박물관", desc: "실내 전시/4D", price: "~1.0만원", mapUrl: "https://map.naver.com/p/search/제주항공우주박물관", condition: "rainy" }
+        ]
     },
     {
         time: "15:30",
@@ -152,6 +178,12 @@ export const SCHEDULE_DAY2: ScheduleItem[] = [
         desc: [
             "🐎 경마 체험 (시간 여유 시 방문)",
             "🚙 이동: 약 15분 (9.81→렛츠런)"
+        ],
+        rainyTitle: "오설록 티 뮤지엄 (우천)",
+        rainyDesc: [
+            "☔ 우천 시: 오설록 티 뮤지엄",
+            "녹차 아이스크림 & 티 타임 🍵",
+            "🚙 이동: 9.81파크에서 20분"
         ],
         subItems: [
             { title: "우천 대안", desc: "오설록 티 뮤지엄 (녹차 아이스크림 & 티 타임)" }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useBudget } from '../hooks/useBudget';
 import type { BudgetCosts } from '../types';
 import { formatWon } from '../utils/format';
@@ -100,18 +100,18 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
                     </div>
                 )}
 
-                <div className="flex flex-col gap-3 mb-6">
-                    <InputRow label="총 예산" value={config.totalBudget} onChange={(v) => updateConfigValue('totalBudget', parseInt(v) || 0)} disabled={!unlocked} />
-                    <InputRow label="인원 수" value={config.personCount} onChange={(v) => updateConfigValue('personCount', parseInt(v) || 0)} disabled={!unlocked} />
+                <div className="flex flex-col gap-2 mb-6">
+                    <SwipeableRow label="총 예산" value={config.totalBudget} onChange={(v) => updateConfigValue('totalBudget', parseInt(v) || 0)} disabled={!unlocked} />
+                    <SwipeableRow label="인원 수" value={config.personCount} onChange={(v) => updateConfigValue('personCount', parseInt(v) || 0)} disabled={!unlocked} />
                     <hr className="border-gray-100 my-1" />
-                    <InputRow label="항공권" value={costs.flight} onChange={(v) => handleCostChange('flight', v)} disabled={!unlocked} />
-                    <InputRow label="렌트+기름 (1인)" value={costs.rent} onChange={(v) => handleCostChange('rent', v)} disabled={!unlocked} />
-                    <InputRow label="흑돼지 (1인)" value={costs.day1Dinner} onChange={(v) => handleCostChange('day1Dinner', v)} disabled={!unlocked} />
-                    <InputRow label="양주 (총액/N)" value={costs.whiskey} onChange={(v) => handleCostChange('whiskey', v)} disabled={!unlocked} labelDetail="(총액/10)" />
-                    <InputRow label="9.81 파크" value={costs.park981} onChange={(v) => handleCostChange('park981', v)} disabled={!unlocked} />
-                    <InputRow label="Day2 점심" value={costs.day2Lunch} onChange={(v) => handleCostChange('day2Lunch', v)} disabled={!unlocked} />
-                    <InputRow label="Day2 카페" value={costs.day2Cafe} onChange={(v) => handleCostChange('day2Cafe', v)} disabled={!unlocked} />
-                    <InputRow label="올레시장(저녁)" value={costs.day2Dinner} onChange={(v) => handleCostChange('day2Dinner', v)} disabled={!unlocked} />
+                    <SwipeableRow label="항공권" value={costs.flight} onChange={(v) => handleCostChange('flight', v)} disabled={!unlocked} onDelete={() => handleCostChange('flight', '0')} />
+                    <SwipeableRow label="렌트+기름 (1인)" value={costs.rent} onChange={(v) => handleCostChange('rent', v)} disabled={!unlocked} onDelete={() => handleCostChange('rent', '0')} />
+                    <SwipeableRow label="흑돼지 (1인)" value={costs.day1Dinner} onChange={(v) => handleCostChange('day1Dinner', v)} disabled={!unlocked} onDelete={() => handleCostChange('day1Dinner', '0')} />
+                    <SwipeableRow label="양주 (총액/N)" value={costs.whiskey} onChange={(v) => handleCostChange('whiskey', v)} disabled={!unlocked} labelDetail="(총액/10)" onDelete={() => handleCostChange('whiskey', '0')} />
+                    <SwipeableRow label="9.81 파크" value={costs.park981} onChange={(v) => handleCostChange('park981', v)} disabled={!unlocked} onDelete={() => handleCostChange('park981', '0')} />
+                    <SwipeableRow label="Day2 점심" value={costs.day2Lunch} onChange={(v) => handleCostChange('day2Lunch', v)} disabled={!unlocked} onDelete={() => handleCostChange('day2Lunch', '0')} />
+                    <SwipeableRow label="Day2 카페" value={costs.day2Cafe} onChange={(v) => handleCostChange('day2Cafe', v)} disabled={!unlocked} onDelete={() => handleCostChange('day2Cafe', '0')} />
+                    <SwipeableRow label="올레시장(저녁)" value={costs.day2Dinner} onChange={(v) => handleCostChange('day2Dinner', v)} disabled={!unlocked} onDelete={() => handleCostChange('day2Dinner', '0')} />
                 </div>
 
                 {/* Custom Items */}
@@ -119,43 +119,18 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
                     <h4 className="text-sm font-bold text-gray-400 mb-2">추가 항목 (왼쪽으로 밀어서 삭제)</h4>
                     <div className="flex flex-col gap-2">
                         {config.costs.customItems?.map((item, idx) => (
-                            <div key={idx} className="flex items-center gap-2 bg-yellow-50/50 p-2 rounded-xl border border-yellow-100 group animate-slide-up">
-                                <input
-                                    type="checkbox"
-                                    checked={item.confirmed}
-                                    onChange={(e) => updateCustomItem(idx, 'confirmed', e.target.checked)}
-                                    disabled={!unlocked}
-                                    className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
-                                />
-                                <div className="flex-1">
-                                    <input
-                                        type="text"
-                                        value={item.label}
-                                        onChange={(e) => updateCustomItem(idx, 'label', e.target.value)}
-                                        placeholder="항목명"
-                                        disabled={!unlocked}
-                                        className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-gray-400"
-                                    />
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <input
-                                        type="number"
-                                        value={item.value}
-                                        onChange={(e) => updateCustomItem(idx, 'value', parseInt(e.target.value) || 0)}
-                                        disabled={!unlocked}
-                                        className="w-20 text-right bg-transparent text-sm outline-none font-bold"
-                                    />
-                                    <span className="text-xs text-text-sub">원</span>
-                                </div>
-                                {unlocked && (
-                                    <button
-                                        onClick={() => removeCustomItem(idx)}
-                                        className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                )}
-                            </div>
+                            <SwipeableRow
+                                key={idx}
+                                isCustom={true}
+                                label={item.label}
+                                onLabelChange={(val: string) => updateCustomItem(idx, 'label', val)}
+                                value={item.value}
+                                onChange={(val) => updateCustomItem(idx, 'value', parseInt(val) || 0)}
+                                checked={item.confirmed}
+                                onCheck={(val: boolean) => updateCustomItem(idx, 'confirmed', val)}
+                                disabled={!unlocked}
+                                onDelete={() => removeCustomItem(idx)}
+                            />
                         ))}
                     </div>
 
@@ -203,30 +178,98 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
     );
 }
 
-interface InputRowProps {
+interface SwipeableRowProps {
     label: string;
     value: number;
     onChange: (val: string) => void;
+    onDelete?: () => void;
     disabled: boolean;
     labelDetail?: string;
+    isCustom?: boolean;
+    onLabelChange?: (val: string) => void;
+    checked?: boolean;
+    onCheck?: (checked: boolean) => void;
 }
 
-function InputRow({ label, value, onChange, disabled, labelDetail }: InputRowProps) {
+function SwipeableRow({ label, value, onChange, onDelete, disabled, labelDetail, isCustom, onLabelChange, checked, onCheck }: SwipeableRowProps) {
+    const [offsetX, setOffsetX] = useState(0);
+    const startX = useRef(0);
+    const backgroundRef = useRef<HTMLDivElement>(null);
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        if (disabled || !onDelete) return;
+        startX.current = e.touches[0].clientX;
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+        if (disabled || !onDelete) return;
+        const currentX = e.touches[0].clientX;
+        const diff = currentX - startX.current;
+        if (diff < 0) { // dragging left
+            e.stopPropagation(); // Prevent global swipe
+            setOffsetX(Math.max(diff, -80));
+        }
+    };
+
+    const onTouchEnd = (e: React.TouchEvent) => {
+        if (disabled || !onDelete) return;
+        if (offsetX < -50) {
+            // If swiped far enough (> -50), lock it open. User clicks red area to delete.
+            if (offsetX < -40) {
+                setOffsetX(-60); // Keep open
+            } else {
+                setOffsetX(0);
+            }
+        } else {
+            setOffsetX(0);
+        }
+    };
+
+    // Handle delete click
+    const handleDelete = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (window.confirm(isCustom ? '삭제하시겠습니까?' : '값을 초기화하시겠습니까?')) {
+            onDelete && onDelete();
+            setOffsetX(0);
+        }
+    };
+
     return (
-        <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-xl border border-gray-100">
-            <div className="flex-1 font-medium text-sm text-text-main">
-                {label} {labelDetail && <span className="text-xs text-text-sub">{labelDetail}</span>}
+        <div className="relative h-[56px] mb-1 overflow-hidden rounded-xl select-none">
+            {/* Background (Delete Btn) */}
+            <div
+                className="absolute inset-0 bg-red-500 flex items-center justify-end pr-4 cursor-pointer"
+                onClick={handleDelete}
+            >
+                <Trash2 className="text-white w-5 h-5" />
             </div>
-            <div className="flex items-center gap-1">
-                <input
-                    type="number"
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    disabled={disabled}
-                    className="w-24 text-right bg-white border border-gray-300 rounded-lg px-2 py-1.5 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none disabled:bg-transparent disabled:border-transparent disabled:font-bold disabled:text-black"
-                />
-                <span className="text-xs text-text-sub">원</span>
+
+            {/* Foreground */}
+            <div
+                className={`relative h-full flex items-center gap-2 p-3 ${isCustom ? 'bg-orange-50/50 border border-orange-100' : 'bg-gray-50 border border-gray-100'} rounded-xl transition-transform duration-200`}
+                style={{ transform: `translateX(${offsetX}px)` }}
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
+                onClick={() => setOffsetX(0)} // Tap to close
+            >
+                {isCustom && onCheck && (
+                    <input type="checkbox" checked={checked} onChange={(e) => onCheck(e.target.checked)} disabled={disabled} className="w-5 h-5 rounded text-primary focus:ring-primary border-gray-300" />
+                )}
+
+                <div className="flex-1 min-w-0">
+                    {isCustom && onLabelChange ? (
+                        <input type="text" value={label} onChange={(e) => onLabelChange(e.target.value)} disabled={disabled} placeholder="항목명" className="w-full bg-transparent outline-none text-sm font-medium" />
+                    ) : (
+                        <div className="text-sm font-medium text-gray-700 truncate">{label} <span className="text-xs text-gray-400 font-normal">{labelDetail}</span></div>
+                    )}
+                </div>
+
+                <div className="flex items-center gap-1">
+                    <input type="number" value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} className="w-20 text-right bg-white/50 border border-gray-200 rounded px-1 py-1 text-sm outline-none focus:border-primary disabled:bg-transparent disabled:border-transparent" />
+                    <span className="text-xs text-gray-500">원</span>
+                </div>
             </div>
         </div>
-    );
+    )
 }

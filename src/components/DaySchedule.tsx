@@ -49,18 +49,31 @@ export function DaySchedule({ dayKey, title, icon, schedule, budgetData, isActiv
                 {/* Timeline */}
                 <div className="relative pl-6 before:content-[''] before:absolute before:left-[7px] before:top-2 before:bottom-0 before:w-[2px] before:bg-border">
                     {schedule.map((item, idx) => {
-                        // Filter logic if item has sunny-only or rainy-only classes in original HTML?
-                        // In our data structure, we can add `condition?: 'sunny' | 'rainy'`
-                        // For now, assuming standard items. 
-                        // In the original, specific *descriptions* were conditional.
-                        // We'll simplify for now.
+                        // 1. Check Item Condition
+                        if (item.condition) {
+                            if (isRainy && item.condition === 'sunny') return null;
+                            if (!isRainy && item.condition === 'rainy') return null;
+                        }
+
+                        // 2. Determine Display Content
+                        const displayTitle = (isRainy && item.rainyTitle) ? item.rainyTitle : item.title;
+                        const displayDesc = (isRainy && item.rainyDesc) ? item.rainyDesc : item.desc;
+
+                        // 3. Filter Options
+                        const displayOptions = item.options?.filter(opt => {
+                            if (!opt.condition) return true;
+                            if (isRainy && opt.condition === 'sunny') return false;
+                            if (!isRainy && opt.condition === 'rainy') return false;
+                            return true;
+                        });
+
                         return (
                             <div key={idx} className="relative mb-8 last:mb-0">
                                 <div className={`absolute -left-6 top-1 w-4 h-4 rounded-full border-[3px] z-10 box-content ${item.highlight ? 'bg-primary border-white ring-2 ring-primary/20' : 'bg-white border-primary'}`} />
 
                                 <div className="flex items-baseline gap-2 mb-2 flex-wrap">
                                     <span className="text-base font-bold text-primary">{item.time}</span>
-                                    <span className="text-base font-semibold text-text-main">{item.title}</span>
+                                    <span className="text-base font-semibold text-text-main">{displayTitle}</span>
                                     {item.badges && item.badges.map((b, i) => (
                                         <span key={i} className={`text-xs px-2 py-0.5 rounded font-semibold ${b.color === 'red' ? 'bg-red-50 text-red-500' :
                                             b.color === 'blue' ? 'bg-blue-50 text-blue-500' : 'bg-orange-50 text-orange-500'
@@ -74,7 +87,7 @@ export function DaySchedule({ dayKey, title, icon, schedule, budgetData, isActiv
                                 </div>
 
                                 <div className="bg-gray-50 rounded-xl p-4 border border-black/5">
-                                    {item.desc?.map((d, i) => (
+                                    {displayDesc?.map((d, i) => (
                                         <p key={i} className="text-sm text-text-sub mb-2 last:mb-0 whitespace-pre-line">{d}</p>
                                     ))}
 
@@ -95,11 +108,11 @@ export function DaySchedule({ dayKey, title, icon, schedule, budgetData, isActiv
                                         </div>
                                     )}
 
-                                    {item.options && (
+                                    {displayOptions && displayOptions.length > 0 && (
                                         <div className="grid gap-2 mt-3">
-                                            {item.options.map((opt, i) => (
+                                            {displayOptions.map((opt, i) => (
                                                 <a key={i} href={opt.mapUrl || '#'} target={opt.mapUrl ? "_blank" : undefined} className="block no-underline">
-                                                    <div className="bg-white border border-border rounded-xl p-3 flex justify-between items-center hover:border-primary transition-colors cursor-pointer shadow-sm">
+                                                    <div className={`bg-white border border-border rounded-xl p-3 flex justify-between items-center hover:border-primary transition-colors cursor-pointer shadow-sm ${opt.condition === 'rainy' ? 'bg-blue-50/30 border-blue-100' : ''}`}>
                                                         <div className="flex-1">
                                                             <div>
                                                                 <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded mr-1.5 ${opt.isRec ? 'bg-orange-50 text-primary' : 'bg-gray-100 text-gray-500'}`}>{opt.tag}</span>
