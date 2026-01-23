@@ -36,8 +36,8 @@ export function Header({ personCount }: HeaderProps) {
             {/* Gradient overlay for text readability */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
 
-            {/* Subtle radial glow */}
-            <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(255,140,0,0.15)_0%,transparent_60%)] animate-[spin_30s_linear_infinite]" />
+            {/* Subtle radial glow with faster rotation for visible movement */}
+            <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(255,140,0,0.15)_0%,transparent_60%)] animate-[spin_12s_linear_infinite]" />
 
             <div className="relative z-10">
                 <div className="flex justify-between items-start mb-3">
