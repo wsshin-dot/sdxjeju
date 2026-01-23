@@ -4,7 +4,7 @@ import type { BudgetConfig, BudgetCalculation, BudgetCosts } from '../types';
 
 const INITIAL_CONFIG: BudgetConfig = {
     totalBudget: 3500000,
-    personCount: 10,
+    personCount: 10, // 2 drivers + 8 passengers
     totalBudgetPerPerson: 350000,
     costs: {
         flight: 100000,

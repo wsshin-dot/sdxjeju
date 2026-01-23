@@ -37,7 +37,7 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
         if (!containerRef.current || engineRef.current) return;
 
         const width = containerRef.current.clientWidth || 400;
-        const height = 1200; // Fixed height for consistency
+        const height = 800; // Reduced to fit viewport without scroll
 
         // Engine
         const engine = Matter.Engine.create();
@@ -70,6 +70,9 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
             Bodies.rectangle(width / 2, height + 100, width, 100, { isStatic: true, label: 'ground' })
         ];
 
+        // Note: Removed finish line barrier - marbles pass through to ground freely
+
+
         // 1. Pins
         const startY = 120;
         for (let row = 0; row < 7; row++) {
@@ -98,21 +101,42 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
         bodies.push(Bodies.rectangle(width * 0.7, slopeY + 120, slopeW, 10, { isStatic: true, angle: -0.4, render: { fillStyle: '#2D9CDB' } }));
         bodies.push(Bodies.rectangle(width * 0.3, slopeY + 240, slopeW, 10, { isStatic: true, angle: 0.4, render: { fillStyle: '#2D9CDB' } }));
 
-        // 4. Funnel
-        const funnelY = height - 120;
-        bodies.push(Bodies.rectangle(width * 0.2, funnelY, 200, 10, { isStatic: true, angle: 0.5, render: { fillStyle: '#555' } }));
-        bodies.push(Bodies.rectangle(width * 0.8, funnelY, 200, 10, { isStatic: true, angle: -0.5, render: { fillStyle: '#555' } }));
+        // 4. Funnel (Bottle-neck style - narrower at bottom)
+        const funnelY = height - 150;
+        // Left funnel wall (steeper angle for narrower bottom)
+        bodies.push(Bodies.rectangle(width * 0.15, funnelY, 180, 10, { isStatic: true, angle: 0.6, render: { fillStyle: '#555' } }));
+        // Right funnel wall (steeper angle for narrower bottom)
+        bodies.push(Bodies.rectangle(width * 0.85, funnelY, 180, 10, { isStatic: true, angle: -0.6, render: { fillStyle: '#555' } }));
+        // Additional lower funnel walls for tighter bottleneck
+        bodies.push(Bodies.rectangle(width * 0.25, funnelY + 60, 120, 10, { isStatic: true, angle: 0.7, render: { fillStyle: '#555' } }));
+        bodies.push(Bodies.rectangle(width * 0.75, funnelY + 60, 120, 10, { isStatic: true, angle: -0.7, render: { fillStyle: '#555' } }));
 
         Composite.add(engine.world, bodies);
 
-        // Mouse Interaction
+        // Mouse Interaction - Click to boost marbles
         const mouse = Matter.Mouse.create(render.canvas);
         const mouseConstraint = Matter.MouseConstraint.create(engine, {
             mouse: mouse,
-            constraint: { stiffness: 0.2, render: { visible: false } }
+            constraint: {
+                stiffness: 0.3,
+                render: { visible: false }
+            }
         });
         Composite.add(engine.world, mouseConstraint);
         render.mouse = mouse;
+
+        // Add click-to-boost interaction
+        Matter.Events.on(mouseConstraint, 'mousedown', (event: any) => {
+            const mousePosition = event.mouse.position;
+            const bodies = Matter.Query.point(Matter.Composite.allBodies(engine.world), mousePosition);
+
+            bodies.forEach(body => {
+                if (!body.isStatic && body.label && body.label !== 'mouseConstraint') {
+                    // Apply upward boost when clicked
+                    Matter.Body.applyForce(body, body.position, { x: 0, y: -0.015 });
+                }
+            });
+        });
 
         // Events
         Matter.Events.on(engine, 'beforeUpdate', () => {
@@ -147,6 +171,34 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
         const runner = Matter.Runner.create();
         runnerRef.current = runner;
         Matter.Runner.run(runner, engine);
+
+        // Add after-render event to draw marble names
+        Matter.Events.on(render, 'afterRender', () => {
+            const context = render.context;
+            const allBodies = Matter.Composite.allBodies(engine.world);
+
+            allBodies.forEach(body => {
+                // Only draw names for marbles (non-static bodies with labels)
+                if (!body.isStatic && body.label &&
+                    body.label !== 'mouseConstraint' &&
+                    body.label !== 'Rectangle Body' &&
+                    body.label !== 'Circle Body') {
+
+                    context.save();
+                    context.translate(body.position.x, body.position.y);
+                    context.rotate(body.angle);
+
+                    // Draw name text
+                    context.fillStyle = '#FFF';
+                    context.font = 'bold 10px Arial';
+                    context.textAlign = 'center';
+                    context.textBaseline = 'middle';
+                    context.fillText(body.label, 0, 0);
+
+                    context.restore();
+                }
+            });
+        });
 
     }, []);
 
@@ -260,7 +312,7 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
             </div>
 
             {/* Physics Container */}
-            <div ref={containerRef} className="w-full h-[600px] bg-[#1a1a1a] rounded-xl overflow-hidden relative shadow-inner border border-[#333]">
+            <div ref={containerRef} className="w-full h-[800px] bg-[#1a1a1a] rounded-xl overflow-hidden relative shadow-inner border border-[#333]">
                 {/* Live Rankings Overlay */}
                 {rankings.length > 0 && (
                     <div className="absolute top-4 right-4 bg-black/50 backdrop-blur text-white p-3 rounded-xl border border-white/10 max-h-[200px] overflow-y-auto">
