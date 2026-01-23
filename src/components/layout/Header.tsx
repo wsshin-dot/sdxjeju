@@ -23,21 +23,41 @@ export function Header({ personCount }: HeaderProps) {
     };
 
     return (
-        <header className="relative h-[280px] text-white p-6 pb-8 rounded-b-[30px] overflow-hidden shadow-lg z-10">
-            {/* Jeju Illustration Background - static */}
+        <header className="relative h-[280px] text-white p-6 pb-8 rounded-b-[30px] overflow-hidden shadow-lg z-10 transition-all duration-1000">
+            {/* Jeju Illustration Background - dynamic */}
             <div
-                className="absolute inset-0 bg-cover bg-center"
+                className={`absolute inset-0 bg-cover bg-center transition-all duration-1000 ${isRainy ? 'animate-rain-sway' : ''}`}
                 style={{
-                    backgroundImage: 'url(/jeju_header_bg.jpg)',
+                    backgroundImage: `url(${isRainy ? '/jeju_header_rain.jpg' : '/jeju_header_bg.jpg'})`,
                     backgroundPosition: 'center 35%',
                 }}
             />
 
-            {/* Gradient overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
+            {/* Rain Overlay */}
+            {isRainy && (
+                <>
+                    <div className="rain-container">
+                        {[...Array(20)].map((_, i) => (
+                            <div
+                                key={i}
+                                className="rain-drop"
+                                style={{
+                                    left: `${Math.random() * 100}%`,
+                                    animationDelay: `${Math.random() * 0.8}s`,
+                                    animationDuration: `${0.4 + Math.random() * 0.4}s`
+                                }}
+                            />
+                        ))}
+                    </div>
+                    <div className="lightning-flash" />
+                </>
+            )}
 
-            {/* Subtle radial glow with faster rotation for visible movement */}
-            <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(255,140,0,0.15)_0%,transparent_60%)] animate-[spin_12s_linear_infinite]" />
+            {/* Gradient overlay for text readability */}
+            <div className={`absolute inset-0 bg-gradient-to-b transition-colors duration-1000 ${isRainy ? 'from-black/40 via-black/30 to-black/50' : 'from-black/30 via-black/20 to-black/40'}`} />
+
+            {/* Subtle radial glow for ambient warmth - faster when rainy */}
+            <div className={`absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(255,140,0,${isRainy ? '0.05' : '0.15'})_0%,transparent_60%)] transition-all duration-1000 ${isRainy ? 'animate-[spin_5s_linear_infinite]' : 'animate-[spin_12s_linear_infinite]'}`} />
 
             <div className="relative z-10">
                 <div className="flex justify-between items-start mb-3">
