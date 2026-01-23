@@ -64,7 +64,15 @@ export function DaySchedule({ dayKey, title, icon, schedule, budgetData, isActiv
                             displayDesc = displayDesc.filter(d => !d.includes('우천') && !d.includes('☔'));
                         }
 
-                        // 3. Filter Options
+                        // 3. Filter Sub-items (hide rainy alternatives when sunny)
+                        const displaySubItems = item.subItems?.filter(sub => {
+                            if (!isRainy) {
+                                return !sub.title.includes('우천') && !sub.desc.includes('우천') && !sub.title.includes('☔') && !sub.desc.includes('☔');
+                            }
+                            return true;
+                        });
+
+                        // 4. Filter Options
                         const displayOptions = item.options?.filter(opt => {
                             if (!opt.condition) return true;
                             if (isRainy && opt.condition === 'sunny') return false;
@@ -102,9 +110,9 @@ export function DaySchedule({ dayKey, title, icon, schedule, budgetData, isActiv
                                         </a>
                                     )}
 
-                                    {item.subItems && (
+                                    {displaySubItems && (
                                         <div className="mt-3 pt-3 border-t border-dashed border-gray-300">
-                                            {item.subItems.map((sub, i) => (
+                                            {displaySubItems.map((sub, i) => (
                                                 <div key={i} className="mb-2 last:mb-0">
                                                     <div className="text-sm font-bold text-gray-700">· {sub.title}</div>
                                                     <div className="text-xs text-text-sub pl-3 whitespace-pre-wrap">{sub.desc}</div>

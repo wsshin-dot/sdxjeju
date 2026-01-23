@@ -85,11 +85,8 @@ export const SCHEDULE_DAY1: ScheduleItem[] = [
             "소화시킬 겸 산책 🌙"
         ],
         rainyDesc: [
-            "🚕 우천 시: 카카오T 택시 호출",
+            "🚕 우천 시: 셔틀 이용",
             "이동: 약 3분 / 기본요금 예상"
-        ],
-        subItems: [
-            { title: "우천 시", desc: "🚕 카카오T 택시 호출 (약 3분 / 기본요금)" }
         ]
     },
     {
@@ -124,8 +121,7 @@ export const SCHEDULE_DAY2: ScheduleItem[] = [
             "🚙 이동: 약 5분 (중문 시내)"
         ],
         subItems: [
-            { title: "새벽 낚시 (선택)", desc: "개인 2~5만원 / 서귀포 선상 체험 🎣" },
-            { title: "우천 시", desc: "실내 위주 중문 자유 일정" }
+            { title: "새벽 낚시 (선택)", desc: "개인 2~5만원 / 서귀포 선상 체험 🎣" }
         ],
         options: [
             { tag: "추천", tagName: "수두리보말칼국수", isRec: true, price: "~1.3만원", desc: "웨이팅 필수 맛집 🍜 / 테이블링 필수", mapUrl: "https://map.naver.com/p/search/수두리보말칼국수" }
@@ -155,14 +151,14 @@ export const SCHEDULE_DAY2: ScheduleItem[] = [
             "🤡 꼴찌 벌칙: 이후 일정 테무 장신구 착용",
             "🚙 이동: 약 30분 (중문→애월)"
         ],
+        rainyTitle: "실내 액티비티 및 관광 진행 (우천)",
         rainyDesc: [
             "☔ 우천 시 대체 액티비티 진행",
             "실내 게임 / 대유랜드 사격 / 항공우주박물관",
             "숙소 이동 없음 (애월/중문 근처)"
         ],
         subItems: [
-            { title: "주의사항", desc: "⚠️ 샌들/슬리퍼 탑승 금지 (뒤 막힌 신발)\nAPP 미리 설치 필수" },
-            { title: "우천 시 대안", desc: "대유랜드(사격), 9.81 실내게임, 항공우주박물관" }
+            { title: "주의사항", desc: "⚠️ 샌들/슬리퍼 탑승 금지 (뒤 막힌 신발)\nAPP 미리 설치 필수" }
         ],
         mapLink: { name: "지도보기", url: "https://map.naver.com/p/search/9.81파크" },
         options: [  // Add rainy options explicitly checkable
@@ -184,9 +180,6 @@ export const SCHEDULE_DAY2: ScheduleItem[] = [
             "☔ 우천 시: 오설록 티 뮤지엄",
             "녹차 아이스크림 & 티 타임 🍵",
             "🚙 이동: 9.81파크에서 20분"
-        ],
-        subItems: [
-            { title: "우천 대안", desc: "오설록 티 뮤지엄 (녹차 아이스크림 & 티 타임)" }
         ]
     },
     {
