@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Matter from 'matter-js';
 import { Play, RotateCcw, Medal } from 'lucide-react';
+import { CAR_PARTICIPANTS } from './CarGame';
 
 interface MarbleRaceProps {
     isActive: boolean;
@@ -13,7 +14,6 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
     const runnerRef = useRef<Matter.Runner | null>(null);
     const gateRef = useRef<Matter.Body | null>(null);
 
-    const [names, setNames] = useState<string>('');
     const [gameState, setGameState] = useState<'IDLE' | 'READY' | 'RUNNING'>('IDLE');
     const [rankings, setRankings] = useState<{ rank: number; name: string }[]>([]);
 
@@ -171,9 +171,9 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
     };
 
     const prepareMarbles = () => {
-        const list = names.split(',').map(s => s.trim()).filter(Boolean);
+        const list = CAR_PARTICIPANTS; // Use car participants directly
         if (list.length < 2) {
-            alert('최소 2명 입력해주세요');
+            alert('차량 배치를 먼저 완료해주세요');
             return;
         }
 
@@ -244,14 +244,8 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
         <div className={`p-5 pb-24 ${isActive ? 'block' : 'hidden'} animate-slide-up bg-[#111] min-h-screen text-white`}>
             <div className="sticky top-[125px] z-30 bg-[#111] pb-4 pt-2 -mx-5 px-5 border-b border-[#333]/50 shadow-md">
                 <h2 className="text-xl font-bold mb-2">🎱 마블 레이스 (순서 정하기)</h2>
-                <div className="flex gap-2 mb-3">
-                    <input
-                        type="text"
-                        value={names}
-                        onChange={(e) => setNames(e.target.value)}
-                        placeholder="이름 입력 (콤마로 구분)"
-                        className="flex-1 bg-[#333] border border-[#555] rounded-lg px-3 py-2 text-white text-sm"
-                    />
+                <div className="text-sm text-gray-400 mb-3">
+                    참가자: {CAR_PARTICIPANTS.join(', ')}
                 </div>
                 <button
                     onClick={startGame}
