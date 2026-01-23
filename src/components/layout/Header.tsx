@@ -24,9 +24,9 @@ export function Header({ personCount }: HeaderProps) {
 
     return (
         <header className="relative h-[280px] text-white p-6 pb-8 rounded-b-[30px] overflow-hidden shadow-lg z-10">
-            {/* Jeju Illustration Background with wind animation */}
+            {/* Jeju Illustration Background - static */}
             <div
-                className="absolute inset-0 bg-cover bg-center animate-gentle-sway"
+                className="absolute inset-0 bg-cover bg-center"
                 style={{
                     backgroundImage: 'url(/jeju_header_bg.jpg)',
                     backgroundPosition: 'center 35%',
