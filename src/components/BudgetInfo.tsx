@@ -102,7 +102,7 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
 
                 <div className="flex flex-col gap-2 mb-6">
                     <SwipeableRow label="총 예산" value={config.totalBudget} onChange={(v) => updateConfigValue('totalBudget', parseInt(v) || 0)} disabled={!unlocked} />
-                    <SwipeableRow label="인원 수" value={config.personCount} onChange={(v) => updateConfigValue('personCount', parseInt(v) || 0)} disabled={!unlocked} />
+                    <SwipeableRow label="인원 수" value={config.personCount} onChange={(v) => updateConfigValue('personCount', parseInt(v) || 0)} disabled={!unlocked} unit="명" />
                     <hr className="border-gray-100 my-1" />
                     <SwipeableRow label="항공권" value={costs.flight} onChange={(v) => handleCostChange('flight', v)} disabled={!unlocked} onDelete={() => handleCostChange('flight', '0')} />
                     <SwipeableRow label="렌트+기름 (1인)" value={costs.rent} onChange={(v) => handleCostChange('rent', v)} disabled={!unlocked} onDelete={() => handleCostChange('rent', '0')} />
@@ -189,9 +189,10 @@ interface SwipeableRowProps {
     onLabelChange?: (val: string) => void;
     checked?: boolean;
     onCheck?: (checked: boolean) => void;
+    unit?: string; // Unit to display (default: 원)
 }
 
-function SwipeableRow({ label, value, onChange, onDelete, disabled, labelDetail, isCustom, onLabelChange, checked, onCheck }: SwipeableRowProps) {
+function SwipeableRow({ label, value, onChange, onDelete, disabled, labelDetail, isCustom, onLabelChange, checked, onCheck, unit = '원' }: SwipeableRowProps) {
     const [offsetX, setOffsetX] = useState(0);
     const startX = useRef(0);
     const backgroundRef = useRef<HTMLDivElement>(null);
@@ -267,7 +268,7 @@ function SwipeableRow({ label, value, onChange, onDelete, disabled, labelDetail,
 
                 <div className="flex items-center gap-1">
                     <input type="number" value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} className="w-20 text-right bg-white/50 border border-gray-200 rounded px-1 py-1 text-sm outline-none focus:border-primary disabled:bg-transparent disabled:border-transparent" />
-                    <span className="text-xs text-gray-500">원</span>
+                    <span className="text-xs text-gray-500">{unit}</span>
                 </div>
             </div>
         </div>
