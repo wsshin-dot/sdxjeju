@@ -1,28 +1,68 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { RainModeProvider } from './contexts/RainModeContext';
 import { Header } from './components/layout/Header';
 import { Nav } from './components/layout/Nav';
 import { IntroOverlay } from './components/common/IntroOverlay';
+import { SwipeGuide } from './components/common/SwipeGuide';
 import { DaySchedule } from './components/DaySchedule';
 import { BudgetInfo } from './components/BudgetInfo';
-import { MarbleRace } from './components/MarbleRace';
+import { GameCenter } from './components/games/GameCenter';
 import { useBudget } from './hooks/useBudget';
 import { SCHEDULE_DAY1, SCHEDULE_DAY2, SCHEDULE_DAY3 } from './data/schedule';
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState('info');
-  const { config, calculation } = useBudget(); // Global budget context would be better but prop drilling is fine for this size
+  const { config, calculation } = useBudget();
 
-  // Create a map for custom item configs if needed
-  // For now just passing basics
+  // Swipe Logic
+  const touchStart = useRef<number | null>(null);
+  const touchEnd = useRef<number | null>(null);
+
+  const minSwipeDistance = 50;
+  const tabs = ['info', 'day1', 'day2', 'day3', 'rec'];
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchEnd.current = null;
+    touchStart.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    touchEnd.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart.current || !touchEnd.current) return;
+
+    const distance = touchStart.current - touchEnd.current;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe || isRightSwipe) {
+      const currentIndex = tabs.indexOf(activeTab);
+      if (isLeftSwipe && currentIndex < tabs.length - 1) {
+        setActiveTab(tabs[currentIndex + 1]);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      if (isRightSwipe && currentIndex > 0) {
+        setActiveTab(tabs[currentIndex - 1]);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  };
 
   return (
-    <div className="min-h-screen pb-safe-bottom">
+    <div
+      className="min-h-screen pb-safe-bottom"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       <IntroOverlay />
+      <SwipeGuide />
       <Header personCount={config.personCount} />
+      <Nav activeTab={activeTab} onTabChange={setActiveTab} />
 
       <main className="relative">
-        {/* Render ALL tabs to keep state/maps alive, but toggle visibility */}
         <BudgetInfo isActive={activeTab === 'info'} />
         <DaySchedule
           dayKey="day1"
@@ -48,11 +88,10 @@ function AppContent() {
           budgetData={calculation.day3}
           isActive={activeTab === 'day3'}
         />
-        <MarbleRace isActive={activeTab === 'rec'} />
+        <GameCenter isActive={activeTab === 'rec'} />
       </main>
 
-      <Nav activeTab={activeTab} onTabChange={setActiveTab} />
-    </div>
+    </div >
   );
 }
 

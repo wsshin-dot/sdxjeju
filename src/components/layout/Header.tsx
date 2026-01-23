@@ -1,5 +1,6 @@
 import { MapPin, Users, Calendar, Cloud, Sun, CloudRain, CloudLightning, Snowflake } from 'lucide-react';
 import { useWeather } from '../../hooks/useWeather';
+import { useRainMode } from '../../contexts/RainModeContext';
 
 interface HeaderProps {
     personCount: number;
@@ -7,6 +8,7 @@ interface HeaderProps {
 
 export function Header({ personCount }: HeaderProps) {
     const { weather, loading } = useWeather();
+    const { isRainy, toggleRainMode } = useRainMode();
 
     const getWeatherIcon = (iconName: string) => {
         switch (iconName) {
@@ -25,9 +27,17 @@ export function Header({ personCount }: HeaderProps) {
             <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(255,255,255,0.2)_0%,transparent_60%)] animate-[spin_20s_linear_infinite]" />
 
             <div className="relative z-10">
-                <span className="inline-block bg-white/25 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold border border-white/30 mb-3">
-                    🍊 Jeju Team Day
-                </span>
+                <div className="flex justify-between items-start mb-3">
+                    <span className="inline-block bg-white/25 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold border border-white/30">
+                        🍊 Jeju Team Day
+                    </span>
+                    <button
+                        onClick={toggleRainMode}
+                        className={`p-2 rounded-full backdrop-blur-md transition-all ${isRainy ? 'bg-blue-500/50 text-white' : 'bg-white/20 text-yellow-300 hover:bg-white/30'}`}
+                    >
+                        {isRainy ? <CloudRain className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+                    </button>
+                </div>
                 <h1 className="text-3xl font-bold mb-2 tracking-tight">SDx 플랫폼팀<br />제주도 워크샵</h1>
 
                 <div className="flex flex-wrap gap-3 text-sm opacity-90 font-medium">

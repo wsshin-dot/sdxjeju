@@ -149,5 +149,68 @@ export function useBudget() {
         }));
     };
 
-    return { config, setConfig, calculation, loading, error, saving, saveBudget, updateCost };
+    const addCustomItem = () => {
+        setConfig(prev => ({
+            ...prev,
+            costs: {
+                ...prev.costs,
+                customItems: [
+                    ...(prev.costs.customItems || []),
+                    { label: '', value: 0, confirmed: false }
+                ]
+            }
+        }));
+    };
+
+    const updateCustomItem = (index: number, field: keyof { label: string, value: number, confirmed: boolean }, value: any) => {
+        setConfig(prev => {
+            const newItems = [...(prev.costs.customItems || [])];
+            if (newItems[index]) {
+                newItems[index] = { ...newItems[index], [field]: value };
+            }
+            return {
+                ...prev,
+                costs: {
+                    ...prev.costs,
+                    customItems: newItems
+                }
+            };
+        });
+    };
+
+    const removeCustomItem = (index: number) => {
+        setConfig(prev => {
+            const newItems = [...(prev.costs.customItems || [])];
+            newItems.splice(index, 1);
+            return {
+                ...prev,
+                costs: {
+                    ...prev.costs,
+                    customItems: newItems
+                }
+            };
+        });
+    };
+
+    const updateConfigValue = (key: keyof BudgetConfig, value: number) => {
+        setConfig(prev => ({
+            ...prev,
+            [key]: value
+        }));
+    };
+
+    return {
+        config,
+        setConfig,
+        calculation,
+        loading,
+        error,
+        saving,
+        saveBudget,
+        updateCost,
+        addCustomItem,
+        updateCustomItem,
+        removeCustomItem,
+        updateConfigValue
+    };
 }

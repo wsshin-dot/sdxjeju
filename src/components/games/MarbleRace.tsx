@@ -242,7 +242,7 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
 
     return (
         <div className={`p-5 pb-24 ${isActive ? 'block' : 'hidden'} animate-slide-up bg-[#111] min-h-screen text-white`}>
-            <div className="mb-4">
+            <div className="sticky top-[125px] z-30 bg-[#111] pb-4 pt-2 -mx-5 px-5 border-b border-[#333]/50 shadow-md">
                 <h2 className="text-xl font-bold mb-2">🎱 마블 레이스 (순서 정하기)</h2>
                 <div className="flex gap-2 mb-3">
                     <input
@@ -256,8 +256,8 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
                 <button
                     onClick={startGame}
                     className={`w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${gameState === 'IDLE' ? 'bg-primary hover:bg-orange-600' :
-                            gameState === 'READY' ? 'bg-green-600 hover:bg-green-700 animate-pulse' :
-                                'bg-gray-600 hover:bg-gray-700'
+                        gameState === 'READY' ? 'bg-green-600 hover:bg-green-700 animate-pulse' :
+                            'bg-gray-600 hover:bg-gray-700'
                         }`}
                 >
                     {gameState === 'IDLE' ? '준비 (READY)' :
