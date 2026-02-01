@@ -177,7 +177,7 @@ export const SCHEDULE_DAY2: ScheduleItem[] = [
         ],
         options: [
             { tag: "카페", tagName: "포도카페 (포도호텔)", desc: "안덕면 산록남로 788", mapUrl: "https://map.naver.com/p/search/제주포도호텔" },
-            { tag: "관광", tagName: "방주교회", desc: "안덕면 상천리 423", mapUrl: "https://map.naver.com/p/search/방주교회" }
+            { tag: "관광", tagName: "방주교회", desc: "안덕면 상천리 423", mapUrl: "https://map.naver.com/p/search/제주%20방주교회" }
         ]
     },
     {
