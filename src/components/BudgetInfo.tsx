@@ -195,7 +195,6 @@ interface SwipeableRowProps {
 function SwipeableRow({ label, value, onChange, onDelete, disabled, labelDetail, isCustom, onLabelChange, checked, onCheck, unit = '원' }: SwipeableRowProps) {
     const [offsetX, setOffsetX] = useState(0);
     const startX = useRef(0);
-    const backgroundRef = useRef<HTMLDivElement>(null);
 
     const onTouchStart = (e: React.TouchEvent) => {
         if (disabled || !onDelete) return;
@@ -212,7 +211,7 @@ function SwipeableRow({ label, value, onChange, onDelete, disabled, labelDetail,
         }
     };
 
-    const onTouchEnd = (e: React.TouchEvent) => {
+    const onTouchEnd = () => {
         if (disabled || !onDelete) return;
         if (offsetX < -50) {
             // If swiped far enough (> -50), lock it open. User clicks red area to delete.
@@ -230,7 +229,7 @@ function SwipeableRow({ label, value, onChange, onDelete, disabled, labelDetail,
     const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation();
         if (window.confirm(isCustom ? '삭제하시겠습니까?' : '값을 초기화하시겠습니까?')) {
-            onDelete && onDelete();
+            if (onDelete) onDelete();
             setOffsetX(0);
         }
     };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef } from 'react';
 
 // Hardcoded locations from map.js
@@ -138,7 +139,7 @@ export function MapViewer({ dayKey, active }: MapViewerProps) {
         };
 
         init();
-    }, [dayKey]);
+    }, [dayKey, mapElementId]);
 
     // Handle Resize when tab becomes active
     useEffect(() => {

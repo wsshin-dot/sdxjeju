@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { RefreshCw } from 'lucide-react';
+import { GAME_PARTICIPANTS } from '../../data/participants';
 
-const PASSENGERS = ['박범진', '손영길', '신예리', '이재환', '임혜정', '장민한', '조옥래', '홍예진'];
+const PASSENGERS = GAME_PARTICIPANTS.slice(2); // Skip drivers
 // Drivers: 신우성 (1호차), 김지섭 (2호차)
 
 export function CarGame({ isActive }: { isActive: boolean }) {
@@ -172,6 +173,3 @@ export function CarGame({ isActive }: { isActive: boolean }) {
         </div>
     );
 }
-
-// Export participants for MarbleRace to use (all 10 people)
-export const CAR_PARTICIPANTS = ['신우성', '김지섭', ...PASSENGERS];

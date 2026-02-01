@@ -70,7 +70,7 @@ export function useBudget() {
 
                 if (data && data.length > 0) {
                     const remoteData = data[0];
-                    let newConfig = { ...INITIAL_CONFIG };
+                    const newConfig = { ...INITIAL_CONFIG };
 
                     if (remoteData.costs) {
                         // Load meta if exists
@@ -88,7 +88,7 @@ export function useBudget() {
                     }
                     setConfig(newConfig);
                 }
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error('Failed to load budget', err);
                 setError('Failed to load budget from DB');
             } finally {
@@ -130,9 +130,9 @@ export function useBudget() {
 
             if (error) throw error;
             return true;
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to save budget', err);
-            setError(err.message);
+            setError(err instanceof Error ? err.message : String(err));
             return false;
         } finally {
             setSaving(false);
@@ -162,7 +162,7 @@ export function useBudget() {
         }));
     };
 
-    const updateCustomItem = (index: number, field: keyof { label: string, value: number, confirmed: boolean }, value: any) => {
+    const updateCustomItem = (index: number, field: keyof { label: string, value: number, confirmed: boolean }, value: string | number | boolean) => {
         setConfig(prev => {
             const newItems = [...(prev.costs.customItems || [])];
             if (newItems[index]) {

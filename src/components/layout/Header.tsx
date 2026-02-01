@@ -1,14 +1,28 @@
 import { MapPin, Users, Calendar, Cloud, Sun, CloudRain, CloudLightning, Snowflake } from 'lucide-react';
 import { useWeather } from '../../hooks/useWeather';
 import { useRainMode } from '../../contexts/RainModeContext';
+import { useState } from 'react';
 
 interface HeaderProps {
     personCount: number;
 }
 
+interface RainDrop {
+    id: number;
+    left: string;
+    animationDelay: string;
+    animationDuration: string;
+}
+
 export function Header({ personCount }: HeaderProps) {
     const { weather, loading } = useWeather();
     const { isRainy, toggleRainMode } = useRainMode();
+    const [rainDrops] = useState<RainDrop[]>(() => [...Array(20)].map((_, i) => ({
+        id: i,
+        left: `${Math.random() * 100}%`,
+        animationDelay: `${Math.random() * 0.8}s`,
+        animationDuration: `${0.4 + Math.random() * 0.4}s`
+    })));
 
     const getWeatherIcon = (iconName: string) => {
         switch (iconName) {
@@ -37,14 +51,14 @@ export function Header({ personCount }: HeaderProps) {
             {isRainy && (
                 <>
                     <div className="rain-container">
-                        {[...Array(20)].map((_, i) => (
+                        {rainDrops.map((drop) => (
                             <div
-                                key={i}
+                                key={drop.id}
                                 className="rain-drop"
                                 style={{
-                                    left: `${Math.random() * 100}%`,
-                                    animationDelay: `${Math.random() * 0.8}s`,
-                                    animationDuration: `${0.4 + Math.random() * 0.4}s`
+                                    left: drop.left,
+                                    animationDelay: drop.animationDelay,
+                                    animationDuration: drop.animationDuration
                                 }}
                             />
                         ))}

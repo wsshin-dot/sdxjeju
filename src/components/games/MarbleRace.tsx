@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Matter from 'matter-js';
-import { Play, RotateCcw, Medal } from 'lucide-react';
-import { CAR_PARTICIPANTS } from './CarGame';
+import { GAME_PARTICIPANTS } from '../../data/participants';
 
 interface MarbleRaceProps {
     isActive: boolean;
@@ -17,20 +17,8 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
     const [gameState, setGameState] = useState<'IDLE' | 'READY' | 'RUNNING'>('IDLE');
     const [rankings, setRankings] = useState<{ rank: number; name: string }[]>([]);
 
-    // Cleanup function
-    const destroyWorld = useCallback(() => {
-        if (renderRef.current) {
-            Matter.Render.stop(renderRef.current);
-            if (renderRef.current.canvas) renderRef.current.canvas.remove();
-        }
-        if (runnerRef.current) Matter.Runner.stop(runnerRef.current);
-        if (engineRef.current) Matter.Engine.clear(engineRef.current);
-
-        engineRef.current = null;
-        renderRef.current = null;
-        runnerRef.current = null;
-        gateRef.current = null;
-    }, []);
+    // Cleanup function (kept for reference, might be used if we unmount completely)
+    // const destroyWorld = useCallback(() => { ... });
 
     // Initialize World
     const initWorld = useCallback(() => {
@@ -223,7 +211,7 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
     };
 
     const prepareMarbles = () => {
-        const list = CAR_PARTICIPANTS; // Use car participants directly
+        const list = GAME_PARTICIPANTS; // Use car participants directly
         if (list.length < 2) {
             alert('차량 배치를 먼저 완료해주세요');
             return;
@@ -297,7 +285,7 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
             <div className="sticky top-[125px] z-30 bg-[#111] pb-4 pt-2 -mx-5 px-5 border-b border-[#333]/50 shadow-md">
                 <h2 className="text-xl font-bold mb-2">🎱 마블 레이스 (순서 정하기)</h2>
                 <div className="text-sm text-gray-400 mb-3">
-                    참가자: {CAR_PARTICIPANTS.join(', ')}
+                    참가자: {GAME_PARTICIPANTS.join(', ')}
                 </div>
                 <button
                     onClick={startGame}

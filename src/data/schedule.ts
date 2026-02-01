@@ -169,6 +169,19 @@ export const SCHEDULE_DAY2: ScheduleItem[] = [
     },
     {
         time: "15:30",
+        title: "안덕면 나들이 (선택)",
+        badges: [{ text: "추가됨", color: "blue" }],
+        desc: [
+            "9.81 파크 후 안덕면으로 이동 (약 20분)",
+            "건축물 투어 및 휴식"
+        ],
+        options: [
+            { tag: "카페", tagName: "포도카페 (포도호텔)", desc: "안덕면 산록남로 788", mapUrl: "https://map.naver.com/p/search/제주포도호텔" },
+            { tag: "관광", tagName: "방주교회", desc: "안덕면 상천리 423", mapUrl: "https://map.naver.com/p/search/방주교회" }
+        ]
+    },
+    {
+        time: "16:30",
         title: "렛츠런 파크 (선택)",
         badges: [{ text: "시간되면", color: "blue" }],
         desc: [

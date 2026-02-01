@@ -56,7 +56,7 @@ export function DaySchedule({ dayKey, title, icon, schedule, budgetData, isActiv
                         }
 
                         // 2. Determine Display Content
-                        let displayTitle = (isRainy && item.rainyTitle) ? item.rainyTitle : item.title;
+                        const displayTitle = (isRainy && item.rainyTitle) ? item.rainyTitle : item.title;
                         let displayDesc = (isRainy && item.rainyDesc) ? item.rainyDesc : item.desc;
 
                         // Filter out rain-specific text from desc if not rainy

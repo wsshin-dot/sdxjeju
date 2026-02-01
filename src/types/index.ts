@@ -13,7 +13,7 @@ export interface BudgetCosts {
         totalBudget: number;
         personCount: number;
     };
-    [key: string]: any; // Allow dynamic access
+    [key: string]: number | CustomItem[] | { totalBudget: number; personCount: number } | undefined; // Allow dynamic access restricted to known types
 }
 
 export interface CustomItem {
