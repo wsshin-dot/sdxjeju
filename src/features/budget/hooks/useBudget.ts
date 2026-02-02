@@ -30,6 +30,7 @@ export function useBudget() {
     // Calculate budgets derived from config
     const calculation = useMemo<BudgetCalculation>(() => {
         const c = config.costs;
+        const status = c.executionStatus || {};
         const customTotal = c.customTotal || 0;
 
         // Sum custom items if they exist and are confirmed
@@ -39,20 +40,54 @@ export function useBudget() {
 
         const day1 = c.flight + c.rent + c.day1Dinner + c.day1Groceries + c.whiskey;
         const day2 = c.day2Lunch + c.park981 + c.day2Cafe + c.day2Dinner;
-        const day3 = calculatedCustomTotal; // Custom items shown in generic logic or specifically
-
-        // In the original script, day3 cost was basically just customTotal? 
-        // "const day3 = customTotal; // 커스텀 항목은 Day3에 표시"
+        const day3 = calculatedCustomTotal;
 
         const total = day1 + day2 + day3;
         const remaining = config.totalBudgetPerPerson - total;
+
+        // Calculate Spent vs Planned
+        let totalSpent = 0;
+        let totalPlanned = 0;
+
+        // Standard Items
+        const standardKeys = ['flight', 'rent', 'day1Dinner', 'day1Groceries', 'whiskey', 'day2Lunch', 'park981', 'day2Cafe', 'day2Dinner'];
+        standardKeys.forEach(key => {
+            const val = (c[key] as number) || 0;
+            if (status[key]) {
+                totalSpent += val;
+            } else {
+                totalPlanned += val;
+            }
+        });
+
+        // Custom Items
+        if (c.customItems) {
+            c.customItems.forEach(item => {
+                if (item.confirmed) {
+                    if (item.executed) {
+                        totalSpent += item.value;
+                    } else {
+                        totalPlanned += item.value;
+                    }
+                }
+            });
+        }
+
+        // Real Remaining (Total Budget - Spent)
+        // Note: totalBudgetPerPerson is a theoretical limit per person.
+        // If we want "Money left in wallet", we should use Total Budget (for group) or Per Person.
+        // Assuming user wants "My Remaining Budget" context:
+        const realRemaining = config.totalBudgetPerPerson - totalSpent;
 
         return {
             day1: { cost: day1, cumulative: day1, remaining: config.totalBudgetPerPerson - day1 },
             day2: { cost: day2, cumulative: day1 + day2, remaining: config.totalBudgetPerPerson - day1 - day2 },
             day3: { cost: day3, cumulative: total, remaining: remaining },
             total,
-            remaining
+            remaining,
+            totalSpent,
+            totalPlanned,
+            realRemaining
         };
     }, [config]);
 
@@ -163,26 +198,12 @@ export function useBudget() {
         }));
     };
 
-    const updateCustomItem = (index: number, field: keyof { label: string, value: number, confirmed: boolean }, value: string | number | boolean) => {
+    const updateCustomItem = (index: number, field: keyof { label: string, value: number, confirmed: boolean, executed?: boolean }, value: string | number | boolean) => {
         setConfig(prev => {
             const newItems = [...(prev.costs.customItems || [])];
             if (newItems[index]) {
                 newItems[index] = { ...newItems[index], [field]: value };
             }
-            return {
-                ...prev,
-                costs: {
-                    ...prev.costs,
-                    customItems: newItems
-                }
-            };
-        });
-    };
-
-    const removeCustomItem = (index: number) => {
-        setConfig(prev => {
-            const newItems = [...(prev.costs.customItems || [])];
-            newItems.splice(index, 1);
             return {
                 ...prev,
                 costs: {
@@ -200,6 +221,33 @@ export function useBudget() {
         }));
     };
 
+    const updateStatus = (key: keyof BudgetCosts, executed: boolean) => {
+        setConfig(prev => ({
+            ...prev,
+            costs: {
+                ...prev.costs,
+                executionStatus: {
+                    ...(prev.costs.executionStatus || {}),
+                    [key]: executed
+                }
+            }
+        }));
+    };
+
+    const removeCustomItem = (index: number) => {
+        setConfig(prev => {
+            const newItems = [...(prev.costs.customItems || [])];
+            newItems.splice(index, 1);
+            return {
+                ...prev,
+                costs: {
+                    ...prev.costs,
+                    customItems: newItems
+                }
+            };
+        });
+    };
+
     return {
         config,
         setConfig,
@@ -212,6 +260,7 @@ export function useBudget() {
         addCustomItem,
         updateCustomItem,
         removeCustomItem,
-        updateConfigValue
+        updateConfigValue,
+        updateStatus
     };
 }

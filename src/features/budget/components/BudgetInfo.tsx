@@ -5,12 +5,13 @@ import { formatWon } from '../../../utils/format';
 import { Lock, Unlock, Save, Trash2 } from 'lucide-react';
 
 export function BudgetInfo({ isActive }: { isActive: boolean }) {
-    const { config, calculation, saveBudget, saving, updateCost, addCustomItem, updateCustomItem, removeCustomItem, updateConfigValue } = useBudget();
+    const { config, calculation, saveBudget, saving, updateCost, addCustomItem, updateCustomItem, removeCustomItem, updateConfigValue, updateStatus } = useBudget();
     const [unlocked, setUnlocked] = useState(false);
     const [password, setPassword] = useState('');
     const [showModal, setShowModal] = useState(false);
 
     const costs = config.costs;
+    const status = costs.executionStatus || {};
 
     const handleUnlock = () => {
         if (unlocked) {
@@ -34,6 +35,10 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
         updateCost(key, parseInt(val) || 0);
     };
 
+    const handleStatusChange = (key: keyof BudgetCosts, checked: boolean) => {
+        updateStatus(key, checked);
+    };
+
     return (
         <div className={`p-5 pb-24 ${isActive ? 'block' : 'hidden'} animate-slide-up`}>
             {/* Total Budget Card */}
@@ -44,20 +49,21 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
                 </div>
                 <div className="grid grid-cols-3 gap-[1px] bg-white/10">
                     <div className="bg-[#212529] p-4 text-center">
-                        <div className="text-xs opacity-60 mb-1">항공권</div>
-                        <div className="font-semibold">{formatWon(costs.flight)}</div>
+                        <div className="text-xs opacity-60 mb-1">집행 완료</div>
+                        <div className="font-semibold text-green-400">{formatWon(calculation.totalSpent)}</div>
                     </div>
                     <div className="bg-[#212529] p-4 text-center">
-                        <div className="text-xs opacity-60 mb-1">렌트+기름</div>
-                        <div className="font-semibold">{formatWon(costs.rent)}</div>
+                        <div className="text-xs opacity-60 mb-1">집행 예정</div>
+                        <div className="font-semibold text-yellow-400">{formatWon(calculation.totalPlanned)}</div>
                     </div>
                     <div className="bg-[#212529] p-4 text-center">
-                        <div className="text-xs opacity-60 mb-1">식비/활동</div>
-                        <div className="font-semibold">~{formatWon(calculation.total - costs.flight - costs.rent)}</div>
+                        <div className="text-xs opacity-60 mb-1">총 예산</div>
+                        <div className="font-semibold">{formatWon(config.totalBudget)}</div>
                     </div>
                 </div>
-                <div className="bg-[#2e343a] p-3 text-center text-xs opacity-80">
-                    숙소: 1인 2만원(별도) | 목표: {formatWon(config.totalBudget)} | <span className="text-[#FFD700] font-bold">사용: {formatWon(calculation.total * config.personCount)}</span>
+                <div className="bg-[#2e343a] p-3 text-center text-xs opacity-80 flex justify-between px-6">
+                    <span>사용: {formatWon(calculation.totalSpent)}</span>
+                    <span className="font-bold text-[#FFD700]">남은 돈: {formatWon(config.totalBudget - calculation.totalSpent)}</span>
                 </div>
             </div>
 
@@ -118,15 +124,15 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
                     <SwipeableRow label="총 예산" value={config.totalBudget} onChange={(v) => updateConfigValue('totalBudget', parseInt(v) || 0)} disabled={!unlocked} />
                     <SwipeableRow label="인원 수" value={config.personCount} onChange={(v) => updateConfigValue('personCount', parseInt(v) || 0)} disabled={!unlocked} unit="명" />
                     <hr className="border-gray-100 my-1" />
-                    <SwipeableRow label="항공권" value={costs.flight} onChange={(v) => handleCostChange('flight', v)} disabled={!unlocked} onDelete={() => handleCostChange('flight', '0')} />
-                    <SwipeableRow label="렌트+기름" value={costs.rent} onChange={(v) => handleCostChange('rent', v)} disabled={!unlocked} onDelete={() => handleCostChange('rent', '0')} />
-                    <SwipeableRow label="흑돼지" value={costs.day1Dinner} onChange={(v) => handleCostChange('day1Dinner', v)} disabled={!unlocked} onDelete={() => handleCostChange('day1Dinner', '0')} />
-                    <SwipeableRow label="저녁 장보기" value={costs.day1Groceries} onChange={(v) => handleCostChange('day1Groceries', v)} disabled={!unlocked} onDelete={() => handleCostChange('day1Groceries', '0')} />
-                    <SwipeableRow label="양주 (총액/N)" value={costs.whiskey} onChange={(v) => handleCostChange('whiskey', v)} disabled={!unlocked} labelDetail="(총액/10)" onDelete={() => handleCostChange('whiskey', '0')} />
-                    <SwipeableRow label="9.81 파크" value={costs.park981} onChange={(v) => handleCostChange('park981', v)} disabled={!unlocked} onDelete={() => handleCostChange('park981', '0')} />
-                    <SwipeableRow label="Day2 점심" value={costs.day2Lunch} onChange={(v) => handleCostChange('day2Lunch', v)} disabled={!unlocked} onDelete={() => handleCostChange('day2Lunch', '0')} />
-                    <SwipeableRow label="Day2 카페" value={costs.day2Cafe} onChange={(v) => handleCostChange('day2Cafe', v)} disabled={!unlocked} onDelete={() => handleCostChange('day2Cafe', '0')} />
-                    <SwipeableRow label="올레시장(저녁)" value={costs.day2Dinner} onChange={(v) => handleCostChange('day2Dinner', v)} disabled={!unlocked} onDelete={() => handleCostChange('day2Dinner', '0')} />
+                    <SwipeableRow label="항공권" value={costs.flight} onChange={(v) => handleCostChange('flight', v)} checked={status.flight} onCheck={(c) => handleStatusChange('flight', c)} disabled={!unlocked} onDelete={() => handleCostChange('flight', '0')} />
+                    <SwipeableRow label="렌트+기름" value={costs.rent} onChange={(v) => handleCostChange('rent', v)} checked={status.rent} onCheck={(c) => handleStatusChange('rent', c)} disabled={!unlocked} onDelete={() => handleCostChange('rent', '0')} />
+                    <SwipeableRow label="흑돼지" value={costs.day1Dinner} onChange={(v) => handleCostChange('day1Dinner', v)} checked={status.day1Dinner} onCheck={(c) => handleStatusChange('day1Dinner', c)} disabled={!unlocked} onDelete={() => handleCostChange('day1Dinner', '0')} />
+                    <SwipeableRow label="저녁 장보기" value={costs.day1Groceries} onChange={(v) => handleCostChange('day1Groceries', v)} checked={status.day1Groceries} onCheck={(c) => handleStatusChange('day1Groceries', c)} disabled={!unlocked} onDelete={() => handleCostChange('day1Groceries', '0')} />
+                    <SwipeableRow label="양주 (총액/N)" value={costs.whiskey} onChange={(v) => handleCostChange('whiskey', v)} checked={status.whiskey} onCheck={(c) => handleStatusChange('whiskey', c)} disabled={!unlocked} labelDetail="(총액/10)" onDelete={() => handleCostChange('whiskey', '0')} />
+                    <SwipeableRow label="9.81 파크" value={costs.park981} onChange={(v) => handleCostChange('park981', v)} checked={status.park981} onCheck={(c) => handleStatusChange('park981', c)} disabled={!unlocked} onDelete={() => handleCostChange('park981', '0')} />
+                    <SwipeableRow label="Day2 점심" value={costs.day2Lunch} onChange={(v) => handleCostChange('day2Lunch', v)} checked={status.day2Lunch} onCheck={(c) => handleStatusChange('day2Lunch', c)} disabled={!unlocked} onDelete={() => handleCostChange('day2Lunch', '0')} />
+                    <SwipeableRow label="Day2 카페" value={costs.day2Cafe} onChange={(v) => handleCostChange('day2Cafe', v)} checked={status.day2Cafe} onCheck={(c) => handleStatusChange('day2Cafe', c)} disabled={!unlocked} onDelete={() => handleCostChange('day2Cafe', '0')} />
+                    <SwipeableRow label="올레시장(저녁)" value={costs.day2Dinner} onChange={(v) => handleCostChange('day2Dinner', v)} checked={status.day2Dinner} onCheck={(c) => handleStatusChange('day2Dinner', c)} disabled={!unlocked} onDelete={() => handleCostChange('day2Dinner', '0')} />
                 </div>
 
                 {/* Custom Items */}
@@ -141,8 +147,8 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
                                 onLabelChange={(val: string) => updateCustomItem(idx, 'label', val)}
                                 value={item.value}
                                 onChange={(val) => updateCustomItem(idx, 'value', parseInt(val) || 0)}
-                                checked={item.confirmed}
-                                onCheck={(val: boolean) => updateCustomItem(idx, 'confirmed', val)}
+                                checked={item.executed}
+                                onCheck={(val: boolean) => updateCustomItem(idx, 'executed', val)}
                                 disabled={!unlocked}
                                 onDelete={() => removeCustomItem(idx)}
                             />
@@ -268,10 +274,6 @@ function SwipeableRow({ label, value, onChange, onDelete, disabled, labelDetail,
                 onTouchEnd={onTouchEnd}
                 onClick={() => setOffsetX(0)} // Tap to close
             >
-                {isCustom && onCheck && (
-                    <input type="checkbox" checked={checked} onChange={(e) => onCheck(e.target.checked)} disabled={disabled} className="w-5 h-5 rounded text-primary focus:ring-primary border-gray-300" />
-                )}
-
                 <div className="flex-1 min-w-0">
                     {isCustom && onLabelChange ? (
                         <input type="text" value={label} onChange={(e) => onLabelChange(e.target.value)} disabled={disabled} placeholder="항목명" className="w-full bg-transparent outline-none text-sm font-medium" />
@@ -279,6 +281,16 @@ function SwipeableRow({ label, value, onChange, onDelete, disabled, labelDetail,
                         <div className="text-sm font-medium text-gray-700 truncate">{label} <span className="text-xs text-gray-400 font-normal">{labelDetail}</span></div>
                     )}
                 </div>
+
+                {onCheck && (
+                    <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={(e) => onCheck(e.target.checked)}
+                        disabled={disabled}
+                        className="w-5 h-5 rounded text-primary focus:ring-primary border-gray-300 ml-2"
+                    />
+                )}
 
                 <div className="flex items-center gap-1">
                     <input type="number" value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} className="w-20 text-right bg-white/50 border border-gray-200 rounded px-1 py-1 text-sm outline-none focus:border-primary disabled:bg-transparent disabled:border-transparent" />
