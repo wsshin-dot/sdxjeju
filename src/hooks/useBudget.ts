@@ -10,6 +10,7 @@ const INITIAL_CONFIG: BudgetConfig = {
         flight: 100000,
         rent: 40000,
         day1Dinner: 50000,
+        day1Groceries: 15000,
         whiskey: 20000,
         day2Lunch: 24000,
         park981: 37000,
@@ -36,7 +37,7 @@ export function useBudget() {
             ? c.customItems.reduce((sum, item) => item.confirmed ? sum + item.value : sum, 0)
             : customTotal;
 
-        const day1 = c.flight + c.rent + c.day1Dinner + c.whiskey;
+        const day1 = c.flight + c.rent + c.day1Dinner + c.day1Groceries + c.whiskey;
         const day2 = c.day2Lunch + c.park981 + c.day2Cafe + c.day2Dinner;
         const day3 = calculatedCustomTotal; // Custom items shown in generic logic or specifically
 

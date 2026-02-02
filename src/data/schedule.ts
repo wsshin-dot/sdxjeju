@@ -54,10 +54,11 @@ export const SCHEDULE_DAY1: ScheduleItem[] = [
     },
     {
         time: "20:20",
-        title: "장보기 (선택)",
-        badges: [{ text: "시간되면", color: "blue" }],
+        title: "장보기 (필수)",
+        badges: [{ text: "필수", color: "red" }],
+        costTag: { id: 'day1Groceries', label: 'groceries' },
         desc: [
-            "🛒 숙소에서 먹을 음료, 안주 등 장보기 (선택사항)",
+            "🛒 숙소에서 먹을 음료, 안주 등 장보기",
             "⚠️ 저녁식사(21:00) 늦지 않게 주의!"
         ],
         options: [
