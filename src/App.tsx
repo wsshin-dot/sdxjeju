@@ -1,65 +1,26 @@
-import { useState, useRef } from 'react';
-import { RainModeProvider } from './contexts/RainModeContext';
+import { useState } from 'react';
+import { RainModeProvider } from './features/weather/contexts/RainModeContext';
 import { Header } from './components/layout/Header';
 import { Nav } from './components/layout/Nav';
 import { IntroOverlay } from './components/common/IntroOverlay';
 import { SwipeGuide } from './components/common/SwipeGuide';
-import { DaySchedule } from './components/DaySchedule';
-import { BudgetInfo } from './components/BudgetInfo';
-import { GameCenter } from './components/games/GameCenter';
-import { useBudget } from './hooks/useBudget';
-import { SCHEDULE_DAY1, SCHEDULE_DAY2, SCHEDULE_DAY3 } from './data/schedule';
+import { DaySchedule } from './features/schedule/components/DaySchedule';
+import { BudgetInfo } from './features/budget/components/BudgetInfo';
+import { GameCenter } from './features/games/components/GameCenter';
+import { useBudget } from './features/budget/hooks/useBudget';
+import { SCHEDULE_DAY1, SCHEDULE_DAY2, SCHEDULE_DAY3 } from './features/schedule/data/schedule';
+import { useSwipeTabs } from './hooks/useSwipeTabs';
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState('info');
   const { config, calculation } = useBudget();
-
-  // Swipe Logic
-  const touchStart = useRef<number | null>(null);
-  const touchStartY = useRef<number | null>(null);
-  const touchEnd = useRef<number | null>(null);
-  const touchEndY = useRef<number | null>(null);
-
-  const minSwipeDistance = 80;
   const tabs = ['info', 'day1', 'day2', 'day3', 'rec'];
 
-  const onTouchStart = (e: React.TouchEvent) => {
-    touchEnd.current = null;
-    touchEndY.current = null;
-    touchStart.current = e.targetTouches[0].clientX;
-    touchStartY.current = e.targetTouches[0].clientY;
-  };
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    touchEnd.current = e.targetTouches[0].clientX;
-    touchEndY.current = e.targetTouches[0].clientY;
-  };
-
-  const onTouchEnd = () => {
-    if (!touchStart.current || !touchEnd.current || !touchStartY.current || !touchEndY.current) return;
-
-    const distanceX = touchStart.current - touchEnd.current;
-    const distanceY = touchStartY.current - touchEndY.current;
-
-    // Check if horizontal swipe is dominant (more horizontal than vertical)
-    if (Math.abs(distanceY) > Math.abs(distanceX)) return;
-
-    const isLeftSwipe = distanceX > minSwipeDistance;
-    const isRightSwipe = distanceX < -minSwipeDistance;
-
-    if (isLeftSwipe || isRightSwipe) {
-      const currentIndex = tabs.indexOf(activeTab);
-      if (isLeftSwipe && currentIndex < tabs.length - 1) {
-        setActiveTab(tabs[currentIndex + 1]);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-      if (isRightSwipe && currentIndex > 0) {
-        setActiveTab(tabs[currentIndex - 1]);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }
-  };
-
+  const { onTouchStart, onTouchMove, onTouchEnd } = useSwipeTabs({
+    tabs,
+    activeTab,
+    onTabChange: setActiveTab
+  });
 
   return (
     <div

@@ -84,6 +84,20 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
                 </div>
             </div>
 
+            {/* Checklist */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-border mb-5">
+                <h3 className="text-lg font-bold mb-4 flex items-center gap-2">🎒 필수 준비물</h3>
+                <ul className="grid grid-cols-2 gap-2 text-sm font-medium text-gray-700">
+                    <li className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg"><span className="text-primary">✔</span> 신분증 (필수)</li>
+                    <li className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg"><span className="text-primary">✔</span> 운전면허증 (운전자)</li>
+                    <li className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg"><span className="text-primary">✔</span> 개인 세면도구</li>
+                    <li className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg"><span className="text-primary">✔</span> 충전기 / 보조배터리</li>
+                    <li className="flex items-center gap-2 bg-blue-50 text-blue-700 p-2 rounded-lg border border-blue-100 col-span-2 justify-center font-bold">
+                        <span className="text-xl">☔</span> 개인 우산 (우천 대비)
+                    </li>
+                </ul>
+            </div>
+
             {/* Calculator */}
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-border">
                 <div className="flex justify-between items-center mb-4">

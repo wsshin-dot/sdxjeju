@@ -163,9 +163,9 @@ export const SCHEDULE_DAY2: ScheduleItem[] = [
         ],
         mapLink: { name: "지도보기", url: "https://map.naver.com/p/search/9.81파크" },
         options: [  // Add rainy options explicitly checkable
-            { tag: "우천1", tagName: "대유랜드", desc: "반실내 클레이 사격", price: "~4.5만원", mapUrl: "https://map.naver.com/p/search/대유랜드", condition: "rainy" },
-            { tag: "우천2", tagName: "9.81 실내게임", desc: "서바이벌/스포츠랩", price: "~3.0만원", condition: "rainy" },
-            { tag: "우천3", tagName: "항공우주박물관", desc: "실내 전시/4D", price: "~1.0만원", mapUrl: "https://map.naver.com/p/search/제주항공우주박물관", condition: "rainy" }
+            { tag: "우천1", tagName: "본태박물관", desc: "안덕면 / 건축&전시 (성인 취향) 🏛️", price: "~2.5만원", mapUrl: "https://map.naver.com/p/search/본태박물관", condition: "rainy" },
+            { tag: "우천2", tagName: "아르떼뮤지엄", desc: "애월 / 미디어아트 인생샷 📸", price: "~1.7만원", mapUrl: "https://map.naver.com/p/search/아르떼뮤지엄제주", condition: "rainy" },
+            { tag: "우천3", tagName: "액티브파크", desc: "한림 / 실내 클라이밍&게임 🧗", price: "~1.5만원", mapUrl: "https://map.naver.com/p/search/제주액티브파크", condition: "rainy" }
         ]
     },
     {
