@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { DaySchedule } from './DaySchedule';
-import { RainModeProvider } from '../contexts/RainModeContext';
+import { RainModeProvider } from '../../../features/weather/contexts/RainModeContext';
 import type { ScheduleItem } from '../data/schedule';
 import { Plane } from 'lucide-react';
 
 // Mock MapViewer to avoid rendering complex map logic
-vi.mock('./map/MapViewer', () => ({
+vi.mock('../../../components/map/MapViewer', () => ({
     MapViewer: () => <div data-testid="map-viewer">Map Component</div>
 }));
 

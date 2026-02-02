@@ -1,6 +1,6 @@
 import { MapPin, Users, Calendar, Cloud, Sun, CloudRain, CloudLightning, Snowflake } from 'lucide-react';
-import { useWeather } from '../../hooks/useWeather';
-import { useRainMode } from '../../contexts/RainModeContext';
+import { useWeather } from '../../features/weather/hooks/useWeather';
+import { useRainMode } from '../../features/weather/contexts/RainModeContext';
 import { useState } from 'react';
 
 interface HeaderProps {

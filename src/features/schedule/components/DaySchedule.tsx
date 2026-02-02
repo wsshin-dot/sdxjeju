@@ -1,8 +1,8 @@
-import { useRainMode } from '../contexts/RainModeContext';
+import { useRainMode } from '../../../features/weather/contexts/RainModeContext';
 import type { ScheduleItem } from '../data/schedule';
-import { MapViewer } from './map/MapViewer';
-import type { DayBudget } from '../types';
-import { formatWon } from '../utils/format';
+import { MapViewer } from '../../../components/map/MapViewer';
+import type { DayBudget } from '../../../types';
+import { formatWon } from '../../../utils/format';
 import { MapPin } from 'lucide-react';
 
 interface DayScheduleProps {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { supabase, TABLE_NAME } from '../lib/supabase';
-import type { BudgetConfig, BudgetCalculation, BudgetCosts } from '../types';
+import { supabase, TABLE_NAME } from '../../../lib/supabase';
+import type { BudgetConfig, BudgetCalculation, BudgetCosts } from '../../../types';
 
 const INITIAL_CONFIG: BudgetConfig = {
     totalBudget: 3500000,

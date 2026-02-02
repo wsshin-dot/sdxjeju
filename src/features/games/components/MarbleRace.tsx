@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Matter from 'matter-js';
-import { GAME_PARTICIPANTS } from '../../data/participants';
+import { GAME_PARTICIPANTS } from './participants';
 
 interface MarbleRaceProps {
     isActive: boolean;
@@ -242,7 +242,7 @@ export function MarbleRace({ isActive }: MarbleRaceProps) {
         // Spawn Marbles
         const colors = ['#FF6B00', '#2D9CDB', '#FFD700', '#4CAF50', '#9C27B0', '#E91E63'];
 
-        list.forEach((name, i) => {
+        list.forEach((name: any, i: any) => {
             const x = width / 2 + (Math.random() - 0.5) * 100;
             const marble = Bodies.circle(x, 0, 9, {
                 restitution: 0.7,

@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useBudget } from '../hooks/useBudget';
-import type { BudgetCosts } from '../types';
-import { formatWon } from '../utils/format';
+import type { BudgetCosts } from '../../../types';
+import { formatWon } from '../../../utils/format';
 import { Lock, Unlock, Save, Trash2 } from 'lucide-react';
 
 export function BudgetInfo({ isActive }: { isActive: boolean }) {

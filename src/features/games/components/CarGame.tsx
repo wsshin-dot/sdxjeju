@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { RefreshCw } from 'lucide-react';
-import { GAME_PARTICIPANTS } from '../../data/participants';
+import { GAME_PARTICIPANTS } from './participants';
 
 const PASSENGERS = GAME_PARTICIPANTS.slice(2); // Skip drivers
 // Drivers: 신우성 (1호차), 김지섭 (2호차)
