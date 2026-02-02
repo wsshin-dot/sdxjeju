@@ -57,7 +57,7 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
                     </div>
                 </div>
                 <div className="bg-[#2e343a] p-3 text-center text-xs opacity-80">
-                    숙소: 1인 2만원(별도) | 총 예산: {formatWon(config.totalBudget)} ({config.personCount}명)
+                    숙소: 1인 2만원(별도) | 목표: {formatWon(config.totalBudget)} | <span className="text-[#FFD700] font-bold">사용: {formatWon(calculation.total * config.personCount)}</span>
                 </div>
             </div>
 
@@ -105,9 +105,9 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
                     <SwipeableRow label="인원 수" value={config.personCount} onChange={(v) => updateConfigValue('personCount', parseInt(v) || 0)} disabled={!unlocked} unit="명" />
                     <hr className="border-gray-100 my-1" />
                     <SwipeableRow label="항공권" value={costs.flight} onChange={(v) => handleCostChange('flight', v)} disabled={!unlocked} onDelete={() => handleCostChange('flight', '0')} />
-                    <SwipeableRow label="렌트+기름 (1인)" value={costs.rent} onChange={(v) => handleCostChange('rent', v)} disabled={!unlocked} onDelete={() => handleCostChange('rent', '0')} />
-                    <SwipeableRow label="흑돼지 (1인)" value={costs.day1Dinner} onChange={(v) => handleCostChange('day1Dinner', v)} disabled={!unlocked} onDelete={() => handleCostChange('day1Dinner', '0')} />
-                    <SwipeableRow label="저녁 장보기 (1인)" value={costs.day1Groceries} onChange={(v) => handleCostChange('day1Groceries', v)} disabled={!unlocked} onDelete={() => handleCostChange('day1Groceries', '0')} />
+                    <SwipeableRow label="렌트+기름" value={costs.rent} onChange={(v) => handleCostChange('rent', v)} disabled={!unlocked} onDelete={() => handleCostChange('rent', '0')} />
+                    <SwipeableRow label="흑돼지" value={costs.day1Dinner} onChange={(v) => handleCostChange('day1Dinner', v)} disabled={!unlocked} onDelete={() => handleCostChange('day1Dinner', '0')} />
+                    <SwipeableRow label="저녁 장보기" value={costs.day1Groceries} onChange={(v) => handleCostChange('day1Groceries', v)} disabled={!unlocked} onDelete={() => handleCostChange('day1Groceries', '0')} />
                     <SwipeableRow label="양주 (총액/N)" value={costs.whiskey} onChange={(v) => handleCostChange('whiskey', v)} disabled={!unlocked} labelDetail="(총액/10)" onDelete={() => handleCostChange('whiskey', '0')} />
                     <SwipeableRow label="9.81 파크" value={costs.park981} onChange={(v) => handleCostChange('park981', v)} disabled={!unlocked} onDelete={() => handleCostChange('park981', '0')} />
                     <SwipeableRow label="Day2 점심" value={costs.day2Lunch} onChange={(v) => handleCostChange('day2Lunch', v)} disabled={!unlocked} onDelete={() => handleCostChange('day2Lunch', '0')} />
