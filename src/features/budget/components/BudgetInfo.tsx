@@ -309,6 +309,20 @@ function SwipeableRow({ label, value, onChange, onDelete, disabled, labelDetail,
                 <div className="flex items-center gap-1">
                     <input type="number" value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} className="w-20 text-right bg-white/50 border border-gray-200 rounded px-1 py-1 text-sm outline-none focus:border-primary disabled:bg-transparent disabled:border-transparent" />
                     <span className="text-xs text-gray-500">{unit}</span>
+
+                    {!disabled && onDelete && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (window.confirm(isCustom ? '삭제하시겠습니까?' : '값을 초기화하시겠습니까?')) {
+                                    onDelete();
+                                }
+                            }}
+                            className="p-1.5 ml-1 text-red-400 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
