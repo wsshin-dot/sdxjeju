@@ -178,6 +178,31 @@ export function useBudget() {
         }
     };
 
+    // Delete from DB
+    const deleteBudget = async () => {
+        try {
+            setSaving(true); // Reuse saving state for loading indicator
+            setError(null);
+
+            const { error } = await supabase
+                .from(TABLE_NAME)
+                .delete()
+                .eq('id', 1);
+
+            if (error) throw error;
+
+            // Reset to initial config
+            setConfig(INITIAL_CONFIG);
+            return true;
+        } catch (err: unknown) {
+            console.error('Failed to delete budget', err);
+            setError(err instanceof Error ? err.message : String(err));
+            return false;
+        } finally {
+            setSaving(false);
+        }
+    };
+
     const updateCost = (key: keyof BudgetCosts, value: number) => {
         setConfig(prev => ({
             ...prev,
@@ -259,6 +284,7 @@ export function useBudget() {
         error,
         saving,
         saveBudget,
+        deleteBudget,
         updateCost,
         addCustomItem,
         updateCustomItem,

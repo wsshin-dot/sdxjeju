@@ -5,7 +5,7 @@ import { formatWon } from '../../../utils/format';
 import { Lock, Unlock, Save, Trash2 } from 'lucide-react';
 
 export function BudgetInfo({ isActive }: { isActive: boolean }) {
-    const { config, calculation, saveBudget, saving, updateCost, addCustomItem, updateCustomItem, removeCustomItem, updateConfigValue, updateStatus } = useBudget();
+    const { config, calculation, saveBudget, deleteBudget, saving, updateCost, addCustomItem, updateCustomItem, removeCustomItem, updateConfigValue, updateStatus } = useBudget();
     const [unlocked, setUnlocked] = useState(false);
     const [password, setPassword] = useState('');
     const [showModal, setShowModal] = useState(false);
@@ -167,13 +167,26 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
                 </div>
 
                 {unlocked && (
-                    <button
-                        onClick={saveBudget}
-                        disabled={saving}
-                        className="w-full bg-primary text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-50"
-                    >
-                        <Save className="w-4 h-4" /> {saving ? '저장 중...' : 'DB에 저장하기'}
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={async () => {
+                                if (window.confirm('정말로 예산 데이터를 삭제하시겠습니까? (복구 불가)')) {
+                                    await deleteBudget();
+                                }
+                            }}
+                            disabled={saving}
+                            className="flex-1 bg-red-500 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-50"
+                        >
+                            <Trash2 className="w-4 h-4" /> {saving ? '처리 중...' : '삭제'}
+                        </button>
+                        <button
+                            onClick={saveBudget}
+                            disabled={saving}
+                            className="flex-[2] bg-primary text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-50"
+                        >
+                            <Save className="w-4 h-4" /> {saving ? '저장 중...' : 'DB에 저장하기'}
+                        </button>
+                    </div>
                 )}
             </div>
 
