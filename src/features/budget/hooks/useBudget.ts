@@ -9,6 +9,7 @@ const INITIAL_CONFIG: BudgetConfig = {
     costs: {
         flight: 1000000, // 100k * 10
         rent: 400000,    // 40k * 10
+        gas: 150000,     // Total estimate
         day1Dinner: 500000, // 50k * 10
         day1Groceries: 150000, // 15k * 10
         whiskey: 200000, // 20k * 10
@@ -38,7 +39,7 @@ export function useBudget() {
             ? c.customItems.reduce((sum, item) => item.confirmed ? sum + item.value : sum, 0)
             : customTotal;
 
-        const day1 = c.flight + c.rent + c.day1Dinner + c.day1Groceries + c.whiskey;
+        const day1 = c.flight + c.rent + c.gas + c.day1Dinner + c.day1Groceries + c.whiskey;
         const day2 = c.day2Lunch + c.park981 + c.day2Cafe + c.day2Dinner;
         const day3 = calculatedCustomTotal;
 
@@ -51,7 +52,7 @@ export function useBudget() {
         let totalPlanned = 0;
 
         // Standard Items
-        const standardKeys = ['flight', 'rent', 'day1Dinner', 'day1Groceries', 'whiskey', 'day2Lunch', 'park981', 'day2Cafe', 'day2Dinner'];
+        const standardKeys = ['flight', 'rent', 'gas', 'day1Dinner', 'day1Groceries', 'whiskey', 'day2Lunch', 'park981', 'day2Cafe', 'day2Dinner'];
         standardKeys.forEach(key => {
             const val = (c[key] as number) || 0;
             if (status[key]) {

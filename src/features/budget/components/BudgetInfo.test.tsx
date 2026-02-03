@@ -58,6 +58,6 @@ describe('BudgetInfo Component', () => {
 
         // Check for standard budget items
         expect(screen.getByText('항공권')).toBeInTheDocument();
-        expect(screen.getByText('렌트+기름')).toBeInTheDocument();
+        expect(screen.getByText('렌트')).toBeInTheDocument();
     });
 });

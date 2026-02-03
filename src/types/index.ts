@@ -1,6 +1,7 @@
 export interface BudgetCosts {
     flight: number;
     rent: number;
+    gas: number;
     day1Dinner: number;
     day1Groceries: number;
     whiskey: number;
