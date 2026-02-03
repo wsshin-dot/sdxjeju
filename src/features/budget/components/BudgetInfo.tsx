@@ -44,8 +44,8 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
             {/* Total Budget Card */}
             <div className="bg-[#212529] text-white rounded-2xl overflow-hidden shadow-lg mb-5">
                 <div className="text-center py-6 border-b border-white/10">
-                    <h3 className="text-sm opacity-70 font-normal mb-1">1인당 예산</h3>
-                    <div className="text-3xl font-bold text-[#FFD700]">{formatWon(config.totalBudgetPerPerson)}</div>
+                    <h3 className="text-sm opacity-70 font-normal mb-1">총 예산 (10인 기준)</h3>
+                    <div className="text-3xl font-bold text-[#FFD700]">{formatWon(config.totalBudget)}</div>
                 </div>
                 <div className="grid grid-cols-3 gap-[1px] bg-white/10">
                     <div className="bg-[#212529] p-4 text-center">
@@ -57,13 +57,13 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
                         <div className="font-semibold text-yellow-400">{formatWon(calculation.totalPlanned)}</div>
                     </div>
                     <div className="bg-[#212529] p-4 text-center">
-                        <div className="text-xs opacity-60 mb-1">총 예산</div>
-                        <div className="font-semibold">{formatWon(config.totalBudget)}</div>
+                        <div className="text-xs opacity-60 mb-1">1인당 회비</div>
+                        <div className="font-semibold">{formatWon(config.totalBudgetPerPerson)}</div>
                     </div>
                 </div>
                 <div className="bg-[#2e343a] p-3 text-center text-xs opacity-80 flex justify-between px-6">
                     <span>사용: {formatWon(calculation.totalSpent)}</span>
-                    <span className="font-bold text-[#FFD700]">남은 돈: {formatWon(config.totalBudget - calculation.totalSpent)}</span>
+                    <span className="font-bold text-[#FFD700]">남은 돈: {formatWon(calculation.realRemaining)}</span>
                 </div>
             </div>
 
@@ -107,7 +107,7 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
             {/* Calculator */}
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-border">
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-bold">💰 예산 계산기</h3>
+                    <h3 className="text-lg font-bold">💰 예산 계산기 (총액 기준)</h3>
                     <button onClick={handleUnlock} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors ${unlocked ? 'bg-gray-200 text-gray-700' : 'bg-primary/10 text-primary'}`}>
                         {unlocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
                         {unlocked ? '잠금' : '잠금해제'}
@@ -128,7 +128,7 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
                     <SwipeableRow label="렌트+기름" value={costs.rent} onChange={(v) => handleCostChange('rent', v)} checked={status.rent} onCheck={(c) => handleStatusChange('rent', c)} disabled={!unlocked} onDelete={() => handleCostChange('rent', '0')} />
                     <SwipeableRow label="흑돼지" value={costs.day1Dinner} onChange={(v) => handleCostChange('day1Dinner', v)} checked={status.day1Dinner} onCheck={(c) => handleStatusChange('day1Dinner', c)} disabled={!unlocked} onDelete={() => handleCostChange('day1Dinner', '0')} />
                     <SwipeableRow label="저녁 장보기" value={costs.day1Groceries} onChange={(v) => handleCostChange('day1Groceries', v)} checked={status.day1Groceries} onCheck={(c) => handleStatusChange('day1Groceries', c)} disabled={!unlocked} onDelete={() => handleCostChange('day1Groceries', '0')} />
-                    <SwipeableRow label="양주 (총액/N)" value={costs.whiskey} onChange={(v) => handleCostChange('whiskey', v)} checked={status.whiskey} onCheck={(c) => handleStatusChange('whiskey', c)} disabled={!unlocked} labelDetail="(총액/10)" onDelete={() => handleCostChange('whiskey', '0')} />
+                    <SwipeableRow label="양주" value={costs.whiskey} onChange={(v) => handleCostChange('whiskey', v)} checked={status.whiskey} onCheck={(c) => handleStatusChange('whiskey', c)} disabled={!unlocked} onDelete={() => handleCostChange('whiskey', '0')} />
                     <SwipeableRow label="9.81 파크" value={costs.park981} onChange={(v) => handleCostChange('park981', v)} checked={status.park981} onCheck={(c) => handleStatusChange('park981', c)} disabled={!unlocked} onDelete={() => handleCostChange('park981', '0')} />
                     <SwipeableRow label="Day2 점심" value={costs.day2Lunch} onChange={(v) => handleCostChange('day2Lunch', v)} checked={status.day2Lunch} onCheck={(c) => handleStatusChange('day2Lunch', c)} disabled={!unlocked} onDelete={() => handleCostChange('day2Lunch', '0')} />
                     <SwipeableRow label="Day2 카페" value={costs.day2Cafe} onChange={(v) => handleCostChange('day2Cafe', v)} checked={status.day2Cafe} onCheck={(c) => handleStatusChange('day2Cafe', c)} disabled={!unlocked} onDelete={() => handleCostChange('day2Cafe', '0')} />

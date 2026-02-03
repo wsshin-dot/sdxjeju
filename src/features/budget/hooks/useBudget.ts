@@ -7,15 +7,15 @@ const INITIAL_CONFIG: BudgetConfig = {
     personCount: 10, // 2 drivers + 8 passengers
     totalBudgetPerPerson: 350000,
     costs: {
-        flight: 100000,
-        rent: 40000,
-        day1Dinner: 50000,
-        day1Groceries: 15000,
-        whiskey: 20000,
-        day2Lunch: 24000,
-        park981: 37000,
-        day2Cafe: 8000,
-        day2Dinner: 40000,
+        flight: 1000000, // 100k * 10
+        rent: 400000,    // 40k * 10
+        day1Dinner: 500000, // 50k * 10
+        day1Groceries: 150000, // 15k * 10
+        whiskey: 200000, // 20k * 10
+        day2Lunch: 240000, // 24k * 10
+        park981: 370000, // 37k * 10
+        day2Cafe: 80000, // 8k * 10
+        day2Dinner: 400000, // 40k * 10
         customTotal: 0,
         customItems: []
     }
@@ -43,7 +43,8 @@ export function useBudget() {
         const day3 = calculatedCustomTotal;
 
         const total = day1 + day2 + day3;
-        const remaining = config.totalBudgetPerPerson - total;
+        // CHANGED: Use totalBudget for remaining calculation
+        const remaining = config.totalBudget - total;
 
         // Calculate Spent vs Planned
         let totalSpent = 0;
@@ -74,14 +75,11 @@ export function useBudget() {
         }
 
         // Real Remaining (Total Budget - Spent)
-        // Note: totalBudgetPerPerson is a theoretical limit per person.
-        // If we want "Money left in wallet", we should use Total Budget (for group) or Per Person.
-        // Assuming user wants "My Remaining Budget" context:
-        const realRemaining = config.totalBudgetPerPerson - totalSpent;
+        const realRemaining = config.totalBudget - totalSpent;
 
         return {
-            day1: { cost: day1, cumulative: day1, remaining: config.totalBudgetPerPerson - day1 },
-            day2: { cost: day2, cumulative: day1 + day2, remaining: config.totalBudgetPerPerson - day1 - day2 },
+            day1: { cost: day1, cumulative: day1, remaining: config.totalBudget - day1 },
+            day2: { cost: day2, cumulative: day1 + day2, remaining: config.totalBudget - day1 - day2 },
             day3: { cost: day3, cumulative: total, remaining: remaining },
             total,
             remaining,
@@ -115,6 +113,7 @@ export function useBudget() {
                             newConfig.personCount = remoteData.costs._meta.personCount;
                             newConfig.totalBudgetPerPerson = Math.floor(newConfig.totalBudget / newConfig.personCount);
                         } else if (remoteData.total_budget_per_person) {
+                            // Legacy fallback
                             newConfig.totalBudgetPerPerson = remoteData.total_budget_per_person;
                             newConfig.totalBudget = newConfig.totalBudgetPerPerson * newConfig.personCount;
                         }
@@ -141,8 +140,11 @@ export function useBudget() {
             setSaving(true);
             setError(null);
 
+            // Ensure per-person is synced
+            const derivedPerPerson = Math.floor(config.totalBudget / config.personCount);
+
             const payload = {
-                total_budget_per_person: config.totalBudgetPerPerson,
+                total_budget_per_person: derivedPerPerson,
                 costs: {
                     ...config.costs,
                     _meta: {
