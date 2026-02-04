@@ -57,7 +57,7 @@ export function BudgetInfo({ isActive }: { isActive: boolean }) {
                         <div className="font-semibold text-yellow-400">{formatWon(calculation.totalPlanned)}</div>
                     </div>
                     <div className="bg-[#212529] p-4 text-center">
-                        <div className="text-xs opacity-60 mb-1">1인당 회비</div>
+                        <div className="text-xs opacity-60 mb-1">1인당 예산</div>
                         <div className="font-semibold">{formatWon(config.totalBudgetPerPerson)}</div>
                     </div>
                 </div>
