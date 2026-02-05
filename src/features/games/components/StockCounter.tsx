@@ -1,16 +1,24 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../../lib/supabase';
 import { GAME_PARTICIPANTS } from './participants';
+import { DrinkingEffect } from './DrinkingEffect';
 
 interface StockCount {
     name: string;
     count: number;
 }
 
+interface DrinkingEvent {
+    name: string;
+    count: number;
+    id: number;
+}
+
 export function StockCounter({ isActive }: { isActive: boolean }) {
     const [counts, setCounts] = useState<StockCount[]>([]);
     const [loading, setLoading] = useState(false);
     const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+    const [drinkingEvent, setDrinkingEvent] = useState<DrinkingEvent | null>(null);
 
     // Initialize counts with 0 for everyone
     const initialCounts = GAME_PARTICIPANTS.map(name => ({ name, count: 0 }));
@@ -75,27 +83,34 @@ export function StockCounter({ isActive }: { isActive: boolean }) {
         }
     };
 
-    const handleIncrement = async (name: string, currentCount: number) => {
+    const updateCount = async (name: string, newCount: number) => {
+        // Prevent negative counts
+        if (newCount < 0) return;
+
         // Optimistic update
-        // We update locally first, then re-sort
         setCounts(prev => {
             const newCounts = prev.map(p => 
-                p.name === name ? { ...p, count: p.count + 1 } : p
+                p.name === name ? { ...p, count: newCount } : p
             );
             return [...newCounts].sort((a, b) => b.count - a.count);
         });
         
+        // Show effect if count increased and is multiple of 5
+        const currentCount = counts.find(p => p.name === name)?.count || 0;
+        if (newCount > currentCount && newCount > 0 && newCount % 5 === 0) {
+            setDrinkingEvent({ name, count: newCount, id: Date.now() });
+        }
+
         setLastUpdated(name);
         setTimeout(() => setLastUpdated(null), 1000);
 
         try {
             const { error } = await supabase
                 .from('stock_counts')
-                .upsert({ name, count: currentCount + 1 }, { onConflict: 'name' });
+                .upsert({ name, count: newCount }, { onConflict: 'name' });
 
             if (error) {
                 console.error('Error updating count:', error);
-                // Revert if needed
                 alert('저장 실패! (DB 연결 확인 필요)');
             }
         } catch (err) {
@@ -107,12 +122,21 @@ export function StockCounter({ isActive }: { isActive: boolean }) {
 
     return (
         <div className="p-4 pb-20 space-y-4">
+            {drinkingEvent && (
+                <DrinkingEffect 
+                    key={drinkingEvent.id}
+                    name={drinkingEvent.name} 
+                    count={drinkingEvent.count} 
+                    onComplete={() => setDrinkingEvent(null)} 
+                />
+            )}
+
             <div className="bg-white/90 backdrop-blur rounded-2xl p-6 shadow-lg border border-red-100">
                 <div className="text-center mb-6">
                     <h2 className="text-2xl font-black text-red-600 mb-2">📈 주식무새 판독기</h2>
                     <p className="text-gray-500 text-sm">
                         "주식", "코인", "나스닥", "테슬라" 언급 시<br/>
-                        가차없이 버튼을 눌러주세요.
+                        <span className="font-bold text-red-500">5회마다 벌주 원샷!</span> 🍺
                     </p>
                 </div>
 
@@ -126,7 +150,7 @@ export function StockCounter({ isActive }: { isActive: boolean }) {
                                     : 'bg-white border-gray-100 hover:border-red-100'
                             }`}
                         >
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 flex-1">
                                 <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold text-sm ${
                                     index === 0 && person.count > 0 ? 'bg-red-500 text-white' : 
                                     index === 1 && person.count > 0 ? 'bg-orange-400 text-white' : 
@@ -139,23 +163,32 @@ export function StockCounter({ isActive }: { isActive: boolean }) {
                                     <span className="font-bold text-gray-800 text-lg">{person.name}</span>
                                     {lastUpdated === person.name && (
                                         <span className="ml-2 text-xs font-bold text-red-500 animate-ping">
-                                            +1
+                                            Update!
                                         </span>
                                     )}
                                 </div>
                             </div>
 
-                            <button
-                                onClick={() => handleIncrement(person.name, person.count)}
-                                className="group relative flex items-center gap-2 bg-white hover:bg-red-50 border-2 border-red-100 hover:border-red-300 px-4 py-2 rounded-xl transition-all active:scale-95"
-                            >
-                                <span className="text-2xl font-black text-red-500 group-hover:scale-110 transition-transform">
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => updateCount(person.name, person.count - 1)}
+                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 active:scale-95 transition-all text-xl font-bold"
+                                    disabled={person.count <= 0}
+                                >
+                                    -
+                                </button>
+                                
+                                <div className="w-12 text-center font-black text-2xl text-gray-800">
                                     {person.count}
-                                </span>
-                                <span className="text-xs font-medium text-gray-400 group-hover:text-red-400">
+                                </div>
+
+                                <button
+                                    onClick={() => updateCount(person.name, person.count + 1)}
+                                    className="w-12 h-10 flex items-center justify-center rounded-xl bg-red-100 text-red-600 hover:bg-red-200 active:scale-95 transition-all text-sm font-bold border border-red-200"
+                                >
                                     적발
-                                </span>
-                            </button>
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>
