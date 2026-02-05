@@ -77,13 +77,11 @@ export function StockCounter({ isActive }: { isActive: boolean }) {
 
     const handleIncrement = async (name: string, currentCount: number) => {
         // Optimistic update
-        setCounts(prev => prev.map(p => 
-            p.name === name ? { ...p, count: p.count + 1 } : p
-        ).sort((a, b) => (p.name === name ? p.count + 1 : p.count) > (p.name === name ? a.count : a.count) ? -1 : 0)); // sorting locally is tricky with map, let's just update value first
-        
-        // Re-sort after update
+        // We update locally first, then re-sort
         setCounts(prev => {
-            const newCounts = prev.map(p => p.name === name ? { ...p, count: p.count + 1 } : p);
+            const newCounts = prev.map(p => 
+                p.name === name ? { ...p, count: p.count + 1 } : p
+            );
             return [...newCounts].sort((a, b) => b.count - a.count);
         });
         
@@ -97,7 +95,7 @@ export function StockCounter({ isActive }: { isActive: boolean }) {
 
             if (error) {
                 console.error('Error updating count:', error);
-                // Revert if needed, but for a fun counter it might be overkill
+                // Revert if needed
                 alert('저장 실패! (DB 연결 확인 필요)');
             }
         } catch (err) {
