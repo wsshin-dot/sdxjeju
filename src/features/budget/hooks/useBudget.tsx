@@ -1,28 +1,47 @@
-import { useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { supabase, TABLE_NAME } from '../../../lib/supabase';
 import type { BudgetConfig, BudgetCalculation, BudgetCosts } from '../../../types';
 
 const INITIAL_CONFIG: BudgetConfig = {
     totalBudget: 3500000,
-    personCount: 10, // 2 drivers + 8 passengers
+    personCount: 10,
     totalBudgetPerPerson: 350000,
     costs: {
-        flight: 1000000, // 100k * 10
-        rent: 400000,    // 40k * 10
-        gas: 150000,     // Total estimate
-        day1Dinner: 500000, // 50k * 10
-        day1Groceries: 150000, // 15k * 10
-        whiskey: 200000, // 20k * 10
-        day2Lunch: 240000, // 24k * 10
-        park981: 370000, // 37k * 10
-        day2Cafe: 80000, // 8k * 10
-        day2Dinner: 400000, // 40k * 10
+        flight: 1000000,
+        rent: 400000,
+        gas: 150000,
+        day1Dinner: 500000,
+        day1Groceries: 150000,
+        whiskey: 200000,
+        day2Lunch: 240000,
+        park981: 370000,
+        day2Cafe: 80000,
+        day2Dinner: 400000,
         customTotal: 0,
         customItems: []
     }
 };
 
-export function useBudget() {
+interface BudgetContextType {
+    config: BudgetConfig;
+    setConfig: React.Dispatch<React.SetStateAction<BudgetConfig>>;
+    calculation: BudgetCalculation;
+    loading: boolean;
+    error: string | null;
+    saving: boolean;
+    saveBudget: () => Promise<boolean>;
+    deleteBudget: () => Promise<boolean>;
+    updateCost: (key: keyof BudgetCosts, value: number) => void;
+    addCustomItem: () => void;
+    updateCustomItem: (index: number, field: keyof { label: string, value: number, confirmed: boolean, executed?: boolean }, value: string | number | boolean) => void;
+    removeCustomItem: (index: number) => void;
+    updateConfigValue: (key: keyof BudgetConfig, value: number) => void;
+    updateStatus: (key: keyof BudgetCosts, executed: boolean) => void;
+}
+
+const BudgetContext = createContext<BudgetContextType | undefined>(undefined);
+
+export function BudgetProvider({ children }: { children: React.ReactNode }) {
     const [config, setConfig] = useState<BudgetConfig>(INITIAL_CONFIG);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -44,7 +63,6 @@ export function useBudget() {
         const day3 = calculatedCustomTotal;
 
         const total = day1 + day2 + day3;
-        // CHANGED: Use totalBudget for remaining calculation
         const remaining = config.totalBudget - total;
 
         // Calculate Spent vs Planned
@@ -75,7 +93,6 @@ export function useBudget() {
             });
         }
 
-        // Real Remaining (Total Budget - Spent)
         const realRemaining = config.totalBudget - totalSpent;
 
         return {
@@ -108,18 +125,14 @@ export function useBudget() {
                     const newConfig = { ...INITIAL_CONFIG };
 
                     if (remoteData.costs) {
-                        // Load meta if exists
                         if (remoteData.costs._meta) {
                             newConfig.totalBudget = remoteData.costs._meta.totalBudget;
                             newConfig.personCount = remoteData.costs._meta.personCount;
                             newConfig.totalBudgetPerPerson = Math.floor(newConfig.totalBudget / newConfig.personCount);
                         } else if (remoteData.total_budget_per_person) {
-                            // Legacy fallback
                             newConfig.totalBudgetPerPerson = remoteData.total_budget_per_person;
                             newConfig.totalBudget = newConfig.totalBudgetPerPerson * newConfig.personCount;
                         }
-
-                        // Merge costs
                         newConfig.costs = { ...newConfig.costs, ...remoteData.costs };
                     }
                     setConfig(newConfig);
@@ -135,15 +148,11 @@ export function useBudget() {
         loadBudget();
     }, []);
 
-    // Save to DB
     const saveBudget = async () => {
         try {
             setSaving(true);
             setError(null);
-
-            // Ensure per-person is synced
             const derivedPerPerson = Math.floor(config.totalBudget / config.personCount);
-
             const payload = {
                 total_budget_per_person: derivedPerPerson,
                 costs: {
@@ -155,18 +164,7 @@ export function useBudget() {
                 },
                 updated_at: new Date().toISOString()
             };
-
-            // Try UPDATE (PATCH equivalent usually means UPDATE where id=1)
-            // Supabase generic 'upsert' or update
-            // Original script used PATCH then POST
-
-            // We'll try upsert with a fixed ID if we knew it, but here we just likely insert a new one or update latest?
-            // The original script fetched param ?id=eq.1 for PATCH. So it assumed Row ID 1.
-
-            const { error } = await supabase
-                .from(TABLE_NAME)
-                .upsert({ id: 1, ...payload });
-
+            const { error } = await supabase.from(TABLE_NAME).upsert({ id: 1, ...payload });
             if (error) throw error;
             return true;
         } catch (err: unknown) {
@@ -178,20 +176,12 @@ export function useBudget() {
         }
     };
 
-    // Delete from DB
     const deleteBudget = async () => {
         try {
-            setSaving(true); // Reuse saving state for loading indicator
+            setSaving(true);
             setError(null);
-
-            const { error } = await supabase
-                .from(TABLE_NAME)
-                .delete()
-                .eq('id', 1);
-
+            const { error } = await supabase.from(TABLE_NAME).delete().eq('id', 1);
             if (error) throw error;
-
-            // Reset to initial config
             setConfig(INITIAL_CONFIG);
             return true;
         } catch (err: unknown) {
@@ -204,49 +194,34 @@ export function useBudget() {
     };
 
     const updateCost = (key: keyof BudgetCosts, value: number) => {
-        setConfig(prev => ({
-            ...prev,
-            costs: {
-                ...prev.costs,
-                [key]: value
-            }
-        }));
+        setConfig(prev => ({ ...prev, costs: { ...prev.costs, [key]: value } }));
     };
 
     const addCustomItem = () => {
         setConfig(prev => ({
             ...prev,
-            costs: {
-                ...prev.costs,
-                customItems: [
-                    ...(prev.costs.customItems || []),
-                    { label: '', value: 0, confirmed: false }
-                ]
-            }
+            costs: { ...prev.costs, customItems: [...(prev.costs.customItems || []), { label: '', value: 0, confirmed: false }] }
         }));
     };
 
-    const updateCustomItem = (index: number, field: keyof { label: string, value: number, confirmed: boolean, executed?: boolean }, value: string | number | boolean) => {
+    const updateCustomItem = (index: number, field: any, value: any) => {
         setConfig(prev => {
             const newItems = [...(prev.costs.customItems || [])];
-            if (newItems[index]) {
-                newItems[index] = { ...newItems[index], [field]: value };
-            }
-            return {
-                ...prev,
-                costs: {
-                    ...prev.costs,
-                    customItems: newItems
-                }
-            };
+            if (newItems[index]) newItems[index] = { ...newItems[index], [field]: value };
+            return { ...prev, costs: { ...prev.costs, customItems: newItems } };
+        });
+    };
+
+    const removeCustomItem = (index: number) => {
+        setConfig(prev => {
+            const newItems = [...(prev.costs.customItems || [])];
+            newItems.splice(index, 1);
+            return { ...prev, costs: { ...prev.costs, customItems: newItems } };
         });
     };
 
     const updateConfigValue = (key: keyof BudgetConfig, value: number) => {
-        setConfig(prev => ({
-            ...prev,
-            [key]: value
-        }));
+        setConfig(prev => ({ ...prev, [key]: value }));
     };
 
     const updateStatus = (key: keyof BudgetCosts, executed: boolean) => {
@@ -254,42 +229,26 @@ export function useBudget() {
             ...prev,
             costs: {
                 ...prev.costs,
-                executionStatus: {
-                    ...(prev.costs.executionStatus || {}),
-                    [key]: executed
-                }
+                executionStatus: { ...(prev.costs.executionStatus || {}), [key]: executed }
             }
         }));
     };
 
-    const removeCustomItem = (index: number) => {
-        setConfig(prev => {
-            const newItems = [...(prev.costs.customItems || [])];
-            newItems.splice(index, 1);
-            return {
-                ...prev,
-                costs: {
-                    ...prev.costs,
-                    customItems: newItems
-                }
-            };
-        });
-    };
+    return (
+        <BudgetContext.Provider value={{
+            config, setConfig, calculation, loading, error, saving,
+            saveBudget, deleteBudget, updateCost, addCustomItem, updateCustomItem,
+            removeCustomItem, updateConfigValue, updateStatus
+        }}>
+            {children}
+        </BudgetContext.Provider>
+    );
+}
 
-    return {
-        config,
-        setConfig,
-        calculation,
-        loading,
-        error,
-        saving,
-        saveBudget,
-        deleteBudget,
-        updateCost,
-        addCustomItem,
-        updateCustomItem,
-        removeCustomItem,
-        updateConfigValue,
-        updateStatus
-    };
+export function useBudget() {
+    const context = useContext(BudgetContext);
+    if (context === undefined) {
+        throw new Error('useBudget must be used within a BudgetProvider');
+    }
+    return context;
 }

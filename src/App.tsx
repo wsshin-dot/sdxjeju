@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { RainModeProvider } from './features/weather/contexts/RainModeContext';
+import { BudgetProvider, useBudget } from './features/budget/hooks/useBudget';
 import { Header } from './components/layout/Header';
 import { Nav } from './components/layout/Nav';
 import { IntroOverlay } from './components/common/IntroOverlay';
@@ -7,7 +8,6 @@ import { SwipeGuide } from './components/common/SwipeGuide';
 import { DaySchedule } from './features/schedule/components/DaySchedule';
 import { BudgetInfo } from './features/budget/components/BudgetInfo';
 import { GameCenter } from './features/games/components/GameCenter';
-import { useBudget } from './features/budget/hooks/useBudget';
 import { SCHEDULE_DAY1, SCHEDULE_DAY2, SCHEDULE_DAY3 } from './features/schedule/data/schedule';
 import { useSwipeTabs } from './hooks/useSwipeTabs';
 
@@ -70,7 +70,9 @@ function AppContent() {
 function App() {
   return (
     <RainModeProvider>
-      <AppContent />
+      <BudgetProvider>
+        <AppContent />
+      </BudgetProvider>
     </RainModeProvider>
   );
 }
